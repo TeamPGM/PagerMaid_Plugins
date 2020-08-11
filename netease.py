@@ -12,7 +12,7 @@ async def netease(context):
     if req.status_code == 200:
         data = json.loads(req.text)
         res = data['Comment'] + '\n\n来自 @' + data[
-            'UserName'] + ' 在鸽曲"<a href="http://music.163.com/song/media/outer/url?id=' + data['SongId'] + '.mp3">' + \
+            'UserName'] + ' 在鸽曲"<a href="http://music.163.com/song/media/outer/url?id=' + str(data['SongId']) + '.mp3">' + \
               data['SongName'] + '</a>"-' + data['SongAutho'] + '</a>下方的评论'
         await context.edit(res, parse_mode='html', link_preview=True)
     else:
