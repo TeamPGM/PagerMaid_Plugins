@@ -29,6 +29,56 @@
             "supported": true,
             "des-short": "自动更新 last_name 为时间等。",
             "des": "每 30 秒自动更新 last_name 为时间等小玩意。"
+        },
+        {
+            "name": "autorm",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "fruitymelon",
+            "size": "6.7 kb",
+            "supported": true,
+            "des-short": "在指定的时间后删除自己的消息。",
+            "des": "安装后使用 -help autorm 查看更多。"
+        },
+        {
+            "name": "sendat",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "fruitymelon",
+            "size": "13.0 kb",
+            "supported": true,
+            "des-short": "定时发送消息。",
+            "des": "安装后使用 -help sendat 查看更多。"
+        },
+        {
+            "name": "weather",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "1.5 kb",
+            "supported": true,
+            "des-short": "查询天气。",
+            "des": "安装后使用 -help weather 查看更多。"
+        },
+        {
+            "name": "xtao-some",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "18.8 kb",
+            "supported": true,
+            "des-short": "一大堆便民功能。",
+            "des": "超多功能 例如 -ip -pixiv -guess 等。"
+        },
+        {
+            "name": "yb-dl",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "18.8 kb",
+            "supported": false,
+            "des-short": "上传 Youtube、Bilibili 视频到 telegram。",
+            "des": "安装后使用 -help yb-dl 查看更多。"
         }
     ]
 }
