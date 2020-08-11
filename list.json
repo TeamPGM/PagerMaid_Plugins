@@ -109,6 +109,36 @@
             "supported": true,
             "des-short": "随机一条网易云音乐评论。",
             "des": "这个人很懒，什么都没有留下。"
+        },
+        {
+            "name": "atadmins_atall",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "Pentacene",
+            "size": "2.5 kb",
+            "supported": true,
+            "des-short": "一键 AT 本群管理员、群员。",
+            "des": "仅在群组中有效。"
+        },
+        {
+            "name": "denyu",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "fruitymelon",
+            "size": "2.7 kb",
+            "supported": true,
+            "des-short": "在某群中强制禁言某用户。",
+            "des": "需要删除他人消息权限，需要 redis。"
+        },
+        {
+            "name": "hyperlink",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "OahiewUoil",
+            "size": "0.5 kb",
+            "supported": true,
+            "des-short": "生成隐藏链接。",
+            "des": "非链接的纯文字将直接隐藏。"
         }
     ]
 }

@@ -52,6 +52,8 @@
     - `dme` : 反 TG desktop 防撤回插件。
     - `autorm` : 在指定的时间后删除自己的消息。
     - `sendat` : 定时发送消息。
+    - `atadmins_atall` : 一键 AT 本群管理员、群员。
+    - `denyu` : 在某群中强制禁言某用户。
 - profile （资料类）
     - `autochangename` : 自动更新 last_name 为时间等。
     - `throwit` : 生成一张 扔头像 图片。
@@ -59,6 +61,7 @@
     - `weather` : 查询天气。
     - `xtao-some` : 一大堆便民功能。
     - `yb-dl` : 上传 Youtube、Bilibili 视频到 telegram。
-    - `rate` : 汇率转换
-    - `netease` : 网易云热评
+    - `rate` : 汇率转换。
+    - `netease` : 网易云热评。
+    - `hyperlink` : 生成隐藏链接。
 
