@@ -104,7 +104,7 @@ async def throwit(context):
         if randint_r == 1:
             background = Image.open("plugins/throwit/2.png")
         elif randint_r == 2:
-            background = Image.open("plugins/throwit/2.png")
+            background = Image.open("plugins/throwit/1.png")
         foreground = Image.open("plugins/throwit/" + str(target_user.user.id) + ".png")
         if len(context.parameter) == 2:
             diu_round = True
