@@ -17,8 +17,18 @@
             "maintainer": "xtaodada",
             "size": "4.3 kb",
             "supported": true,
-            "des-short": "反 TG desktop 防撤回插件",
+            "des-short": "反 TG desktop 防撤回插件。",
             "des": "编辑并删除当前对话您发送的特定数量的消息。支持 Redis 记录上一次指定的文本，方便快速撤回消息。 最近更新：防止编辑消息报错。"
+        },
+        {
+            "name": "autochangename",
+            "version": "1.0",
+            "section": "profile",
+            "maintainer": "xtaodada",
+            "size": "2.1 kb",
+            "supported": true,
+            "des-short": "自动更新 last_name 为时间等。",
+            "des": "每 30 秒自动更新 last_name 为时间等小玩意。"
         }
     ]
 }
