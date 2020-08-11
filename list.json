@@ -5,10 +5,20 @@
             "version": "0.2",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "10 kb",
+            "size": "1.9 kb",
             "supported": true,
             "des-short": "自动回复。",
             "des": "此插件用于需要自动回复的场景。"
+        },
+        {
+            "name": "dme",
+            "version": "1.1",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "4.3 kb",
+            "supported": true,
+            "des-short": "反 TG desktop 防撤回插件",
+            "des": "编辑并删除当前对话您发送的特定数量的消息。支持 Redis 记录上一次指定的文本，方便快速撤回消息。 最近更新：防止编辑消息报错。"
         }
     ]
 }
