@@ -1,0 +1,14 @@
+{
+    "list": [
+        {
+            "name": "autorespond",
+            "version": "0.0.1",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "10 kb",
+            "supported": true,
+            "des-short": "自动回复。",
+            "des": "此插件用于需要自动回复的场景。"
+        }
+    ]
+}
