@@ -38,7 +38,7 @@
             "size": "6.7 kb",
             "supported": true,
             "des-short": "在指定的时间后删除自己的消息。",
-            "des": "安装后使用 -help autorm 查看更多。"
+            "des": "这个人很懒，什么都没有留下。"
         },
         {
             "name": "sendat",
@@ -48,7 +48,7 @@
             "size": "13.0 kb",
             "supported": true,
             "des-short": "定时发送消息。",
-            "des": "安装后使用 -help sendat 查看更多。"
+            "des": "这个人很懒，什么都没有留下。"
         },
         {
             "name": "weather",
@@ -58,7 +58,7 @@
             "size": "1.5 kb",
             "supported": true,
             "des-short": "查询天气。",
-            "des": "安装后使用 -help weather 查看更多。"
+            "des": "这个人很懒，什么都没有留下。"
         },
         {
             "name": "xtao-some",
@@ -78,7 +78,37 @@
             "size": "18.8 kb",
             "supported": false,
             "des-short": "上传 Youtube、Bilibili 视频到 telegram。",
-            "des": "安装后使用 -help yb-dl 查看更多。"
+            "des": "这个人很懒，什么都没有留下。"
+        },
+        {
+            "name": "throwit",
+            "version": "1.3",
+            "section": "profile",
+            "maintainer": "xtaodada",
+            "size": "6.9 kb",
+            "supported": true,
+            "des-short": "生成一张 扔头像 图片。",
+            "des": "支持旋转图片，随机生成丢头像的人物。"
+        },
+        {
+            "name": "rate",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "fruitymelon",
+            "size": "1.7 kb",
+            "supported": true,
+            "des-short": "汇率转换。",
+            "des": "这个人很懒，什么都没有留下。"
+        },
+        {
+            "name": "netease",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada、KorenKrita",
+            "size": "0.7 kb",
+            "supported": true,
+            "des-short": "随机一条网易云音乐评论。",
+            "des": "这个人很懒，什么都没有留下。"
         }
     ]
 }
