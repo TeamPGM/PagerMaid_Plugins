@@ -7,7 +7,7 @@ from pagermaid.listener import listener
 persistent_vars.update({'autorespond': {'enabled': False, 'message': None, 'amount': 0}})
 
 
-@listener(outgoing=True, command="autorespond",
+@listener(is_plugin=True, outgoing=True, command="autorespond",
           description="启用自动回复。",
           parameters="<message>")
 async def autorespond(context):
