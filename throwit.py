@@ -110,7 +110,10 @@ async def throwit(context):
             diu_round = True
         if diu_round:
             foreground = foreground.rotate(180)  # 对图片进行旋转
-        background.paste(foreground, (19, 181), foreground)
+        if randint_r == 1:
+            background.paste(foreground, (19, 181), foreground)
+        elif randint_r == 2:
+            background.paste(foreground, (368, 16), foreground)
         background.save('plugins/throwit/throwout.webp')
         target_file = await context.client.upload_file('plugins/throwit/throwout.webp')
         try:
