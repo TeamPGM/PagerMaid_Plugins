@@ -11,7 +11,9 @@ async def netease(context):
     req = get("https://api.oioweb.cn/api/wyypl.php")
     if req.status_code == 200:
         data = json.loads(req.text)
-        res = data['Comment'] + '\n\n来自 @' + data['UserName'] + ' 在鸽曲"' + data['SongName'] + '"-' + data['SongAutho'] + '</a>下方的评论'
+        res = data['Comment'] + '\n\n来自 @' + data[
+            'UserName'] + ' 在鸽曲"<a href="http://music.163.com/song/media/outer/url?id=' + data['SongId'] + '.mp3">' + \
+              data['SongName'] + '</a>"-' + data['SongAutho'] + '</a>下方的评论'
         await context.edit(res, parse_mode='html', link_preview=True)
     else:
         await context.edit("出错了呜呜呜 ~ 无法访问到 API 服务器 。")
