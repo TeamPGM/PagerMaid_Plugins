@@ -162,13 +162,13 @@
         },
         {
             "name": "resou",
-            "version": "1.0",
+            "version": "1.2",
             "section": "daily",
-            "maintainer": "KorenKrita",
-            "size": "5 kb",
+            "maintainer": "KorenKrita、xtaodada",
+            "size": "6.1 kb",
             "supported": true,
-            "des-short": "微博，知乎，抖音实时热搜。",
-            "des": "命令：wbrs，zhrs，dyrs。"
+            "des-short": "微博，知乎，抖音实时热搜，B站实时排行榜。",
+            "des": "命令：wbrs，zhrs，dyrs，brank。"
         },
         {
             "name": "whois",
