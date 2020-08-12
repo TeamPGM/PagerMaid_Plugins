@@ -6,7 +6,7 @@ from datetime import timedelta
 from telethon.tl.types import ChannelParticipantsAdmins
 
 
-@listener(incoming=True, outgoing=True, command="portball",
+@listener(is_plugin=True, outgoing=True, command="portball",
           description="回复你要临时禁言的人的消息来实现XX秒的禁言。",
           parameters="<理由> <时间 单位：秒>")
 async def portball(context):
@@ -18,6 +18,9 @@ async def portball(context):
                 last_name = ''
             else:
                 last_name = reply.sender.last_name
+            if not len(action) == 2:
+                await context.edit('你好蠢诶，没有参数我怎么禁言嘛。')
+                return
             if int(action[1])<60:
                 notification = await bot.send_message(context.chat_id, '诶呀不要小于60秒啦')
                 await sleep(10)
