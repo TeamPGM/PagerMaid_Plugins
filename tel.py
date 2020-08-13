@@ -7,7 +7,7 @@ from pagermaid.utils import obtain_message
 
 @listener(outgoing=True, command="tel",
           description="手机号码归属地等信息查询。")
-async def whois(context):
+async def tel(context):
     await context.edit("获取中 . . .")
     try:
         message = await obtain_message(context)
@@ -17,7 +17,11 @@ async def whois(context):
     req = get("https://tenapi.cn/tel?tel=" + message)
     if req.status_code == 200:
         data = json.loads(req.text)
-        res = '电话号码：' + str(data['tel']) + '\n' + str(data['local']) + '\n' + str(data['duan']) + '\n' + str(data['type']) + '\n' + str(data['yys']) + '\n' + str(data['bz'])
+        if not 'msg' in data:
+            res = '电话号码：' + str(data['tel']) + '\n' + str(data['local']) + '\n' + str(data['duan']) + '\n' + str(
+                data['type']) + '\n' + str(data['yys']) + '\n' + str(data['bz'])
+        else:
+            res = data['msg']
         await context.edit(res)
     else:
         await context.edit("出错了呜呜呜 ~ 无法访问到 API 服务器 。")

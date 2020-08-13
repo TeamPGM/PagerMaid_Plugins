@@ -182,9 +182,9 @@
         },
         {
             "name": "tel",
-            "version": "1.0",
+            "version": "1.1",
             "section": "daily",
-            "maintainer": "KorenKrita",
+            "maintainer": "KorenKrita、xtaodada",
             "size": "1 kb",
             "supported": true,
             "des-short": "查询手机号码归属地等信息",
