@@ -199,6 +199,16 @@
             "supported": true,
             "des-short": "查询域名whois信息",
             "des": "查看域名是否已被注册、注册日期、过期日期、域名状态、DNS解析服务器等。"
+        },
+        {
+            "name": "eat",
+            "version": "1.0",
+            "section": "profile",
+            "maintainer": "SF_PICK",
+            "size": "6.4 kb",
+            "supported": false,
+            "des-short": "生成一张 吃头像 图片。",
+            "des": "这个人很懒，什么都没有留下。"
         }
     ]
 }
