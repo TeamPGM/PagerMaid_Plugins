@@ -13,7 +13,8 @@ async def meizi(context):
     for _ in range (20): #最多重试20次
         website = random.randint(0, 13)
         if website == 0:
-            img = get("https://mm.52.mk")
+            continue
+            # img = get("https://mm.52.mk") 暂时停用
         elif website == 1:
             img = get("https://api.helloworld.la/xiezhen_xinggan.php")
         elif website == 2:
