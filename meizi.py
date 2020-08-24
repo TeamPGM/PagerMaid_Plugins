@@ -43,7 +43,7 @@ async def meizi(context):
         elif website == 12:
             img = get("https://api.diskgirl.com/image/api.php?t=&v=0.9451485087333713")
         elif website == 13:
-            img = get("https://api.diskgirl.com/image/api.php?t=&v=" + str(random.uniform(0, 100)))
+            img = get("https://api.diskgirl.com/image/api.php")
         if img.status_code == 200:
             with open(r'tu.png', 'wb') as f:
                 await context.edit("正在上传图片")
