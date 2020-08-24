@@ -222,7 +222,7 @@
         },
         {
             "name": "meizi",
-            "version": "1.1",
+            "version": "1.2",
             "section": "profile",
             "maintainer": "TNTcraftHIM",
             "size": "2.6 kb",
@@ -249,6 +249,16 @@
             "supported": true,
             "des-short": "删除所有信息",
             "des": "删除所有信息（非群组管理员只删除自己的消息），需要二次确定（-da true）。命令：da"
+        },
+        {
+            "name": "diss",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "TNTcraftHIM",
+            "size": "1.0 kb",
+            "supported": true,
+            "des-short": "祖安对线语录",
+            "des": "让你在祖安大舞台能够时而儒雅，时而火力全开的对线。命令：diss，biss。"
         }
     ]
 }
