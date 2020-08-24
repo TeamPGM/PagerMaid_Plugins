@@ -13,18 +13,14 @@ async def meizi(context):
     for _ in range (20): #最多重试20次
         website = random.randint(0, 13)
         if website == 0:
-            continue
-            # img = get("https://mm.52.mk") 暂时停用
+            img = get("https://mm.52.mk/img")
         elif website == 1:
             img = get("https://api.helloworld.la/xiezhen_xinggan.php")
         elif website == 2:
-            # img = get("https://cdn.seovx.com/?mom=302") 不够涩
             img = get("https://api.66mz8.com/api/rand.tbimg.php")
         elif website == 3:
-            # img = get("http://api.btstu.cn/sjbz/?lx=meizi") 不够涩
             img = get("https://api.isoyu.com/mm_images.php")
         elif website == 4:
-            # img = get("https://api.qicaiyun.top/sjbz/api.php?lx=meizi") 不够涩
             img = get("https://uploadbeta.com/api/pictures/random/?key=%E5%A5%B3")
         elif website == 5:
             img = get("https://uploadbeta.com/api/pictures/random/?key=%E5%A6%B9%E5%AD%90")
@@ -43,7 +39,7 @@ async def meizi(context):
         elif website == 12:
             img = get("https://api.diskgirl.com/image/api.php?t=&v=0.9451485087333713")
         elif website == 13:
-            img = get("https://api.diskgirl.com/image/api.php?t=&v=" + str(random.uniform(0, 100)))
+            img = get("https://uploadbeta.com/api/pictures/random/?key=%E6%80%A7%E6%84%9F")
         if img.status_code == 200:
             with open(r'tu.png', 'wb') as f:
                 await context.edit("正在上传图片")
