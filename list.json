@@ -222,13 +222,13 @@
         },
         {
             "name": "meizi",
-            "version": "1.4",
+            "version": "1.5",
             "section": "profile",
             "maintainer": "TNTcraftHIM",
             "size": "3.7 kb",
             "supported": true,
             "des-short": "多网站随机获取写真",
-            "des": "从不同的网站中调取妹子写真/视频，但是无漏点，放心使用（安全版ghs）。命令：meizi，meizisp。"
+            "des": "从不同的网站中调取妹子写真/视频，但是无漏点，放心使用（安全版ghs）。命令：mz，sp。"
         },
         {
             "name": "acg-multi",

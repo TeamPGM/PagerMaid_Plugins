@@ -5,9 +5,9 @@ from pagermaid.listener import listener
 from os import remove
 
 
-@listener(is_plugin=True, outgoing=True, command="meizi",
+@listener(is_plugin=True, outgoing=True, command="mz",
           description="多网站随机获取性感（可能）的写真")
-async def meizi(context):
+async def mz(context):
     await context.edit("获取中 . . .")
     status = False
     for _ in range (20): #最多重试20次
@@ -62,9 +62,9 @@ async def meizi(context):
         sleep(2)
     await context.delete()
 
-@listener(is_plugin=True, outgoing=True, command="meizisp",
+@listener(is_plugin=True, outgoing=True, command="sp",
           description="随机获取妹子的视频")
-async def meizisp(context):
+async def sp(context):
     await context.edit("获取中 . . .")
     status = False
     for _ in range (20): #最多重试20次
