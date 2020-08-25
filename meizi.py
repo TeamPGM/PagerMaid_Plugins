@@ -61,3 +61,32 @@ async def meizi(context):
         await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器（没有妹子看啦！） 。")
         sleep(2)
     await context.delete()
+
+@listener(is_plugin=True, outgoing=True, command="meizisp",
+          description="随机获取妹子的视频")
+async def meizisp(context):
+    await context.edit("获取中 . . .")
+    status = False
+    for _ in range (20): #最多重试20次
+        vid = get("https://mv.52.mk/video.php")
+        if vid.status_code == 200:
+            with open(r'vid.mp4', 'wb') as f:
+                await context.edit("正在上传视频")
+                f.write(vid.content)
+                await context.client.send_file(
+                    context.chat_id,
+                    "vid.mp4",
+                    reply_to=None,
+                    caption=None
+                  )
+            try:
+                remove('vid.mp4')
+            except:
+                pass
+            status = True
+            break #成功了就赶紧结束啦！
+
+    if not status:
+        await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器（没有妹子视频看啦！） 。")
+        sleep(2)
+    await context.delete()
