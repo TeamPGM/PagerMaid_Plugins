@@ -269,6 +269,16 @@
             "supported": true,
             "des-short": "上流对话工具",
             "des": "让你可以随时放彩虹屁，毒鸡汤，或者变身营销号（迫真，配合-tts食用更佳）。命令：chp，djt，yxh。"
+        },
+        {
+            "name": "neteaseshuffle",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "TNTcraftHIM",
+            "size": "3.1 kb",
+            "supported": true,
+            "des-short": "随机网抑热歌",
+            "des": "从热歌榜随机获取一首歌，可以多进程同开，且附带歌曲信息。命令：ns。"
         }
     ]
 }
