@@ -279,6 +279,16 @@
             "supported": true,
             "des-short": "随机网抑热歌",
             "des": "从热歌榜随机获取一首歌，可以多进程同开，且附带歌曲信息。命令：ns。"
+        },
+        {
+            "name": "neteasemusic",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "TNTcraftHIM",
+            "size": "6.6 kb",
+            "supported": true,
+            "des-short": "网易云点歌",
+            "des": "可以在线搜索并且点歌，并且歌曲信息齐全，支持ID点歌。命令：music。"
         }
     ]
 }
