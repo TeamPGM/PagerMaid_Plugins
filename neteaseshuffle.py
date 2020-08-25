@@ -26,7 +26,7 @@ async def ns(context):
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"}
             music = requests.request("GET", music, headers=headers)
-            name = "/nstmp" + str(req['data']['name']) + ".mp3"
+            name = str(req['data']['name']) + ".mp3"
             with open(name, 'wb') as f:
                 f.write(music.content)
                 if (path.getsize(name) / 1024) < 100:
@@ -57,12 +57,12 @@ async def ns(context):
                     caption=cap,
                     link_preview=False,
                     force_document=False)
-                status = True
-                break
             try:
                 remove(name)
             except:
                 pass
+            status = True
+            break
         else:
             continue
     if status == False:

@@ -272,10 +272,10 @@
         },
         {
             "name": "neteaseshuffle",
-            "version": "1.0",
+            "version": "1.1",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
-            "size": "3.1 kb",
+            "size": "3.0 kb",
             "supported": true,
             "des-short": "随机网抑热歌",
             "des": "从热歌榜随机获取一首歌，可以多进程同开，且附带歌曲信息。命令：ns。"
