@@ -359,7 +359,7 @@ async def nem(context):
                         tag.album = info['album']
                         tag.images.remove('')
                         tag.images.set(3, imagedata, "image/jpeg",
-                                       u"you can put a description here")
+                                       u"Cover")
                         tag.save(
                             version=eyed3.id3.ID3_DEFAULT_VERSION, encoding='utf-8')
                     await context.edit(f"{title}上传中 . . .")
