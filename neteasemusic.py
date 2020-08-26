@@ -145,8 +145,11 @@ async def nem(context):
                         f.write(music.content)
                         if (path.getsize(name) / 1024) < 100:
                             remove(name)
-                            if reply.sender.is_self:
-                                await reply.delete()
+                            try:
+                                if reply.sender.is_self:
+                                    await reply.delete()
+                            except:
+                                pass
                             await context.delete()
                             res = '你可以点击<a href="https://music.163.com/#/song?id=' + \
                                 str(info['id']) + '">' + \
@@ -168,8 +171,11 @@ async def nem(context):
                             caption=cap,
                             link_preview=False,
                             force_document=False)
-                        if reply.sender.is_self:
-                            await reply.delete()
+                        try:
+                            if reply.sender.is_self:
+                                await reply.delete()
+                        except:
+                            pass
                     try:
                         remove(name)
                     except:
