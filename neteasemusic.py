@@ -13,8 +13,8 @@ from os import remove, path
 from os.path import exists
 from collections import defaultdict
 
-songid=''
-name=''
+songid = ''
+name = ''
 
 
 @listener(is_plugin=True, outgoing=True, command="nem",
@@ -130,7 +130,7 @@ async def nem(context):
                 req = json.loads(req.content)
                 if req['result']:
                     info = {'id': '', 'title': '', 'alias': '',
-                            'album': '', 'albumpic': '', 'artist': '','br':''}
+                            'album': '', 'albumpic': '', 'artist': '', 'br': ''}
                     info['id'] = req['result']['songs'][0]['id']
                     info['title'] = req['result']['songs'][0]['name']
                     info['alias'] = req['result']['songs'][0]['alias']
@@ -150,27 +150,23 @@ async def nem(context):
                     else:
                         title = f"【{info['title']}】"
                     await context.edit(f"{title}下载中 . . .")
-                    
+
                     try:
                         from Crypto.Cipher import AES
-                        AES.new("0CoJUm6Qyw8W8jud".encode('utf-8'), AES.MODE_CBC, "0102030405060708".encode('utf-8'))
-                        ccimported=True
+                        AES.new("0CoJUm6Qyw8W8jud".encode('utf-8'),
+                                AES.MODE_CBC, "0102030405060708".encode('utf-8'))
+                        ccimported = True
                     except ImportError:
-                        ccimported=False
+                        ccimported = False
                         await bot.send_message(context.chat_id, '(`PyCryptodome`支持库未安装，音乐曲库/音质受限\n请使用 `-sh` `pip3` `install` `pycryptodome` 安装，或自行ssh安装)')
                     name = info['title'].replace('/', " ") + ".mp3"
-                    if ccimported: #尝试使用高清音质下载
+                    if ccimported:  # 尝试使用高清音质下载
                         songid = str(info['id'])
+
                         class WangyiyunDownload(object):
                             def __init__(self):
-                                # "爱心", "女孩", "惊恐", "大笑"的值
-                                # 对应的js --> bqL0x(["爱心", "女孩", "惊恐", "大笑"])
                                 self.key = '0CoJUm6Qyw8W8jud'
-                                # "流泪", "强"的值
-                                # 对应的js --> bqL0x(["流泪", "强"])
                                 self.public_key = "010001"
-                                # 一串表情的值(省略,对应的js --> Yb5g.md)
-                                # 对应的js --> bqL0x(Yb5g.md)
                                 self.modulus = '00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7'
                                 # 偏移量
                                 self.iv = "0102030405060708"
@@ -192,7 +188,8 @@ async def nem(context):
                                 for i in range(16):
                                     # random.uniform(0, 1) * len(string): 生成一个实数,范围在0 <= n < len(string)
                                     # math.floor(n): 将n向下取整
-                                    n = math.floor(random.uniform(0, 1) * len(string))
+                                    n = math.floor(
+                                        random.uniform(0, 1) * len(string))
                                     # 从string中取出下标为n的字符拼接到random_num中
                                     random_num += string[n]
                                 # 返回16位随机数字符串
@@ -206,10 +203,12 @@ async def nem(context):
                                 # 先将16位随机数字符串倒序并以utf-8编码
                                 random_num = random_num[::-1].encode('utf-8')
                                 # 然后再将其以hex(16进制)编码
-                                random_num = codecs.encode(random_num, 'hex_codec')
+                                random_num = codecs.encode(
+                                    random_num, 'hex_codec')
                                 # 加密(三者均要从16进制转换为10进制)
                                 # int(n, 16) --> 将16进制字符串n转换为10进制
-                                encryption = int(random_num, 16) ** int(self.public_key, 16) % int(self.modulus, 16)
+                                encryption = int(
+                                    random_num, 16) ** int(self.public_key, 16) % int(self.modulus, 16)
                                 # 将加密后的数据转换为16进制字符串
                                 encryption = format(encryption, 'x')
                                 # 返回加密后的字符串
@@ -228,7 +227,7 @@ async def nem(context):
                                 pad = (16 - len(msg) % 16)
                                 # 补全
                                 msg = msg + pad * chr(pad)
-                                # 这里需要将key,iv和msg均以utf-8编码
+                                # 将key,iv和msg均以utf-8编码
                                 key = key.encode('utf-8')
                                 iv = iv.encode('utf-8')
                                 msg = msg.encode('utf-8')
@@ -238,7 +237,7 @@ async def nem(context):
                                 encrypt_aes = encryptor.encrypt(msg)
                                 # 先将加密后的值进行base64编码
                                 encrypt_text = base64.encodebytes(encrypt_aes)
-                                # 再将其转换为utf-8字符串
+                                # 将其转换为utf-8字符串
                                 encrypt_text = str(encrypt_text, 'utf-8')
                                 # 返回加密后的字符串
                                 return encrypt_text
@@ -249,14 +248,17 @@ async def nem(context):
                                 # 先生成16位随机数字符串
                                 random_num = self.set_random_num()
                                 # 生成encSecKey
-                                encSecKey = self.RSA_encrypt(random_num=random_num)
+                                encSecKey = self.RSA_encrypt(
+                                    random_num=random_num)
                                 # 调用两次AES加密生成params
                                 # 先初始化歌曲song_info
                                 song_info = '{"ids":"[%s]","level":"exhigh","encodeType":"mp3","csrf_token":"477c1bd99fddedb3adc074f47fee2d35"}' % song_id
                                 # 第一次加密,传入encText, key和iv
-                                first_encryption = self.AES_encrypt(msg=song_info, key=self.key, iv=self.iv)
+                                first_encryption = self.AES_encrypt(
+                                    msg=song_info, key=self.key, iv=self.iv)
                                 # 第二次加密, 传入first_encryption, random_num和iv
-                                encText = self.AES_encrypt(msg=first_encryption, key=random_num, iv=self.iv)
+                                encText = self.AES_encrypt(
+                                    msg=first_encryption, key=random_num, iv=self.iv)
                                 # 生成data
                                 data = {
                                     'params': encText,
@@ -271,9 +273,11 @@ async def nem(context):
                                 # 输入歌曲song_id
                                 self.song_id = songid
                                 # 获取data
-                                data = self.construct_data(song_id=self.song_id)
+                                data = self.construct_data(
+                                    song_id=self.song_id)
                                 # 发送请求
-                                request = requests.post(url=self.url, headers=self.headers, data=data)
+                                request = requests.post(
+                                    url=self.url, headers=self.headers, data=data)
                                 # 初始化real_url
                                 real_url = ''
                                 # 处理返回信息
@@ -300,33 +304,36 @@ async def nem(context):
                                 else:
                                     file = name
                                     # 开始下载
-                                    content = requests.get(url=real_url, headers=self.headers).content
+                                    content = requests.get(
+                                        url=real_url, headers=self.headers).content
                                     with open(file, 'wb') as fp:
                                         fp.write(content)
                         try:
                             WangyiyunDownload().download()
                         except:
-                            pass
+                            ccimported = False
                         if not exists(name):
                             ccimported = False
-                    
-                    if ccimported is False: # 下载(普通音质)
+
+                    if ccimported is False:  # 下载(普通音质)
                         music = requests.request(
-                            "GET", "http://music.163.com/api/song/enhance/download/url?&br=" + str(info['br'])+ "&id=" + str(info['id']) , headers=headers)
+                            "GET", "http://music.163.com/api/song/enhance/download/url?&br=" + str(info['br']) + "&id=" + str(info['id']), headers=headers)
                         if music.status_code == 200:
                             music = json.loads(music.content)
                             if not music['data']['url']:
-                                music = requests.request("GET", "https://music.163.com/song/media/outer/url?id=" + str(info['id']) + ".mp3", headers= headers)
+                                music = requests.request(
+                                    "GET", "https://music.163.com/song/media/outer/url?id=" + str(info['id']) + ".mp3", headers=headers)
                                 if music.status_code != 200:
                                     continue
                             else:
-                                music = requests.request("GET", music['data']['url'] , headers=headers)
+                                music = requests.request(
+                                    "GET", music['data']['url'], headers=headers)
                         else:
                             continue
 
                     cap = info['artist'].replace(
                         ';', ', ') + " - " + "**" + info['title'] + "**"
-                    
+
                     if ccimported is False:
                         with open(name, 'wb') as f:
                             f.write(music.content)
@@ -344,13 +351,15 @@ async def nem(context):
                         await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，可能歌曲为VIP专属，或受到地区版权限制。\n" + res, parse_mode='html', link_preview=True)
                         return
                     if imported is True:
-                        imagedata = requests.get(info['albumpic'], headers=headers).content
+                        imagedata = requests.get(
+                            info['albumpic'], headers=headers).content
                         tag = eyed3.load(name).tag
                         tag.artist = info['artist']
                         tag.title = info['title']
                         tag.album = info['album']
                         tag.images.remove('')
-                        tag.images.set(3,imagedata,"image/jpeg",u"you can put a description here")
+                        tag.images.set(3, imagedata, "image/jpeg",
+                                       u"you can put a description here")
                         tag.save(
                             version=eyed3.id3.ID3_DEFAULT_VERSION, encoding='utf-8')
                     await context.edit(f"{title}上传中 . . .")
@@ -364,7 +373,7 @@ async def nem(context):
                         if reply.sender.is_self:
                             await reply.delete()
                     except:
-                            pass
+                        pass
                     try:
                         remove(name)
                     except:
