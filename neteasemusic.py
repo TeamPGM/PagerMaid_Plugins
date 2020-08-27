@@ -12,6 +12,7 @@ from pagermaid.utils import obtain_message
 from os import remove, path
 from os.path import exists
 from collections import defaultdict
+from telethon.tl.types import DocumentAttributeAudio
 
 songid = ''
 name = ''
@@ -387,7 +388,9 @@ async def nem(context):
                         name,
                         caption=cap,
                         link_preview=False,
-                        force_document=False)
+                        force_document=False,
+                        attributes=(DocumentAttributeAudio(0),)
+                        )
                     try:
                         if reply.sender.is_self:
                             await reply.delete()
