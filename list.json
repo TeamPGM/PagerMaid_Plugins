@@ -289,6 +289,16 @@
             "supported": true,
             "des-short": "网易云点歌",
             "des": "可以在线搜索并且快速点歌，歌曲信息齐全，支持直接回复点歌。命令：nem。"
+        },
+        {
+            "name": "killallmembers",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "Pentacene",
+            "size": "idk",
+            "supported": true,
+            "des-short": "一键扬了群",
+            "des": "⚠⚠慎用! 一件扬了群内所有成员⚠⚠"
         }
     ]
 }
