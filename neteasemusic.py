@@ -389,7 +389,7 @@ async def nem(context):
                         caption=cap,
                         link_preview=False,
                         force_document=False,
-                        attributes=(DocumentAttributeAudio(0),)
+                        attributes=(DocumentAttributeAudio(0, False, info['title'], info['artist']),)
                         )
                     try:
                         if reply.sender.is_self:
