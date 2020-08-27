@@ -28,7 +28,7 @@ async def nem(context):
     global proxynum
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","X-Real-IP": "223.252.199.66"}
-    proxy=[{'http': 'http://xbmmw.xyz:1001', 'https': 'http://xbmmw.xyz:1001'},{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},{'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}]
+    proxy=[{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},{'http': 'http://xbmmw.xyz:1001', 'https': 'http://xbmmw.xyz:1001'},{'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}]
     if len(context.parameter) < 2:
         await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果 `-nem` `p` `<歌曲数字序号>`)")
         return
