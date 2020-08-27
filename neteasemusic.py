@@ -15,7 +15,8 @@ from collections import defaultdict
 
 songid = ''
 name = ''
-
+proxies = {}
+proxynum = 0
 
 @listener(is_plugin=True, outgoing=True, command="nem",
           description="网易云搜/点歌。",
@@ -23,8 +24,11 @@ name = ''
 async def nem(context):
     global name
     global songid
+    global proxies
+    global proxynum
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
-               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"}
+               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","X-Real-IP": "223.252.199.66"}
+    proxy=[{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},{'http': 'http://xbmmw.xyz:1001', 'https': 'http://xbmmw.xyz:1001'},{'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}]
     if len(context.parameter) < 2:
         await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果 `-nem` `p` `<歌曲数字序号>`)")
         return
@@ -34,7 +38,7 @@ async def nem(context):
             keyword += context.parameter[i] + " "
     keyword = keyword[:-1]
     if context.parameter[0] == "s":  # 搜索功能
-        await context.edit("搜索中 . . .")
+        await context.edit(f"【{keyword}】搜索中 . . .")
         url = "http://music.163.com/api/search/pc?&s=" + \
             keyword + "&offset=0&limit=5&type=1"
         for _ in range(20):  # 最多尝试20次
@@ -58,7 +62,7 @@ async def nem(context):
                     for i in range(len(info)):
                         text += f"#{i+1}： \n<strong>歌名</strong>： {info[i]['title']}\n"
                         if info[i]['alias']:
-                            text += f"<strong>别名</strong>： {info[i]['alias'][0]} \n"
+                            text += f"<strong>别名</strong>： <i>{info[i]['alias'][0]}</i>\n"
                         if info[i]['album']:
                             res = '<a href="' + \
                                 info[i]['albumpic'] + '">' + \
@@ -125,6 +129,10 @@ async def nem(context):
             keyword + "&offset=0&limit=1&type=1"
         for _ in range(20):  # 最多尝试20次
             status = False
+            if proxynum > (len(proxy) -1): #代理自动切换至下一个
+                proxynum = 0
+            proxies = proxy[proxynum]
+            proxynum += 1
             req = requests.request("GET", url, headers=headers)
             if req.status_code == 200:
                 req = json.loads(req.content)
@@ -162,7 +170,6 @@ async def nem(context):
                     name = info['title'].replace('/', " ") + ".mp3"
                     if ccimported:  # 尝试使用高清音质下载
                         songid = str(info['id'])
-
                         class WangyiyunDownload(object):
                             def __init__(self):
                                 self.key = '0CoJUm6Qyw8W8jud'
@@ -173,36 +180,31 @@ async def nem(context):
                                 # 请求头
                                 self.headers = {
                                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
-                                    # 这里需传入登录cookie,并且必须是会员账户才能访问会员曲目,否则只能访问免费曲目
+                                    # 传入登录cookie,
                                     'Cookie': 'MUSIC_U=f52f220df171da480dbf33ce89947961585a7fdf08c89a2a4bdd6efebd86544233a649814e309366;',
+                                    "X-Real-IP": "223.252.199.66",
                                 }
                                 # 请求url
                                 self.url = 'https://music.163.com/weapi/song/enhance/player/url/v1?csrf_token='
 
                             # 生成16位随机数字符串
-                            # 对应的js --> a函数
                             def set_random_num(self):
                                 random_num = ''
-                                # 从此字符串随机取出16个字符
+                                # 随机取16个字符
                                 string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                                for i in range(16):
-                                    # random.uniform(0, 1) * len(string): 生成一个实数,范围在0 <= n < len(string)
-                                    # math.floor(n): 将n向下取整
+                                for ___ in range(16):
                                     n = math.floor(
                                         random.uniform(0, 1) * len(string))
-                                    # 从string中取出下标为n的字符拼接到random_num中
                                     random_num += string[n]
                                 # 返回16位随机数字符串
                                 return random_num
 
                             # 生成encSecKey
-                            # 对应的js --> c函数
                             # 通过public_key和modulus对random_num进行RSA加密
-                            # random_num: 生成的16位随机数字符串
                             def RSA_encrypt(self, random_num):
-                                # 先将16位随机数字符串倒序并以utf-8编码
+                                # 将16位随机数字符串倒序并以utf-8编码
                                 random_num = random_num[::-1].encode('utf-8')
-                                # 然后再将其以hex(16进制)编码
+                                # 将其以hex(16进制)编码
                                 random_num = codecs.encode(
                                     random_num, 'hex_codec')
                                 # 加密(三者均要从16进制转换为10进制)
@@ -215,7 +217,6 @@ async def nem(context):
                                 return encryption
 
                             # 生成params
-                            # 对应的js --> b函数
                             # 根据key和iv对msg进行AES加密,需调用两次
                             # key:
                             #   第一次: key
@@ -245,13 +246,13 @@ async def nem(context):
                             # 根据歌曲song_id,生成需要传输的data
                             # 其中包括params和encSecKey
                             def construct_data(self, song_id):
-                                # 先生成16位随机数字符串
+                                # 生成16位随机数字符串
                                 random_num = self.set_random_num()
                                 # 生成encSecKey
                                 encSecKey = self.RSA_encrypt(
                                     random_num=random_num)
                                 # 调用两次AES加密生成params
-                                # 先初始化歌曲song_info
+                                # 初始化歌曲song_info
                                 song_info = '{"ids":"[%s]","level":"exhigh","encodeType":"mp3","csrf_token":"477c1bd99fddedb3adc074f47fee2d35"}' % song_id
                                 # 第一次加密,传入encText, key和iv
                                 first_encryption = self.AES_encrypt(
@@ -297,6 +298,7 @@ async def nem(context):
 
                             def download(self):
                                 global name
+                                global proxies
                                 # 获取下载链接
                                 real_url = self.get_real_url()
                                 if real_url == '':
@@ -305,29 +307,33 @@ async def nem(context):
                                     file = name
                                     # 开始下载
                                     content = requests.get(
-                                        url=real_url, headers=self.headers).content
+                                        url=real_url, headers=self.headers, proxies=proxies, verify=False).content
                                     with open(file, 'wb') as fp:
                                         fp.write(content)
-                        try:
-                            WangyiyunDownload().download()
-                        except:
-                            ccimported = False
+                        for __ in range(3): #最多尝试3次
+                            try:
+                                WangyiyunDownload().download()
+                                ccimported = True
+                                break
+                            except:
+                                ccimported = False
+                                continue
                         if not exists(name):
                             ccimported = False
 
                     if ccimported is False:  # 下载(普通音质)
                         music = requests.request(
-                            "GET", "http://music.163.com/api/song/enhance/download/url?&br=" + str(info['br']) + "&id=" + str(info['id']), headers=headers)
+                            "GET", "http://music.163.com/api/song/enhance/download/url?&br=" + str(info['br']) + "&id=" + str(info['id']), headers=headers, proxies=proxies, verify=False)
                         if music.status_code == 200:
                             music = json.loads(music.content)
                             if not music['data']['url']:
                                 music = requests.request(
-                                    "GET", "https://music.163.com/song/media/outer/url?id=" + str(info['id']) + ".mp3", headers=headers)
+                                    "GET", "https://music.163.com/song/media/outer/url?id=" + str(info['id']) + ".mp3", headers=headers, proxies=proxies, verify=False)
                                 if music.status_code != 200:
                                     continue
                             else:
                                 music = requests.request(
-                                    "GET", music['data']['url'], headers=headers)
+                                    "GET", music['data']['url'], headers=headers, proxies=proxies, verify=False)
                         else:
                             continue
 
@@ -348,12 +354,12 @@ async def nem(context):
                         res = '你可以点击<a href="https://music.163.com/#/song?id=' + \
                             str(info['id']) + '">' + \
                             ' <strong>这里</strong> ' + '</a>' + '前往网页版收听'
-                        await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，可能歌曲为VIP专属，或受到地区版权限制。\n" + res, parse_mode='html', link_preview=True)
+                        await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，可能歌曲资源受限，受到地区版权限制，或为VIP资源。\n" + res, parse_mode='html', link_preview=True)
                         return
                     if imported is True:
                         await context.edit(f"{title}信息导入中 . . .")
                         imagedata = requests.get(
-                            info['albumpic'], headers=headers).content
+                            info['albumpic'], headers=headers, proxies=proxies, verify=False).content
                         tag = eyed3.load(name)
                         tag.initTag()
                         tag = tag.tag
@@ -364,6 +370,13 @@ async def nem(context):
                         tag.images.set(3, imagedata, "image/jpeg", u"Cover")
                         tag.save(
                             name, version=eyed3.id3.ID3_DEFAULT_VERSION, encoding='utf-8')
+                    br = ""
+                    if imported is True:
+                        br = "#" + str(eyed3.mp3.Mp3AudioFile(name).info.bit_rate[1]) + "kbps "
+                    alias = ""
+                    if info['alias']:
+                        alias = "\n\n__" + info['alias'][0].replace(" ","__") + "__"
+                    cap += "\n#NeteaseMusic " + br + alias
                     await context.edit(f"{title}上传中 . . .")
                     await context.client.send_file(
                         context.chat_id,
