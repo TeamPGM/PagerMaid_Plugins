@@ -354,7 +354,7 @@ async def nem(context):
                         res = '你可以点击<a href="https://music.163.com/#/song?id=' + \
                             str(info['id']) + '">' + \
                             ' <strong>这里</strong> ' + '</a>' + '前往网页版收听'
-                        await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，可能歌曲为VIP专属，或受到地区版权限制。\n" + res, parse_mode='html', link_preview=True)
+                        await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，可能歌曲资源受限，或解锁服务器失效。\n" + res, parse_mode='html', link_preview=True)
                         return
                     if imported is True:
                         await context.edit(f"{title}信息导入中 . . .")
