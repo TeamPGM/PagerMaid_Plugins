@@ -310,7 +310,7 @@ async def nem(context):
                                         url=real_url, headers=self.headers).content
                                     with open(file, 'wb') as fp:
                                         fp.write(content)
-                        for __ in range(3): #最多尝试3次
+                        for __ in range(6): #最多尝试6次
                             try:
                                 WangyiyunDownload().download()
                                 ccimported = True
@@ -351,15 +351,15 @@ async def nem(context):
                         except:
                             pass
                         await context.delete()
-                        res = '你可以点击<a href="https://music.163.com/#/song?id=' + \
+                        res = '或者你可以点击<a href="https://music.163.com/#/song?id=' + \
                             str(info['id']) + '">' + \
                             ' <strong>这里</strong> ' + '</a>' + '前往网页版收听'
-                        await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，可能歌曲资源受限，受到地区版权限制，或为VIP资源。\n" + res, parse_mode='html', link_preview=True)
+                        await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，资源获取可能受限，你可以再次尝试。\n" + res, parse_mode='html', link_preview=True)
                         return
                     if imported is True:
                         await context.edit(f"{title}信息导入中 . . .")
                         imagedata = requests.get(
-                            info['albumpic'], headers=headers, proxies=proxies, verify=False).content
+                            info['albumpic'], headers=headers).content
                         tag = eyed3.load(name)
                         tag.initTag()
                         tag = tag.tag
