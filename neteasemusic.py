@@ -351,17 +351,19 @@ async def nem(context):
                         await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，可能歌曲为VIP专属，或受到地区版权限制。\n" + res, parse_mode='html', link_preview=True)
                         return
                     if imported is True:
+                        await context.edit(f"{title}信息导入中 . . .")
                         imagedata = requests.get(
                             info['albumpic'], headers=headers).content
-                        tag = eyed3.load(name).tag
+                        tag = eyed3.load(name)
+                        tag.initTag()
+                        tag = tag.tag
                         tag.artist = info['artist']
                         tag.title = info['title']
                         tag.album = info['album']
                         tag.images.remove('')
-                        tag.images.set(3, imagedata, "image/jpeg",
-                                       u"Cover")
+                        tag.images.set(3, imagedata, "image/jpeg", u"Cover")
                         tag.save(
-                            version=eyed3.id3.ID3_DEFAULT_VERSION, encoding='utf-8')
+                            name, version=eyed3.id3.ID3_DEFAULT_VERSION, encoding='utf-8')
                     await context.edit(f"{title}上传中 . . .")
                     await context.client.send_file(
                         context.chat_id,
