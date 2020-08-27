@@ -379,7 +379,7 @@ async def nem(context):
                         br = "#" + str(eyed3.mp3.Mp3AudioFile(name).info.bit_rate[1]) + "kbps "
                     alias = ""
                     if info['alias']:
-                        alias = "\n\n__" + info['alias'][0].replace(" ","__") + "__"
+                        alias = "\n\n__" + info['alias'][0] + "__"
                     cap += "\n#NeteaseMusic " + br + alias
                     await context.edit(f"{title}上传中 . . .")
                     await context.client.send_file(
