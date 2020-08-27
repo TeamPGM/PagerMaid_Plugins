@@ -278,7 +278,7 @@ async def nem(context):
                                     song_id=self.song_id)
                                 # 发送请求
                                 request = requests.post(
-                                    url=self.url, headers=self.headers, data=data)
+                                    url=self.url, headers=self.headers, data=data, proxies=proxies, verify=False)
                                 # 初始化real_url
                                 real_url = ''
                                 # 处理返回信息
@@ -307,7 +307,7 @@ async def nem(context):
                                     file = name
                                     # 开始下载
                                     content = requests.get(
-                                        url=real_url, headers=self.headers, proxies=proxies, verify=False).content
+                                        url=real_url, headers=self.headers).content
                                     with open(file, 'wb') as fp:
                                         fp.write(content)
                         for __ in range(3): #最多尝试3次
@@ -333,7 +333,7 @@ async def nem(context):
                                     continue
                             else:
                                 music = requests.request(
-                                    "GET", music['data']['url'], headers=headers, proxies=proxies, verify=False)
+                                    "GET", music['data']['url'], headers=headers)
                         else:
                             continue
 
