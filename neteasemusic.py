@@ -311,6 +311,10 @@ async def nem(context):
                                     with open(file, 'wb') as fp:
                                         fp.write(content)
                         for __ in range(6): #最多尝试6次
+                            if proxynum > (len(proxy) -1): #代理自动切换至下一个
+                                proxynum = 0
+                            proxies = proxy[proxynum]
+                            proxynum += 1
                             try:
                                 WangyiyunDownload().download()
                                 ccimported = True
