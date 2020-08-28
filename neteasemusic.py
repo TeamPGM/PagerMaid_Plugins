@@ -25,7 +25,7 @@ async def nem(context):
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","X-Real-IP": "223.252.199.66"}
     proxy=[{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},{'http': 'http://xbmmw.xyz:1001', 'https': 'http://xbmmw.xyz:1001'},{'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}]
     if len(context.parameter) < 2:
-        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果 `-nem` `p` `<歌曲数字序号>`)")
+        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果消息 `-nem` `p` `<歌曲数字序号>`)")
         return
     else:
         keyword = ''
@@ -41,7 +41,11 @@ async def nem(context):
             req = requests.request("GET", url, headers=headers)
             if req.status_code == 200:
                 req = json.loads(req.content)
-                if req['result']:
+                if req['code'] == 200:
+                    result = req['result']
+                else:
+                    result = False
+                if result:
                     info = defaultdict()
                     for i in range(len(req['result']['songs'])):
                         info[i] = {'id': '', 'title': '', 'alias': '',
@@ -64,23 +68,24 @@ async def nem(context):
                                 info[i]['album'] + '</a>'
                             text += f"<strong>专辑</strong>： {res} \n"
                         text += f"<strong>作者</strong>： {info[i]['artist']}\n<strong>歌曲ID</strong>： <code>{info[i]['id']}</code>\n————————\n"
-                    text += "回复此消息 <code>-nem p <歌曲序号></code> 即可点歌"
+                    text += "<strong>回复此消息</strong><code>-nem p <歌曲序号></code><strong>即可点歌</strong>"
                     await context.edit(text, parse_mode='html', link_preview=True)
                     status = True
                     break
                 else:
                     await context.edit("**未搜索到结果**")
+                    sleep(3)
+                    await context.delete()
                     status = True
                     break
             else:
                 continue
         if status is False:
             await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。")
-            sleep(2)
+            sleep(3)
             await context.delete()
         return
-
-    if context.parameter[0] == "p":  # 播放功能
+    elif context.parameter[0] == "p":  # 播放功能
         try:
             reply = await context.get_reply_message()
         except ValueError:
@@ -395,6 +400,8 @@ async def nem(context):
                     break
                 else:
                     await context.edit("**未搜索到结果**")
+                    sleep(3)
+                    await context.delete()
                     status = True
                     break
             else:
@@ -402,5 +409,8 @@ async def nem(context):
 
         if status is False:
             await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。")
-            sleep(2)
+            sleep(3)
             await context.delete()
+    else: #错误输入
+        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果消息 `-nem` `p` `<歌曲数字序号>`)")
+        return
