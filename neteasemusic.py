@@ -14,19 +14,13 @@ from os.path import exists
 from collections import defaultdict
 from telethon.tl.types import DocumentAttributeAudio
 
-songid = ''
-name = ''
-proxies = {}
-proxynum = 0
 
 @listener(is_plugin=True, outgoing=True, command="nem",
           description="网易云搜/点歌。",
           parameters="<指令> <关键词>")
 async def nem(context):
-    global name
-    global songid
-    global proxies
-    global proxynum
+    proxies = {}
+    proxynum = 0
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","X-Real-IP": "223.252.199.66"}
     proxy=[{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},{'http': 'http://xbmmw.xyz:1001', 'https': 'http://xbmmw.xyz:1001'},{'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}]
@@ -271,7 +265,6 @@ async def nem(context):
 
                             # 发送请求,获取下载链接
                             def get_real_url(self):
-                                global songid
                                 # 输入歌曲song_id
                                 self.song_id = songid
                                 # 获取data
@@ -298,8 +291,6 @@ async def nem(context):
                                 return real_url
 
                             def download(self):
-                                global name
-                                global proxies
                                 # 获取下载链接
                                 real_url = self.get_real_url()
                                 if real_url == '':
@@ -373,8 +364,7 @@ async def nem(context):
                         tag.album = info['album']
                         tag.images.remove('')
                         tag.images.set(3, imagedata, "image/jpeg", u"Cover")
-                        tag.save(
-                            name, version=eyed3.id3.ID3_DEFAULT_VERSION, encoding='utf-8')
+                        tag.save(version=eyed3.id3.ID3_DEFAULT_VERSION, encoding='utf-8')
                     br = ""
                     if imported is True:
                         br = "#" + str(eyed3.mp3.Mp3AudioFile(name).info.bit_rate[1]) + "kbps "
