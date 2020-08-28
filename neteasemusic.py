@@ -16,7 +16,7 @@ from telethon.tl.types import DocumentAttributeAudio
 
 
 @listener(is_plugin=True, outgoing=True, command="nem",
-          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息 `-nem` `p` `<歌曲数字序号>` 点歌",
+          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌",
           parameters="<指令> <关键词>")
 async def nem(context):
     proxies = {}
