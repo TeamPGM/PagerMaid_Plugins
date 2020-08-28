@@ -16,7 +16,7 @@ from telethon.tl.types import DocumentAttributeAudio
 
 
 @listener(is_plugin=True, outgoing=True, command="nem",
-          description="网易云搜/点歌。",
+          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息 `-nem` `p` `<歌曲数字序号>` 点歌",
           parameters="<指令> <关键词>")
 async def nem(context):
     proxies = {}
@@ -26,7 +26,7 @@ async def nem(context):
     proxy = [{'http': 'http://192.210.137.108:8080', 'https': 'http://192.210.137.108:8080'}, {'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},
              {'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}, {'http': 'http://64.64.250.246:8080', 'https': 'http://64.64.250.246:8080'}]
     if len(context.parameter) < 2:
-        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
+        await context.edit("**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
         return
     else:
         keyword = ''
@@ -36,7 +36,7 @@ async def nem(context):
     idplay = False
     if context.parameter[0] == "id":  # ID点歌功能
         if len(context.parameter) > 2:
-            await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
+            await context.edit("**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
             return
         idplay = keyword
         context.parameter[0] = "p"
@@ -187,7 +187,6 @@ async def nem(context):
                     name = info['title'].replace('/', " ") + ".mp3"
                     if ccimported:  # 尝试使用高清音质下载
                         songid = str(info['id'])
-
                         class WangyiyunDownload(object):
                             def __init__(self):
                                 self.key = '0CoJUm6Qyw8W8jud'
@@ -434,5 +433,5 @@ async def nem(context):
             sleep(3)
             await context.delete()
     else:  # 错误输入
-        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
+        await context.edit("**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
         return
