@@ -68,7 +68,7 @@ async def nem(context):
                                 info[i]['album'] + '</a>'
                             text += f"<strong>专辑</strong>： {res} \n"
                         text += f"<strong>作者</strong>： {info[i]['artist']}\n<strong>歌曲ID</strong>： <code>{info[i]['id']}</code>\n————————\n"
-                    text += "<strong>>>>回复这条消息</strong> <code>-nem p <歌曲序号></code> <strong>即可点歌<<<</strong>"
+                    text += "<strong>回复此消息</strong><code>-nem p <歌曲序号></code><strong>即可点歌</strong>"
                     await context.edit(text, parse_mode='html', link_preview=True)
                     status = True
                     break
