@@ -25,7 +25,7 @@ async def nem(context):
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","X-Real-IP": "223.252.199.66"}
     proxy=[{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},{'http': 'http://xbmmw.xyz:1001', 'https': 'http://xbmmw.xyz:1001'},{'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}]
     if len(context.parameter) < 2:
-        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果 `-nem` `p` `<歌曲数字序号>`)")
+        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果消息 `-nem` `p` `<歌曲数字序号>`)")
         return
     else:
         keyword = ''
@@ -68,7 +68,7 @@ async def nem(context):
                                 info[i]['album'] + '</a>'
                             text += f"<strong>专辑</strong>： {res} \n"
                         text += f"<strong>作者</strong>： {info[i]['artist']}\n<strong>歌曲ID</strong>： <code>{info[i]['id']}</code>\n————————\n"
-                    text += "<strong>回复此消息</strong> <code>-nem p <歌曲序号></code> <strong>即可点歌</strong>"
+                    text += "<strong>>>>回复这条消息</strong> <code>-nem p <歌曲序号></code> <strong>即可点歌<<<</strong>"
                     await context.edit(text, parse_mode='html', link_preview=True)
                     status = True
                     break
@@ -412,5 +412,5 @@ async def nem(context):
             sleep(3)
             await context.delete()
     else: #错误输入
-        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果 `-nem` `p` `<歌曲数字序号>`)")
+        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果消息 `-nem` `p` `<歌曲数字序号>`)")
         return
