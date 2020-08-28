@@ -22,16 +22,24 @@ async def nem(context):
     proxies = {}
     proxynum = 0
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
-               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","X-Real-IP": "223.252.199.66"}
-    proxy=[{'http': 'http://64.64.250.246:8848', 'https': 'http://64.64.250.246:8848'},{'http': 'http://192.210.137.108:8848', 'https': 'http://192.210.137.108:8848'},{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},{'http': 'http://xbmmw.xyz:1001', 'https': 'http://xbmmw.xyz:1001'},{'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}]
+               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9", "X-Real-IP": "223.252.199.66"}
+    proxy = [{'http': 'http://192.210.137.108:8080', 'https': 'http://192.210.137.108:8080'}, {'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},
+             {'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}, {'http': 'http://64.64.250.246:8080', 'https': 'http://64.64.250.246:8080'}]
     if len(context.parameter) < 2:
-        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果消息 `-nem` `p` `<歌曲数字序号>`)")
+        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
         return
     else:
         keyword = ''
         for i in range(1, len(context.parameter)):
             keyword += context.parameter[i] + " "
     keyword = keyword[:-1]
+    idplay = False
+    if context.parameter[0] == "id":  # ID点歌功能
+        if len(context.parameter) > 2:
+            await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
+            return
+        idplay = keyword
+        context.parameter[0] = "p"
     if context.parameter[0] == "s":  # 搜索功能
         await context.edit(f"【{keyword}】搜索中 . . .")
         url = "http://music.163.com/api/search/pc?&s=" + \
@@ -85,7 +93,7 @@ async def nem(context):
             sleep(3)
             await context.delete()
         return
-    elif context.parameter[0] == "p":  # 播放功能
+    elif context.parameter[0] == "p":  # 点歌功能
         try:
             reply = await context.get_reply_message()
         except ValueError:
@@ -129,10 +137,19 @@ async def nem(context):
             keyword + "&offset=0&limit=1&type=1"
         for _ in range(20):  # 最多尝试20次
             status = False
-            if proxynum > (len(proxy) -1): #代理自动切换至下一个
+            if proxynum > (len(proxy) - 1):  # 代理自动切换至下一个
                 proxynum = 0
             proxies = proxy[proxynum]
             proxynum += 1
+            if idplay:  # 指定ID播放
+                idurl = 'https://music.163.com/song?id=' + idplay
+                text = requests.get(url=idurl, headers=headers).text
+                pattern = re.compile(r'歌曲名《(.*?)》.*?由 (.*?) 演唱.*?')
+                keyword = pattern.findall(
+                    text)[0][0] + " " + pattern.findall(text)[0][1]
+                url = "http://music.163.com/api/search/pc?&s=" + \
+                    keyword + "&offset=0&limit=1&type=1"
+            # 普通搜索+播放
             req = requests.request("GET", url, headers=headers)
             if req.status_code == 200:
                 req = json.loads(req.content)
@@ -158,6 +175,7 @@ async def nem(context):
                     else:
                         title = f"【{info['title']}】"
                     await context.edit(f"{title}下载中 . . .")
+
                     try:
                         from Crypto.Cipher import AES
                         AES.new("0CoJUm6Qyw8W8jud".encode('utf-8'),
@@ -169,6 +187,7 @@ async def nem(context):
                     name = info['title'].replace('/', " ") + ".mp3"
                     if ccimported:  # 尝试使用高清音质下载
                         songid = str(info['id'])
+
                         class WangyiyunDownload(object):
                             def __init__(self):
                                 self.key = '0CoJUm6Qyw8W8jud'
@@ -306,8 +325,8 @@ async def nem(context):
                                         url=real_url, headers=self.headers).content
                                     with open(file, 'wb') as fp:
                                         fp.write(content)
-                        for __ in range(6): #最多尝试6次
-                            if proxynum > (len(proxy) -1): #代理自动切换至下一个
+                        for __ in range(6):  # 最多尝试6次
+                            if proxynum > (len(proxy) - 1):  # 代理自动切换至下一个
                                 proxynum = 0
                             proxies = proxy[proxynum]
                             proxynum += 1
@@ -368,10 +387,13 @@ async def nem(context):
                         tag.album = info['album']
                         tag.images.remove('')
                         tag.images.set(3, imagedata, "image/jpeg", u"Cover")
-                        tag.save(version=eyed3.id3.ID3_DEFAULT_VERSION, encoding='utf-8')
+                        tag.save(version=eyed3.id3.ID3_DEFAULT_VERSION,
+                                 encoding='utf-8')
                     br = ""
                     if imported is True:
-                        br = "#" + str(eyed3.mp3.Mp3AudioFile(name).info.bit_rate[1]) + "kbps "
+                        br = "#" + \
+                            str(eyed3.mp3.Mp3AudioFile(
+                                name).info.bit_rate[1]) + "kbps "
                     alias = ""
                     if info['alias']:
                         alias = "\n\n__" + info['alias'][0] + "__"
@@ -383,8 +405,9 @@ async def nem(context):
                         caption=cap,
                         link_preview=False,
                         force_document=False,
-                        attributes=(DocumentAttributeAudio(0, False, info['title'], info['artist']),)
-                        )
+                        attributes=(DocumentAttributeAudio(
+                            0, False, info['title'], info['artist']),)
+                    )
                     try:
                         if reply.sender.is_self:
                             await reply.delete()
@@ -410,6 +433,6 @@ async def nem(context):
             await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。")
             sleep(3)
             await context.delete()
-    else: #错误输入
-        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n(指令s为搜索，指令p为播放\n关键词可填歌曲ID，或直接回复搜索结果消息 `-nem` `p` `<歌曲数字序号>`)")
+    else:  # 错误输入
+        await context.edit("使用方法：`-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
         return
