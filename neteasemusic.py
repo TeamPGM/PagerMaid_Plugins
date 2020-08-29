@@ -190,6 +190,7 @@ async def nem(context):
                         ccimported = False
                         await bot.send_message(context.chat_id, '(`PyCryptodome`支持库未安装，音乐曲库/音质受限\n请使用 `-sh` `pip3` `install` `pycryptodome` 安装，或自行ssh安装)')
                     name = info['title'].replace('/', " ") + ".mp3"
+                    name = name.encode('utf-8').decode('utf-8')
                     if ccimported:  # 尝试使用高清音质下载
                         songid = str(info['id'])
 
@@ -333,7 +334,7 @@ async def nem(context):
                                     try:
                                         content = requests.get(
                                             url=real_url, headers=self.headers).content
-                                        with open(file, 'wb', encoding='utf8') as fp:
+                                        with open(file, 'wb') as fp:
                                             fp.write(content)
                                     except:
                                         print('服务器连接出错')
@@ -372,7 +373,7 @@ async def nem(context):
                         ';', ', ') + " - " + "**" + info['title'] + "**"
 
                     if ccimported is False:
-                        with open(name, 'wb', encoding='utf8') as f:
+                        with open(name, 'wb') as f:
                             f.write(music.content)
                     if (path.getsize(name) / 1024) < 100:
                         remove(name)
