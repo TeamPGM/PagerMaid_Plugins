@@ -389,7 +389,7 @@ async def nem(context):
                             imagedata = requests.get(
                                 info['albumpic'], headers=headers).content
                         except:
-                            await bot.send_message(context.chat_id, '(唔 ~ 封面好像获取失败了呢，不要在意不要在意 。)')
+                            await bot.send_message(context.chat_id, '唔 ~ 封面好像获取失败了呢，不要在意不要在意 ~ ')
                         tag = eyed3.load(name)
                         tag.initTag()
                         tag = tag.tag
