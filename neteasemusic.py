@@ -272,7 +272,7 @@ async def nem(context):
                                     random_num=random_num)
                                 # 调用两次AES加密生成params
                                 # 初始化歌曲song_info
-                                song_info = '{"ids":"[%s]","level":"lossless","encodeType":"mp3","csrf_token":"477c1bd99fddedb3adc074f47fee2d35"}' % song_id
+                                song_info = '{"ids":"[%s]","level":"exhigh","encodeType":"mp3","csrf_token":"477c1bd99fddedb3adc074f47fee2d35"}' % song_id
                                 # 第一次加密,传入encText, key和iv
                                 first_encryption = self.AES_encrypt(
                                     msg=song_info, key=self.key, iv=self.iv)
