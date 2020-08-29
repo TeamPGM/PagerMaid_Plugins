@@ -190,6 +190,7 @@ async def nem(context):
                         ccimported = False
                         await bot.send_message(context.chat_id, '(`PyCryptodome`支持库未安装，音乐曲库/音质受限\n请使用 `-sh` `pip3` `install` `pycryptodome` 安装，或自行ssh安装)')
                     name = info['title'].replace('/', " ") + ".mp3"
+                    name = name.encode('utf-8').decode('utf-8')
                     if ccimported:  # 尝试使用高清音质下载
                         songid = str(info['id'])
 
