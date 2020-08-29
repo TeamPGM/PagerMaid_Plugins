@@ -334,7 +334,7 @@ async def nem(context):
                                     try:
                                         content = requests.get(
                                             url=real_url, headers=self.headers).content
-                                        with open(file, 'wb') as fp:
+                                        with open(file, 'wb', encoding='utf8') as fp:
                                             fp.write(content)
                                     except:
                                         print('服务器连接出错')
@@ -373,7 +373,7 @@ async def nem(context):
                         ';', ', ') + " - " + "**" + info['title'] + "**"
 
                     if ccimported is False:
-                        with open(name, 'wb') as f:
+                        with open(name, 'wb', encoding='utf8') as f:
                             f.write(music.content)
                     if (path.getsize(name) / 1024) < 100:
                         remove(name)
