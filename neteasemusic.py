@@ -383,14 +383,16 @@ async def nem(context):
                             ' <strong>这里</strong> ' + '</a>' + '前往网页版收听'
                         await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，资源获取可能受限，你可以再次尝试。\n" + res, parse_mode='html', link_preview=True)
                         return
+                    duration=0
                     if imported is True:
                         await context.edit(f"{title}信息导入中 . . .")
                         try:
                             imagedata = requests.get(
                                 info['albumpic'], headers=headers).content
                         except:
-                            await bot.send_message(context.chat_id, '唔 ~ 封面好像获取失败了呢，不要在意不要在意 ~ ')
+                            await bot.send_message(context.chat_id, '唔 封面好像获取失败了呢，不要在意不要在意 ~ ')
                         tag = eyed3.load(name)
+                        duration = int(tag.info.time_secs)
                         tag.initTag()
                         tag = tag.tag
                         tag.artist = info['artist']
@@ -417,7 +419,7 @@ async def nem(context):
                         link_preview=False,
                         force_document=False,
                         attributes=(DocumentAttributeAudio(
-                            0, False, info['title'], info['artist']),)
+                            duration, False, info['title'], info['artist']),)
                     )
                     try:
                         if reply.sender.is_self:
