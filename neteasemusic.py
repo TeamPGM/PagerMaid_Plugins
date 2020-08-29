@@ -14,7 +14,8 @@ from os.path import exists
 from collections import defaultdict
 from telethon.tl.types import DocumentAttributeAudio
 
-class RetryError(Exception): #重试错误，用于再次重试
+
+class RetryError(Exception):  # 重试错误，用于再次重试
     pass
 
 
@@ -26,7 +27,8 @@ async def nem(context):
     proxynum = 0
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9", "X-Real-IP": "223.252.199.66"}
-    proxy = [{'http': 'http://192.210.137.108:8080', 'https': 'http://192.210.137.108:8080'}, {'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'}, {'http': 'http://aimer.one:2333', 'https': 'http://aimer.one:2333'}, {'http': 'http://fs2.ilogic.net.cn:5200','https': 'http://fs2.ilogic.net.cn:5200'}, {'http': 'http://64.64.250.246:8080', 'https': 'http://64.64.250.246:8080'}]
+    proxy = [{'http': 'http://192.210.137.108:8080', 'https': 'http://192.210.137.108:8080'}, {'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'}, {'http': 'http://aimer.one:2333',
+                                                                                                                                                                                  'https': 'http://aimer.one:2333'}, {'http': 'http://fs2.ilogic.net.cn:5200', 'https': 'http://fs2.ilogic.net.cn:5200'}, {'http': 'http://64.64.250.246:8080', 'https': 'http://64.64.250.246:8080'}]
     if len(context.parameter) < 2:
         await context.edit("**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
         return
@@ -144,7 +146,8 @@ async def nem(context):
             proxies = proxy[proxynum]
             proxynum += 1
             if idplay:  # 指定ID播放
-                url = "http://music.163.com/api/song/detail?id="+ idplay +"&ids=[" + idplay + "]"
+                url = "http://music.163.com/api/song/detail?id=" + \
+                    idplay + "&ids=[" + idplay + "]"
             # 搜索后播放
             req = requests.request("GET", url, headers=headers)
             if req.status_code == 200:
@@ -189,6 +192,7 @@ async def nem(context):
                     name = info['title'].replace('/', " ") + ".mp3"
                     if ccimported:  # 尝试使用高清音质下载
                         songid = str(info['id'])
+
                         class WangyiyunDownload(object):
                             def __init__(self):
                                 self.key = '0CoJUm6Qyw8W8jud'
@@ -329,7 +333,7 @@ async def nem(context):
                                     try:
                                         content = requests.get(
                                             url=real_url, headers=self.headers).content
-                                        with open(file, 'wb') as fp:
+                                        with open(file, 'wb', encoding='utf8') as fp:
                                             fp.write(content)
                                     except:
                                         print('服务器连接出错')
@@ -368,7 +372,7 @@ async def nem(context):
                         ';', ', ') + " - " + "**" + info['title'] + "**"
 
                     if ccimported is False:
-                        with open(name, 'wb') as f:
+                        with open(name, 'wb', encoding='utf8') as f:
                             f.write(music.content)
                     if (path.getsize(name) / 1024) < 100:
                         remove(name)
@@ -383,14 +387,16 @@ async def nem(context):
                             ' <strong>这里</strong> ' + '</a>' + '前往网页版收听'
                         await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，资源获取可能受限，你可以再次尝试。\n" + res, parse_mode='html', link_preview=True)
                         return
+                    duration = 0
                     if imported is True:
                         await context.edit(f"{title}信息导入中 . . .")
                         try:
                             imagedata = requests.get(
                                 info['albumpic'], headers=headers).content
                         except:
-                            await bot.send_message(context.chat_id, '唔 ~ 封面好像获取失败了呢，不要在意不要在意 ~ ')
+                            await bot.send_message(context.chat_id, '唔 封面好像获取失败了呢，不要在意不要在意 ~ ')
                         tag = eyed3.load(name)
+                        duration = int(tag.info.time_secs)
                         tag.initTag()
                         tag = tag.tag
                         tag.artist = info['artist']
@@ -417,7 +423,7 @@ async def nem(context):
                         link_preview=False,
                         force_document=False,
                         attributes=(DocumentAttributeAudio(
-                            0, False, info['title'], info['artist']),)
+                            duration, False, info['title'], info['artist']),)
                     )
                     try:
                         if reply.sender.is_self:
