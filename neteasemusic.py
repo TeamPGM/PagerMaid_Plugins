@@ -14,6 +14,9 @@ from os.path import exists
 from collections import defaultdict
 from telethon.tl.types import DocumentAttributeAudio
 
+class RetryError(Exception): #重试错误，用于再次重试
+    pass
+
 
 @listener(is_plugin=True, outgoing=True, command="nem",
           description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌",
@@ -115,7 +118,7 @@ async def nem(context):
                         search = ".*歌曲ID： (.*)\n.*"
                         title = ".*歌名： (.*?)\n.*"
                         title = "【"+re.findall(title, msg, re.S)[0]+"】"
-                        keyword = re.findall(search, msg, re.S)[0]
+                        idplay = re.findall(search, msg, re.S)[0]
                         if reply.sender.is_self:
                             await reply.edit(f"{title}点歌完成")
                 except:
@@ -141,18 +144,18 @@ async def nem(context):
             proxies = proxy[proxynum]
             proxynum += 1
             if idplay:  # 指定ID播放
-                idurl = 'https://music.163.com/song?id=' + idplay
-                text = requests.get(url=idurl, headers=headers).text
-                pattern = re.compile(r'歌曲名《(.*?)》.*?由 (.*?) 演唱.*?')
-                keyword = pattern.findall(
-                    text)[0][0] + " " + pattern.findall(text)[0][1]
-                url = "http://music.163.com/api/search/pc?&s=" + \
-                    keyword + "&offset=0&limit=1&type=1"
-            # 普通搜索+播放
+                url = "http://music.163.com/api/song/detail?id="+ idplay +"&ids=[" + idplay + "]"
+            # 搜索后播放
             req = requests.request("GET", url, headers=headers)
             if req.status_code == 200:
                 req = json.loads(req.content)
-                if req['result']:
+                if req['code'] == 200:
+                    if idplay:
+                        req['result'] = req
+                    result = req['result']
+                else:
+                    result = False
+                if result:
                     info = {'id': '', 'title': '', 'alias': '',
                             'album': '', 'albumpic': '', 'artist': '', 'br': ''}
                     info['id'] = req['result']['songs'][0]['id']
@@ -306,8 +309,11 @@ async def nem(context):
                                         if code == 200:
                                             # 歌曲真实地址
                                             real_url = data[0]['url']
+                                        else:
+                                            raise RetryError
                                 except:
-                                    print('生成的params和encSecKey有误!可重试!')
+                                    print('生成的params和encSecKey有误!重试中!')
+                                    raise RetryError
                                 # 返回real_url
                                 return real_url
 
@@ -316,13 +322,18 @@ async def nem(context):
                                 real_url = self.get_real_url()
                                 if real_url == '':
                                     print('链接获取失败!')
+                                    raise RetryError
                                 else:
                                     file = name
                                     # 开始下载
-                                    content = requests.get(
-                                        url=real_url, headers=self.headers).content
-                                    with open(file, 'wb') as fp:
-                                        fp.write(content)
+                                    try:
+                                        content = requests.get(
+                                            url=real_url, headers=self.headers).content
+                                        with open(file, 'wb') as fp:
+                                            fp.write(content)
+                                    except:
+                                        print('服务器连接出错')
+                                        raise RetryError
                         for __ in range(6):  # 最多尝试6次
                             if proxynum > (len(proxy) - 1):  # 代理自动切换至下一个
                                 proxynum = 0
@@ -334,7 +345,6 @@ async def nem(context):
                                 break
                             except:
                                 ccimported = False
-                                continue
                         if not exists(name):
                             ccimported = False
 
@@ -375,8 +385,11 @@ async def nem(context):
                         return
                     if imported is True:
                         await context.edit(f"{title}信息导入中 . . .")
-                        imagedata = requests.get(
-                            info['albumpic'], headers=headers).content
+                        try:
+                            imagedata = requests.get(
+                                info['albumpic'], headers=headers).content
+                        except:
+                            await bot.send_message(context.chat_id, '唔 ~ 封面好像获取失败了呢，不要在意不要在意 ~ ')
                         tag = eyed3.load(name)
                         tag.initTag()
                         tag = tag.tag
