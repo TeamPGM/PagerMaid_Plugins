@@ -181,7 +181,6 @@ async def nem(context):
                     else:
                         title = f"【{info['title']}】"
                     await context.edit(f"{title}下载中 . . .")
-
                     try:
                         from Crypto.Cipher import AES
                         AES.new("0CoJUm6Qyw8W8jud".encode('utf-8'),
@@ -353,7 +352,6 @@ async def nem(context):
                                 ccimported = False
                         if not exists(name):
                             ccimported = False
-
                     if ccimported is False:  # 下载(普通音质)
                         music = requests.request(
                             "GET", "http://music.163.com/api/song/enhance/download/url?&br=" + str(info['br']) + "&id=" + str(info['id']), headers=headers, proxies=proxies, verify=False)
@@ -427,13 +425,14 @@ async def nem(context):
                                     break
                     try:
                         from NeteaseMusicExtra.FastTelethon import upload_file
-                        name = await upload_file(context.client, open(name, 'rb'), name)
+                        file = await upload_file(context.client, open(name, 'rb'), name)
                     except:
+                        file = name
                         await bot.send_message(context.chat_id, '(`FastTelethon`支持文件导入失败，上传速度可能受到影响)')
 
                     await context.client.send_file(
                         context.chat_id,
-                        name,
+                        file,
                         caption=cap,
                         link_preview=False,
                         force_document=False,
