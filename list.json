@@ -282,10 +282,10 @@
         },
         {
             "name": "neteasemusic",
-            "version": "3.0",
+            "version": "3.1",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
-            "size": "25.3 kb",
+            "size": "26.3 kb",
             "supported": true,
             "des-short": "网易云点歌",
             "des": "可以在线搜索并且快速点歌，歌曲信息齐全，支持直接回复点歌。命令：nem。"
