@@ -174,8 +174,8 @@ async def nem(context):
                     elif req['result']['songs'][0]['lMusic']:
                         info['br'] = req['result']['songs'][0]['lMusic']['bitrate']
                     for j in range(len(req['result']['songs'][0]['artists'])):
-                        info['artist'] += req['result']['songs'][0]['artists'][j]['name'] + ";"
-                    info['artist'] = info['artist'][:-1]
+                        info['artist'] += req['result']['songs'][0]['artists'][j]['name'] + "; "
+                    info['artist'] = info['artist'][:-2]
                     if title:
                         title = ""
                     else:
@@ -367,9 +367,8 @@ async def nem(context):
                                     "GET", music['data']['url'], headers=headers)
                         else:
                             continue
-
-                    cap = info['artist'].replace(
-                        ';', ', ') + " - " + "**" + info['title'] + "**"
+                    performers = info['artist'].replace(';', ',')
+                    cap = performers + " - " + "**" + info['title'] + "**"
 
                     if ccimported is False:
                         with open(name, 'wb') as f:
@@ -400,7 +399,7 @@ async def nem(context):
                         tag.title = info['title']
                         tag.album = info['album']
                         tag.images.remove('')
-                        tag.images.set(3, imagedata, "image/jpeg", u"Cover")
+                        tag.images.set(6, imagedata, "image/jpeg", u"Media")
                         tag.save(version=eyed3.id3.ID3_DEFAULT_VERSION,
                                  encoding='utf-8')
                     br = ""
@@ -438,7 +437,7 @@ async def nem(context):
                         force_document=False,
                         thumb=imagedata,
                         attributes=(DocumentAttributeAudio(
-                            duration, False, info['title'], info['artist']),)
+                            duration, False, info['title'], performers),)
                     )
                     try:
                         if reply.sender.is_self:
