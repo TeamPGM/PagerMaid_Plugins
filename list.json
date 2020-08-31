@@ -282,10 +282,10 @@
         },
         {
             "name": "neteasemusic",
-            "version": "3.2",
+            "version": "3.3",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
-            "size": "26.3 kb",
+            "size": "26.4 kb",
             "supported": true,
             "des-short": "网易云搜/点歌",
             "des": "可以在线搜索并且快速点歌（可回复信息点歌），支持解锁VIP/灰色歌曲。命令：nem。"
