@@ -40,20 +40,20 @@ async def nem(context):
         elif context.parameter[0] == "r":  # 随机热歌
             await context.edit("随机中 . . .")
             url = "https://api.vvhan.com/api/rand.music?type=json&sort=%E7%83%AD%E6%AD%8C%E6%A6%9C"
-            randsong = requests.get(url, headers=headers)
             for _ in range(20):  # 最多重试20次
-                status = False
-                if randsong.status_code == 200:
-                    randsong = json.loads(randsong.content)
-                    if randsong['success'] is True:
-                        context.parameter[0] = "id"
-                        try:
-                            context.parameter[1] = str(randsong['info']['id'])
-                        except:
+                try:
+                    status = False
+                    randsong = requests.get(url, headers=headers)
+                    if randsong.status_code == 200:
+                        randsong = json.loads(randsong.content)
+                        if randsong['success'] is True:
+                            context.parameter[0] = "id"
                             context.parameter.append(
                                 str(randsong['info']['id']))
-                        status = True
-                        break
+                            status = True
+                            break
+                except:
+                    continue
             if status is False:
                 await context.edit(apifailtext)
                 sleep(3)
