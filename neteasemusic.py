@@ -388,7 +388,7 @@ async def nem(context):
                             music = json.loads(music.content)
                             if not music['data']['url']:
                                 music = requests.request(
-                                    "GET", "https://music.163.com/song/media/outer/url?id=" + str(info['id']) + ".mp3", headers=headers, proxies=proxies, verify=False)
+                                    "GET", "https://music.163.com/song/media/outer/url?id=" + str(info['id']) + ".mp3", headers=headers, verify=False)
                                 if music.status_code != 200:
                                     continue
                             else:
