@@ -21,7 +21,7 @@ class RetryError(Exception):  # 重试错误，用于再次重试
 
 
 @listener(is_plugin=True, outgoing=True, command="nem",
-          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌",
+          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索灰色歌曲请指定歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌",
           parameters="<指令> <关键词>")
 async def nem(context):
     proxies = {}
@@ -30,18 +30,47 @@ async def nem(context):
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9", "X-Real-IP": "223.252.199.66"}
     proxy = [{'http': 'http://192.210.137.108:8080', 'https': 'http://192.210.137.108:8080'}, {'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'}, {'http': 'http://aimer.one:2333',
                                                                                                                                                                                   'https': 'http://aimer.one:2333'}, {'http': 'http://fs2.ilogic.net.cn:5200', 'https': 'http://fs2.ilogic.net.cn:5200'}, {'http': 'http://64.64.250.246:8080', 'https': 'http://64.64.250.246:8080'}]
+    helptext = "**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索灰色歌曲请指定歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌"
+    apifailtext = "出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。"
+
     if len(context.parameter) < 2:
-        await context.edit("**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
-        return
-    else:
-        keyword = ''
-        for i in range(1, len(context.parameter)):
-            keyword += context.parameter[i] + " "
+        if len(context.parameter) == 0:
+            await context.edit(helptext)
+            return
+        elif context.parameter[0] == "r":  # 随机热歌
+            await context.edit("随机中 . . .")
+            url = "https://api.vvhan.com/api/rand.music?type=json&sort=%E7%83%AD%E6%AD%8C%E6%A6%9C"
+            randsong = requests.get(url, headers=headers)
+            for _ in range(20):  # 最多重试20次
+                status = False
+                if randsong.status_code == 200:
+                    randsong = json.loads(randsong.content)
+                    if randsong['success'] is True:
+                        context.parameter[0] = "id"
+                        try:
+                            context.parameter[1] = str(randsong['info']['id'])
+                        except:
+                            context.parameter.append(
+                                str(randsong['info']['id']))
+                        status = True
+                        break
+            if status is False:
+                await context.edit(apifailtext)
+                sleep(3)
+                await context.delete()
+                return
+        else:
+            await context.edit(helptext)
+            return
+    # 整理关键词
+    keyword = ''
+    for i in range(1, len(context.parameter)):
+        keyword += context.parameter[i] + " "
     keyword = keyword[:-1]
     idplay = False
     if context.parameter[0] == "id":  # ID点歌功能
         if len(context.parameter) > 2:
-            await context.edit("**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
+            await context.edit(helptext)
             return
         idplay = keyword
         context.parameter[0] = "p"
@@ -81,7 +110,7 @@ async def nem(context):
                                 info[i]['album'] + '</a>'
                             text += f"<strong>专辑</strong>： {res} \n"
                         text += f"<strong>作者</strong>： {info[i]['artist']}\n<strong>歌曲ID</strong>： <code>{info[i]['id']}</code>\n————————\n"
-                    text += "<strong>回复此消息</strong><code>-nem p <歌曲序号></code><strong>即可点歌</strong>"
+                    text += "\n<strong>回复此消息</strong><code>-nem p <歌曲序号></code><strong>即可点歌</strong>"
                     await context.edit(text, parse_mode='html', link_preview=True)
                     status = True
                     break
@@ -94,7 +123,7 @@ async def nem(context):
             else:
                 continue
         if status is False:
-            await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。")
+            await context.edit(apifailtext)
             sleep(3)
             await context.delete()
         return
@@ -461,9 +490,9 @@ async def nem(context):
                 continue
 
         if status is False:
-            await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。")
+            await context.edit(apifailtext)
             sleep(3)
             await context.delete()
     else:  # 错误输入
-        await context.edit("**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌\n搜索灰色歌曲请给出歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌")
+        await context.edit(helptext)
         return

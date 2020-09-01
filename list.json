@@ -276,19 +276,19 @@
             "section": "daily",
             "maintainer": "TNTcraftHIM",
             "size": "3.0 kb",
-            "supported": true,
+            "supported": false,
             "des-short": "随机网抑热歌",
             "des": "从热歌榜随机获取一首歌，可以多进程同开，且附带歌曲信息。命令：ns。"
         },
         {
             "name": "neteasemusic",
-            "version": "3.3",
+            "version": "3.4",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
-            "size": "26.4 kb",
+            "size": "27.2 kb",
             "supported": true,
-            "des-short": "网易云搜/点歌",
-            "des": "可以在线搜索并且快速点歌（可回复信息点歌），支持解锁VIP/灰色歌曲。命令：nem。"
+            "des-short": "网易云搜歌/随机热歌/点歌",
+            "des": "可以在线搜索并且快速点歌（可回复信息点歌），也支持随机热歌功能，支持解锁VIP/灰色歌曲。命令：nem。"
         },
         {
             "name": "killallmembers",
