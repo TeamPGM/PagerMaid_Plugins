@@ -39,17 +39,32 @@ async def nem(context):
             return
         elif context.parameter[0] == "r":  # 随机热歌
             await context.edit("随机中 . . .")
-            url = "https://api.vvhan.com/api/rand.music?type=json&sort=%E7%83%AD%E6%AD%8C%E6%A6%9C"
             for _ in range(20):  # 最多重试20次
+                apinum = random.randint(0, 1)
+                apitype = random.randint(0, 1)
+                if apitype == 0:
+                    apitype = "飙升榜"
+                else:
+                    apitype = "热歌榜"
+                if apinum == 0:
+                    url = "https://api.vvhan.com/api/rand.music?type=json&sort=" + apitype
+                else:
+                    url = "https://api.uomg.com/api/rand.music?sort=" + apitype + "&format=json"
+                status = False
                 try:
-                    status = False
                     randsong = requests.get(url, headers=headers)
                     if randsong.status_code == 200:
                         randsong = json.loads(randsong.content)
-                        if randsong['success'] is True:
+                        if apinum == 0 and randsong['success'] is True:
                             context.parameter[0] = "id"
                             context.parameter.append(
                                 str(randsong['info']['id']))
+                            status = True
+                            break
+                        elif apinum == 1 and randsong['code'] == 1:
+                            context.parameter[0] = "id"
+                            context.parameter.append(
+                                str(randsong['data']['url'][45:]))
                             status = True
                             break
                 except:
@@ -59,7 +74,7 @@ async def nem(context):
                 sleep(3)
                 await context.delete()
                 return
-        else:
+        else: # 错误输入
             await context.edit(helptext)
             return
     # 整理关键词
