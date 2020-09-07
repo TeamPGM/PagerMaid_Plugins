@@ -21,7 +21,7 @@ class RetryError(Exception):  # 重试错误，用于再次重试
 
 
 @listener(is_plugin=True, outgoing=True, command="nem",
-          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索灰色歌曲请指定歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌",
+          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索在s后添加数字如`-nem` `s8` `<关键词>`调整结果数量\n搜索灰色歌曲请尽量**指定歌手**\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌",
           parameters="<指令> <关键词>")
 async def nem(context):
     proxies = {}
@@ -30,7 +30,7 @@ async def nem(context):
                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9", "X-Real-IP": "223.252.199.66"}
     proxy = [{'http': 'http://192.210.137.108:8080', 'https': 'http://192.210.137.108:8080'}, {'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'}, {'http': 'http://aimer.one:2333',
                                                                                                                                                                                   'https': 'http://aimer.one:2333'}, {'http': 'http://fs2.ilogic.net.cn:5200', 'https': 'http://fs2.ilogic.net.cn:5200'}, {'http': 'http://64.64.250.246:8080', 'https': 'http://64.64.250.246:8080'}]
-    helptext = "**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索灰色歌曲请指定歌手\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌"
+    helptext = "**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索在s后添加数字如`-nem` `s8` `<关键词>`调整结果数量\n搜索灰色歌曲请尽量**指定歌手**\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌"
     apifailtext = "出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。"
 
     if len(context.parameter) < 2:
@@ -89,10 +89,14 @@ async def nem(context):
             return
         idplay = keyword
         context.parameter[0] = "p"
-    if context.parameter[0] == "s":  # 搜索功能
+    if context.parameter[0][0] == "s":  # 搜索功能
         await context.edit(f"【{keyword}】搜索中 . . .")
+        if len(context.parameter[0]) > 1:
+            limit = str(context.parameter[0][1:])
+        else:
+            limit = "5"
         url = "http://music.163.com/api/search/pc?&s=" + \
-            keyword + "&offset=0&limit=5&type=1"
+            keyword + "&offset=0&limit=" + limit +"&type=1"
         for _ in range(20):  # 最多尝试20次
             status = False
             req = requests.request("GET", url, headers=headers)
@@ -155,21 +159,17 @@ async def nem(context):
             search = re.findall(".*【(.*)】.*", msg)
             if search:
                 try:
-                    if int(context.parameter[1]) > 5:
-                        await context.edit("出错了呜呜呜 ~ 无效的歌曲序号。")
-                        return
-                    else:
-                        start = "#" + context.parameter[1] + "："
-                        search = ".*" + start + "(.*?)" + '————————' + ".*"
-                        msg = re.findall(search, msg, re.S)[0]
-                        search = ".*歌曲ID： (.*)\n.*"
-                        title = ".*歌名： (.*?)\n.*"
-                        title = "【"+re.findall(title, msg, re.S)[0]+"】"
-                        idplay = re.findall(search, msg, re.S)[0]
-                        if reply.sender.is_self:
-                            await reply.edit(f"{title}点歌完成")
+                    start = "#" + context.parameter[1] + "："
+                    search = ".*" + start + "(.*?)" + '————————' + ".*"
+                    msg = re.findall(search, msg, re.S)[0]
+                    search = ".*歌曲ID： (.*)\n.*"
+                    title = ".*歌名： (.*?)\n.*"
+                    title = "【"+re.findall(title, msg, re.S)[0]+"】"
+                    idplay = re.findall(search, msg, re.S)[0]
+                    if reply.sender.is_self:
+                        await reply.edit(f"{title}点歌完成")
                 except:
-                    await context.edit("出错了呜呜呜 ~ 无效的参数。")
+                    await context.edit("出错了呜呜呜 ~ 无效的歌曲序号。")
                     return
             else:
                 await context.edit("出错了呜呜呜 ~ 无效的参数。")
