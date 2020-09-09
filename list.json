@@ -315,7 +315,7 @@
             "version": "1.0",
             "section": "chat",
             "maintainer": "TNTcraftHIM",
-            "size": 2.0 kb",
+            "size": "2.0 kb",
             "supported": true,
             "des-short": "光速发Aff信息",
             "des": "在别人要打算买机场的时候光速发出提前准备好的Aff信息与链接~ （尽量用短链接哦）。命令：aff。"
