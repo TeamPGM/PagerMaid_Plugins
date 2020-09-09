@@ -305,10 +305,20 @@
             "version": "0.1",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
-            "size": "5.3",
+            "size": "5.3 kb",
             "supported": true,
             "des-short": "下载YTB/B站视频",
             "des": "随手写的youtube/B站下载视频插件，B站的似乎因为TG编码问题不支持在线播放，先这样吧（我懒）。命令：vdl。"
+        },
+        {
+            "name": "aff",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "TNTcraftHIM",
+            "size": "2.0 kb",
+            "supported": true,
+            "des-short": "光速发Aff信息",
+            "des": "在别人要打算买机场的时候光速发出提前准备好的Aff信息与链接~ （尽量用短链接哦）。命令：aff。"
         }
     ]
 }
