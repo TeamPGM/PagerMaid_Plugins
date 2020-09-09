@@ -18,7 +18,7 @@ async def aff(context):
             await context.edit("出错了呜呜呜 ~ Aff消息不存在。\n(你有提前保存好嘛？)")
             return
         try:
-            await context.edit(msg)
+            await context.edit(msg, link_preview=True)
         except:
             await context.edit("出错了呜呜呜 ~ 信息无变化。")
             sleep(3)
