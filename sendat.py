@@ -230,12 +230,13 @@ async def sendatparse(context):
     if text.find(".\n") == 0:
         text = "\n".join(text.split("\n")[1:])
     lines = text.split("\n")
+    pms = []
     for i in range(len(lines)):
         line = lines[i]
         sent = await sendmsg(context, chat, line)
-        await asyncio.sleep(1)
         sent.parameter = line.replace("-sendat ", "").split(" ")
-        await sendat(sent)
+        pms.append(sendat(sent))
+    await asyncio.wait(pms)
 
 """ Modified pagermaid autorespond plugin. """
 
