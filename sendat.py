@@ -221,7 +221,7 @@ async def sendatdump(context):
     await context.edit(".\n-sendat " + "\n-sendat ".join(clean_mem))
 
 @listener(outgoing=True, command="sendatparse", diagnostics=True, ignore_edited=True,
-          description="导入已导出的 sendat 配置")
+          description="导入已导出的 sendat 配置。用法：-sendatparse 在此处粘贴 -sendatdump 命令的输出结果")
 async def sendatparse(context):
     chat = await context.get_chat()
     text = "\n".join(context.message.text.split("\n")[1:])
@@ -230,11 +230,13 @@ async def sendatparse(context):
     if text.find(".\n") == 0:
         text = "\n".join(text.split("\n")[1:])
     lines = text.split("\n")
+    pms = []
     for i in range(len(lines)):
         line = lines[i]
         sent = await sendmsg(context, chat, line)
         sent.parameter = line.replace("-sendat ", "").split(" ")
-        await sendat(sent)
+        pms.append(sendat(sent))
+    await asyncio.wait(pms)
 
 """ Modified pagermaid autorespond plugin. """
 
