@@ -322,10 +322,10 @@
         },
         {
             "name": "stickertopic",
-            "version": "1.0",
+            "version": "1.1",
             "section": "chat",
             "maintainer": "TNTcraftHIM",
-            "size": "3.6 kb",
+            "size": "3.5 kb",
             "supported": true,
             "des-short": "贴纸转图片",
             "des": "把别人发的贴纸转换成图片（只支持静态）。命令：pic。"
