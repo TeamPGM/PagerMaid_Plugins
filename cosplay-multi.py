@@ -12,7 +12,7 @@ async def joke(context):
     status = False
     for _ in range (20): #最多重试20次
         website = randint(0, 6)
-        filename = str(random()) + ".png"
+        filename = "cosm" + str(random())[2:] + ".png"
         try:
             if website == 0:
                 img = get("https://api.helloworld.la/xiezhen_cosplay.php")
@@ -34,23 +34,32 @@ async def joke(context):
                     if img.status_code != 200:
                         continue #再试一次
                 with open(filename, 'wb') as f:
-                    await context.edit("上传中 . . .")
                     f.write(img.content)
-                    await context.client.send_file(
-                    context.chat_id,
-                    filename,
-                    reply_to=None,
-                    caption=None
-                    )
-                try:
-                    remove(filename)
-                except:
-                    pass
+                await context.edit("上传中 . . .")
+                await context.client.send_file(context.chat_id,filename)
                 status = True
                 break #成功了就赶紧结束啦！
         except:
+            try:
+                remove(filename)
+            except:
+                pass
             continue
+    try:
+        remove(filename)
+    except:
+        pass
+    try:
+        await context.delete()
+    except:
+        pass
     if not status:
-        await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。")
-        sleep(2)
-    await context.delete()
+        try:
+            remove(filename)
+        except:
+            pass
+        try:
+            await context.delete()
+        except:
+            pass
+        await context.client.send_message(context.chat_id,"出错了呜呜呜 ~ 试了好多好多次都无法访问到服务器 。")

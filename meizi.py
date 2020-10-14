@@ -12,7 +12,7 @@ async def mz(context):
     status = False
     for _ in range (20): #最多重试20次
         website = random.randint(0, 13)
-        filename = str(random.random()) + ".png"
+        filename = "mz" + str(random.random())[2:] + ".png"
         try:
             if website == 0:
                 img = get("https://mm.52.mk/img")
@@ -44,26 +44,27 @@ async def mz(context):
                 img = get("https://uploadbeta.com/api/pictures/random/?key=%E6%80%A7%E6%84%9F")
             if img.status_code == 200:
                 with open(filename, 'wb') as f:
-                    await context.edit("上传中 . . .")
                     f.write(img.content)
-                    await context.client.send_file(
-                        context.chat_id,
-                        filename,
-                        reply_to=None,
-                        caption=None
-                    )
-                try:
-                    remove(filename)
-                except:
-                    pass
+                await context.edit("上传中 . . .")
+                await context.client.send_file(context.chat_id,filename)
                 status = True
                 break #成功了就赶紧结束啦！
         except:
+            try:
+                remove(filename)
+            except:
+                pass
             continue
+    try:
+        remove(filename)
+    except:
+        pass
+    try:
+        await context.delete()
+    except:
+        pass
     if not status:
-        await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器（没有妹子看啦！） 。")
-        sleep(2)
-    await context.delete()
+        await context.client.send_message(context.chat_id,"出错了呜呜呜 ~ 试了好多好多次都无法访问到服务器（没有妹子看啦！） 。")
 
 @listener(is_plugin=True, outgoing=True, command="sp",
           description="随机获取妹子的视频")
@@ -71,26 +72,37 @@ async def sp(context):
     await context.edit("获取中 . . .")
     status = False
     for _ in range (20): #最多重试20次
-        vid = get("https://mv.52.mk/video.php")
-        filename = str(random.random()) + ".mp4"
-        if vid.status_code == 200:
-            with open(filename, 'wb') as f:
+        try:
+            vid = get("https://mv.52.mk/video.php")
+            filename = "sp" + str(random.random())[2:] + ".mp4"
+            if vid.status_code == 200:
+                with open(filename, 'wb') as f:
+                    f.write(vid.content)
                 await context.edit("上传中 . . .")
-                f.write(vid.content)
-                await context.client.send_file(
-                    context.chat_id,
-                    filename,
-                    reply_to=None,
-                    caption=None
-                  )
+                await context.client.send_file(context.chat_id,filename)
+                status = True
+                break #成功了就赶紧结束啦！
+        except:
             try:
                 remove(filename)
             except:
                 pass
-            status = True
-            break #成功了就赶紧结束啦！
-
+            continue
+    try:
+        remove(filename)
+    except:
+        pass
+    try:
+        await context.delete()
+    except:
+        pass
     if not status:
-        await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器（没有妹子视频看啦！） 。")
-        sleep(2)
-    await context.delete()
+        try:
+            remove(filename)
+        except:
+            pass
+        try:
+            await context.delete()
+        except:
+            pass
+        await context.client.send_message(context.chat_id,"出错了呜呜呜 ~ 试了好多好多次都无法访问到服务器（没有妹子视频看啦！） 。")
