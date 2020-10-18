@@ -10,7 +10,7 @@ from time import sleep
 from pagermaid.listener import listener
 from pagermaid import bot
 from pagermaid.utils import obtain_message
-from os import remove, path, mkdir
+from os import remove, path, mkdir, getcwd
 from os.path import exists
 from collections import defaultdict
 from telethon.tl.types import DocumentAttributeAudio
@@ -74,7 +74,7 @@ async def nem(context):
                 sleep(3)
                 await context.delete()
                 return
-        else: # 错误输入
+        else:  # 错误输入
             await context.edit(helptext)
             return
     # 整理关键词
@@ -96,7 +96,7 @@ async def nem(context):
         else:
             limit = "5"
         url = "http://music.163.com/api/search/pc?&s=" + \
-            keyword + "&offset=0&limit=" + limit +"&type=1"
+            keyword + "&offset=0&limit=" + limit + "&type=1"
         for _ in range(20):  # 最多尝试20次
             status = False
             req = requests.request("GET", url, headers=headers)
@@ -459,19 +459,25 @@ async def nem(context):
                     if not exists("plugins/NeteaseMusicExtra/FastTelethon.py"):
                         if not exists("plugins/NeteaseMusicExtra"):
                             mkdir("plugins/NeteaseMusicExtra")
-                        faster = requests.request(
-                            "GET", "https://gist.githubusercontent.com/TNTcraftHIM/ca2e6066ed5892f67947eb2289dd6439/raw/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py")
                         for ____ in range(6):  # 最多尝试6次
+                            faster = requests.request(
+                                "GET", "https://gist.githubusercontent.com/TNTcraftHIM/ca2e6066ed5892f67947eb2289dd6439/raw/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py")
                             if faster.status_code == 200:
                                 with open("plugins/NeteaseMusicExtra/FastTelethon.py", "wb") as f:
                                     f.write(faster.content)
+                                break
+                            else:
+                                if exists("plugins/NeteaseMusicExtra/NoFastTelethon.txt"):
                                     break
                     try:
                         from NeteaseMusicExtra.FastTelethon import upload_file
                         file = await upload_file(context.client, open(name, 'rb'), name)
                     except:
                         file = name
-                        await bot.send_message(context.chat_id, '(`FastTelethon`支持文件导入失败，上传速度可能受到影响)')
+                        if not exists("plugins/NeteaseMusicExtra/NoFastTelethon.txt"):
+                            with open("plugins/NeteaseMusicExtra/NoFastTelethon.txt", "w") as f:
+                                f.write("此文件出现表示FastTelethon支持文件在首次运行NeteaseMusic插件时导入失败\n这可能是因为Github服务器暂时性的访问出错导致的\nFastTelethon可以提升低网络性能机型在上传文件时的效率，但是正常情况提升并不明显\n如想要手动导入，可以手动下载：\nhttps://gist.githubusercontent.com/TNTcraftHIM/ca2e6066ed5892f67947eb2289dd6439/raw/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py\n并放入当前文件夹")
+                            await bot.send_message(context.chat_id, '`FastTelethon`支持文件导入失败，上传速度可能受到影响\n此提示仅出现**一次**，手动导入可参考：\n`' + getcwd() + '/plugins/NeteaseMusicExtra/NoFastTelethon.txt`')
 
                     await context.client.send_file(
                         context.chat_id,
