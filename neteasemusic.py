@@ -104,6 +104,8 @@ async def nem(context):
                 req = json.loads(req.content)
                 if req['code'] == 200:
                     result = req['result']
+                    if req['result']['songCount'] == 0:
+                        result = False
                 else:
                     result = False
                 if result:
