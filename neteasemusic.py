@@ -203,6 +203,8 @@ async def nem(context):
                     if idplay:
                         req['result'] = req
                     result = req['result']
+                    if req['result']['songCount'] == 0:
+                        result = False
                 else:
                     result = False
                 if result:
