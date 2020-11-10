@@ -37,7 +37,7 @@ async def portball(context):
                     pass
                 return False
             admins = await context.client.get_participants(context.chat, filter=ChannelParticipantsAdmins)
-            if context.sender in admins:
+            if (context.sender in admins) or (context.sender_id == 1087968824):
                 try:
                     await bot.edit_permissions(context.chat_id, reply.sender.id, timedelta(seconds=int(action[1].replace(' ',''))), send_messages=False, send_media=False, send_stickers=False, send_gifs=False, send_games=False, send_inline=False, send_polls=False, invite_users=False, change_info=False, pin_messages=False)
                     portball_message = await bot.send_message(
