@@ -6,7 +6,7 @@ from datetime import timedelta
 from telethon.tl.types import ChannelParticipantsAdmins
 
 
-@listener(is_plugin=True, incoming=True, outgoing=True, command="portball",
+@listener(is_plugin=True, outgoing=True, command="portball",
           description="回复你要临时禁言的人的消息来实现XX秒的禁言",
           parameters="<理由>(空格)<时间/秒>")
 async def portball(context):
