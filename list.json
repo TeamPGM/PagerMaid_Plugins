@@ -339,6 +339,16 @@
             "supported": true,
             "des-short": "vip 捐赠用户功能",
             "des": "命令：天气：weather 。"
+        },
+        {
+            "name": "calculator",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "Pentacene",
+            "size": "1.0 kb",
+            "supported": true,
+            "des-short": "小型计算器",
+            "des": "/cal 6+4。"
         }
     ]
 }
