@@ -15,7 +15,7 @@ async def cal(context):
         return
 
     await context.edit(f"{command}" )
-    cmd = f'echo {command} | bc'
+    cmd = f'echo "scale=4;{command}" | bc'
     result = await execute(cmd)
 
     if result:
