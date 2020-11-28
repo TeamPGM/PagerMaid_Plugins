@@ -79,7 +79,7 @@ async def wiki(context):
         try:
             await context.edit("正在生成翻译中 . . .")
             wiki_content = trans(to_lang=lang).translate(clear_emojis(wiki_content))
-            message = '词条： [' + wiki_title + '](https://zh.wikipedia.org/zh-cn/' + wiki_title + ')\n\n' + wiki_content.text + '...\n\n此词条最后修订于 ' + wiki_time
+            message = '词条： [' + wiki_title + '](https://zh.wikipedia.org/zh-cn/' + wiki_title + ')\n\n' + wiki_content + '...\n\n此词条最后修订于 ' + wiki_time
         except ValueError:
             await context.edit("出错了呜呜呜 ~ 找不到目标语言，请更正配置文件中的错误。")
             return
