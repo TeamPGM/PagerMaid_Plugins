@@ -349,6 +349,16 @@
             "supported": true,
             "des-short": "小型计算器",
             "des": "/cal 6+4。"
+        },
+        {
+            "name": "paolu",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "Pentacene",
+            "size": "1.0 kb",
+            "supported": true,
+            "des-short": "一键跑路（删所有消息并禁言）",
+            "des": "paolu。"
         }
     ]
 }
