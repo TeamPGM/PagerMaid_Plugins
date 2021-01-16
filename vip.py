@@ -42,7 +42,7 @@ async def pixiv(context):
         pixiv_albums = pixiv_list[1].split('|||')
         pixiv_album = []
         await context.edit("下载图片中 . . .")
-        for i in range(0, len(pixiv_albums) - 1):
+        for i in range(0, len(pixiv_albums)):
             r = get(pixiv_albums[i])
             with open("pixiv." + str(i) + ".jpg", "wb") as code:
                   code.write(r.content)
