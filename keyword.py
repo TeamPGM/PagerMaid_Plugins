@@ -75,12 +75,30 @@ def parse_multi(rule: str):
         n_rule.append(data)
     return n_rule
 
+def get_capture(search_data, group_name):
+    try:
+        capture_data = search_data.group(group_name)
+        return capture_data
+    except:
+        return None
+
 async def del_msg(context, t_lim):
     await asyncio.sleep(t_lim)
     await context.delete()
 
 async def send_reply(chat_id, reply_msg, context):
+    chat = context.chat
+    sender = context.sender
+    replace_data = {
+        "user_id": sender.id,
+        "first_name": sender.first_name,
+        "last_name": sender.last_name if sender.last_name else "",
+        "chat_id": chat.id,
+        "chat_name": chat.title
+    }
     for re_type, re_msg in reply_msg:
+        for k, v in replace_data.items():
+            re_msg = re_msg.replace(f"${k}", str(v))
         if re_type == "plain":
             await bot.send_message(chat_id, re_msg)
         elif re_type == "file" and len(re_msg.split()) >= 2:
@@ -95,6 +113,10 @@ async def send_reply(chat_id, reply_msg, context):
         elif re_type == "op":
             if re_msg == "delete":
                 await context.delete()
+            elif re_msg.split()[0] == "sleep" and len(re_msg.split()) == 2:
+                sleep_time = re_msg.split()[1]
+                if is_num(sleep_time):
+                    await asyncio.sleep(int(sleep_time))
 
 @listener(is_plugin=True, outgoing=True, command="keyword",
           description="关键词自动回复",
@@ -347,4 +369,15 @@ async def auto_reply(context):
             if pattern.search(send_text) and time.time() - last_time > msg_rate:
                 if validate(str(sender_id), int(mode), user_list):
                     last_time = time.time()
+                    catch_pattern = r"\$\{regex_(?P<str>((?!\}).)+)\}"
+                    while re.search(catch_pattern, v):
+                        search_data = re.search(k, send_text)
+                        print(search_data)
+                        group_name = re.search(catch_pattern, v).group("str")
+                        print(group_name)
+                        capture_data = get_capture(search_data, group_name)
+                        print(capture_data)
+                        if not capture_data: capture_data = ""
+                        v = v.replace("${regex_%s}" % group_name, capture_data)
+                        print(v)
                     await send_reply(chat_id, parse_multi(v), context)
