@@ -82,7 +82,7 @@ def get_capture(search_data, group_name):
     except:
         return None
 
-async def del_msg(context, t_lim):
+async def del_msg(context, t_lim: int):
     await asyncio.sleep(t_lim)
     await context.delete()
 
