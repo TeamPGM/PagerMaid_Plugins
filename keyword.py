@@ -82,7 +82,7 @@ def get_capture(search_data, group_name):
     except:
         return None
 
-async def del_msg(context, t_lim: int):
+async def del_msg(context, t_lim):
     await asyncio.sleep(t_lim)
     await context.delete()
 
@@ -269,7 +269,7 @@ async def reply_set(context):
                 return
         elif params[0] == "list":
             if params[1] == "show" and len(params) == 2:
-                user_list = settings_dict["list"] if "list" in settings_dict else None
+                user_list = settings_dict.get("list", None)
                 if user_list:
                     msg = "List: \n"
                     for p in user_list.split(","):
@@ -282,7 +282,7 @@ async def reply_set(context):
                     return
             elif params[1] == "add" and len(params) == 3:
                 if is_num(params[2]):
-                    tmp = settings_dict["list"] if "list" in settings_dict else None
+                    tmp = settings_dict.get("list", None)
                     if not tmp: settings_dict["list"] = params[2]
                     else: settings_dict["list"] += f",{params[2]}"
                     redis.set(redis_data, save_rules(settings_dict, None))
@@ -295,7 +295,7 @@ async def reply_set(context):
                     return
             elif params[1] == "del" and len(params) == 3:
                 if is_num(params[2]):
-                    tmp = settings_dict["list"] if "list" in settings_dict else None
+                    tmp = settings_dict.get("list", None)
                     if tmp:
                         user_list = settings_dict["list"].split(",")
                         if params[2] in user_list:
@@ -348,11 +348,11 @@ async def auto_reply(context):
         regex_dict = get_redis(f"keyword.{chat_id}.regex")
         g_settings = get_redis("keyword.settings")
         n_settings = get_redis(f"keyword.{chat_id}.settings")
-        g_mode = g_settings["mode"] if "mode" in g_settings else None
-        n_mode = n_settings["mode"] if "mode" in n_settings else None
+        g_mode = g_settings.get("mode", None)
+        n_mode = n_settings.get("mode", None)
         mode = "0"
-        g_list = g_settings["list"] if "list" in g_settings else None
-        n_list = n_settings["list"] if "list" in n_settings else None
+        g_list = g_settings.get("list", None)
+        n_list = g_settings.get("list", None)
         user_list = []
         if g_mode and n_mode: mode = n_mode
         elif g_mode or n_mode: mode = g_mode if g_mode else n_mode
@@ -372,12 +372,8 @@ async def auto_reply(context):
                     catch_pattern = r"\$\{regex_(?P<str>((?!\}).)+)\}"
                     while re.search(catch_pattern, v):
                         search_data = re.search(k, send_text)
-                        print(search_data)
                         group_name = re.search(catch_pattern, v).group("str")
-                        print(group_name)
                         capture_data = get_capture(search_data, group_name)
-                        print(capture_data)
                         if not capture_data: capture_data = ""
                         v = v.replace("${regex_%s}" % group_name, capture_data)
-                        print(v)
                     await send_reply(chat_id, parse_multi(v), context)
