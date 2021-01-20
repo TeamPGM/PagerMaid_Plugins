@@ -340,6 +340,8 @@ async def reply_set(context):
 
 @listener(incoming=True, ignore_edited=True)
 async def auto_reply(context):
+    if not redis_status():
+        return
     global msg_rate, last_time
     chat_id = context.chat_id
     sender_id = context.sender_id
