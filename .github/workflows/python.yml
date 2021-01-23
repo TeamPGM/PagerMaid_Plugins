@@ -30,5 +30,6 @@ jobs:
     # 发送通知
     - name: Send notice
       run: |
-        mkdir -p tmp && cd tmp
-        python ../telegram_update.py ${{ secrets.TG_BOT_TOKEN }}
+        cd tmp
+        cp ../telegram_update.py ./
+        python telegram_update.py ${{ secrets.TG_BOT_TOKEN }}
