@@ -23,6 +23,7 @@ jobs:
     # 安装依赖
     - name: Install dependencies
       run: |
+        mkdir tmp && cd tmp
         python -m pip install --upgrade pip
         pip install requests
 
