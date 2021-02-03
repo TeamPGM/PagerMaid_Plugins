@@ -94,7 +94,10 @@ def get_rule(chat_id, rule_type, rule_index):
 
 async def del_msg(context, t_lim):
     await asyncio.sleep(t_lim)
-    await context.delete()
+    try:
+        await context.delete()
+    except:
+        pass
 
 async def send_reply(chat_id, reply_msg, context):
     chat = context.chat
