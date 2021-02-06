@@ -88,3 +88,4 @@
     - `neteaseshuffle` : 随机网抑热歌。
     - `neteasemusic` : 网易云搜歌/随机热歌/点歌。
     - `videodl` : 下载YTB/B站视频。
+    - `transfer` : 上传和下载文件。
