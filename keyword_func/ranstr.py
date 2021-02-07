@@ -1,7 +1,7 @@
 import random
 import string
 
-def main(context):
+async def main(context):
     try:
         length = int(context.text.split()[1])
     except:
