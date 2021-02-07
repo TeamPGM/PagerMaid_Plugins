@@ -12,6 +12,7 @@ msg_freq = 1
 group_last_time = {}
 read_context = {}
 
+
 def is_num(x: str):
     try:
         x = int(x)
@@ -19,14 +20,18 @@ def is_num(x: str):
     except ValueError:
         return False
 
+
 def encode(s: str):
     return str(b64encode(s.encode('utf-8')), 'utf-8')
+
 
 def decode(s: str):
     return str(b64decode(s.encode('utf-8')), 'utf-8')
 
+
 def random_str():
     return str(uuid4()).replace('-', '')
+
 
 def parse_rules(rules: str):
     n_rules = {}
@@ -39,6 +44,7 @@ def parse_rules(rules: str):
             n_rules[key] = value
     return n_rules
 
+
 def save_rules(rules: dict, placeholder: str):
     n_rules = ""
     for k, v in rules.items():
@@ -48,6 +54,7 @@ def save_rules(rules: dict, placeholder: str):
         n_rules += encode(k) + ":" + encode(v) + ";"
     return n_rules
 
+
 def validate(user_id: str, mode: int, user_list: list):
     if mode == 0:
         return user_id not in user_list
@@ -56,11 +63,13 @@ def validate(user_id: str, mode: int, user_list: list):
     else:
         return False
 
+
 def get_redis(db_key: str):
     byte_data = redis.get(db_key)
     byte_data = byte_data if byte_data else b""
     byte_data = str(byte_data, "ascii")
     return parse_rules(byte_data)
+
 
 def parse_multi(rule: str):
     sep_ph = random_str()
@@ -74,10 +83,13 @@ def parse_multi(rule: str):
         p = [i.replace(sep_ph, "||") for i in p]
         p = [i.replace(col_ph, "::") for i in p]
         data = ['plain', '']
-        if len(p) == 2: data = p
-        else: data[1] = p[0]
+        if len(p) == 2:
+            data = p
+        else:
+            data[1] = p[0]
         n_rule.append(data)
     return n_rule
+
 
 def get_capture(search_data, group_name: str):
     try:
@@ -85,6 +97,7 @@ def get_capture(search_data, group_name: str):
         return capture_data
     except:
         return None
+
 
 def get_rule(chat_id, rule_type, rule_index):
     rule_index = int(rule_index)
@@ -95,6 +108,7 @@ def get_rule(chat_id, rule_type, rule_index):
             return encode(k)
         index += 1
     return None
+
 
 def valid_time(chat_id):
     global msg_freq, group_last_time
@@ -113,12 +127,14 @@ def valid_time(chat_id):
     else:
         return True
 
+
 async def del_msg(context, t_lim):
     await asyncio.sleep(t_lim)
     try:
         await context.delete()
     except:
         pass
+
 
 async def send_reply(chat_id, reply_msg, context):
     try:
@@ -171,11 +187,11 @@ async def send_reply(chat_id, reply_msg, context):
                 if "plain" in type_parse:
                     if could_send_msg:
                         update_last_time = True
-                        await bot.send_message(chat_id, re_msg, reply_to = None)
+                        await bot.send_message(chat_id, re_msg, reply_to=None)
                 elif "reply" in type_parse and chat_id == real_chat_id:
                     if could_send_msg:
                         update_last_time = True
-                        await bot.send_message(chat_id, re_msg, reply_to = context.id)
+                        await bot.send_message(chat_id, re_msg, reply_to=context.id)
                 elif "file" in type_parse and len(re_msg.split()) >= 2:
                     if could_send_msg:
                         update_last_time = True
@@ -192,7 +208,7 @@ async def send_reply(chat_id, reply_msg, context):
                         reply_to = None
                         if "reply" in re_type.split(","):
                             reply_to = context.id
-                        await bot.send_file(chat_id, file_name, reply_to = reply_to, force_document = True)
+                        await bot.send_file(chat_id, file_name, reply_to=reply_to, force_document=True)
                         remove(file_name)
                 elif "op" in type_parse:
                     if re_msg == "delete":
@@ -210,9 +226,11 @@ async def send_reply(chat_id, reply_msg, context):
     except:
         pass
 
+
 @listener(is_plugin=True, outgoing=True, command="keyword",
           description="关键词自动回复",
-          parameters="``new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 `list` 或者 `clear <plain|regex>")
+          parameters="``new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 `list` 或者 `clear "
+                     "<plain|regex>")
 async def reply(context):
     if not redis_status():
         await context.edit("出错了呜呜呜 ~ Redis 离线，无法运行")
@@ -230,8 +248,12 @@ async def reply(context):
     for i in range(len(tmp_parse)):
         if len(tmp_parse[i].split()) != 0:
             parse.append(tmp_parse[i])
-    if len(parse) == 0 or (len(parse[0].split()) == 1 and parse[0].split()[0] in ("new", "del", "delid", "clear")) or len(parse[0].split()) > 2:
-        await context.edit("[Code: -1] 格式错误，格式为 `-keyword` 加上 `new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 `list` 或者 `clear <plain|regex>`")
+    if len(parse) == 0 or (
+            len(parse[0].split()) == 1 and parse[0].split()[0] in ("new", "del", "delid", "clear")) or len(
+            parse[0].split()) > 2:
+        await context.edit(
+            "[Code: -1] 格式错误，格式为 `-keyword` 加上 `new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 "
+            "`list` 或者 `clear <plain|regex>`")
         await del_msg(context, 10)
         return
     else:
@@ -244,7 +266,9 @@ async def reply(context):
             regex_dict[parse[1]] = parse[2]
             redis.set(f"keyword.{chat_id}.regex", save_rules(regex_dict, placeholder))
         else:
-            await context.edit("格式错误，格式为 `-keyword` 加上 `new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 `list` 或者 `clear <plain|regex>`")
+            await context.edit(
+                "格式错误，格式为 `-keyword` 加上 `new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 `list` "
+                "或者 `clear <plain|regex>`")
             await del_msg(context, 10)
             return
         await context.edit("设置成功")
@@ -273,7 +297,9 @@ async def reply(context):
                 await del_msg(context, 5)
                 return
         else:
-            await context.edit("格式错误，格式为 -keyword 加上 new <plain|regex> '<规则>' '<回复信息>' 或者 del <plain|regex> '<规则>' 或者 list 或者 clear <plain|regex>")
+            await context.edit(
+                "格式错误，格式为 -keyword 加上 new <plain|regex> '<规则>' '<回复信息>' 或者 del <plain|regex> '<规则>' 或者 list 或者 clear "
+                "<plain|regex>")
             await del_msg(context, 10)
             return
         await context.edit("删除成功")
@@ -306,9 +332,12 @@ async def reply(context):
         await context.edit("清除成功")
         await del_msg(context, 5)
     else:
-        await context.edit("[Code -2] 格式错误，格式为 `-keyword` 加上 `new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 `list` 或者 `clear <plain|regex>`")
+        await context.edit(
+            "[Code -2] 格式错误，格式为 `-keyword` 加上 `new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 "
+            "`list` 或者 `clear <plain|regex>`")
         await del_msg(context, 10)
         return
+
 
 @listener(outgoing=True, command="replyset",
           description="自动回复设置",
@@ -331,7 +360,7 @@ async def reply_set(context):
             del params[0:2]
     settings_dict = get_redis(redis_data)
     cmd_list = ["help", "mode", "list", "freq", "show", "clear"]
-    cmd_dict = {"help": (1, ), "mode": (2, ), "list": (2, 3), "freq": (2, ), "show": (1, ), "clear": (1, )}
+    cmd_dict = {"help": (1,), "mode": (2,), "list": (2, 3), "freq": (2,), "show": (1,), "clear": (1,)}
     if len(params) < 1:
         await context.edit("参数错误")
         await del_msg(context, 5)
@@ -473,13 +502,14 @@ async def reply_set(context):
         await context.edit("参数错误")
         await del_msg(context, 5)
         return
-    
+
+
 @listener(outgoing=True, command="funcset",
           description="设置自定义函数",
           parameters="help")
 async def funcset(context):
     if not path.exists("plugins/keyword_func"):
-        mkdir("plugins/keyword_func") 
+        mkdir("plugins/keyword_func")
     params = context.parameter
     params = " ".join(params).split("\n")
     cmd = []
@@ -552,6 +582,7 @@ async def funcset(context):
         await context.edit("参数错误")
         await del_msg(context, 5)
         return
+
 
 @listener(incoming=True, ignore_edited=True)
 async def auto_reply(context):
