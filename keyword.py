@@ -1,11 +1,11 @@
-import re, time, asyncio, requests, os
+import re, time, asyncio, requests, os, json
 from io import BytesIO
 from os import path, mkdir, remove
-from shutil import copyfile
+from shutil import copyfile, move
 from uuid import uuid4
 from base64 import b64encode, b64decode
 from importlib import import_module
-from pagermaid import bot, redis, log, redis_status
+from pagermaid import bot, redis, log, redis_status, working_dir
 from pagermaid.listener import listener
 
 msg_freq = 1
@@ -559,18 +559,41 @@ async def funcset(context):
                     await bot.download_file(message.media.document, data)
                     with open(f"plugins/keyword_func/{cmd[1]}.py", "wb") as f:
                         f.write(data.getvalue())
-                    await context.edit("添加成功，正在重启 PagerMaid")
+                    await context.edit(f"函数 {cmd[1]} 已添加，PagerMaid-Modify 正在重新启动。")
                     await bot.disconnect()
                 except:
-                    await context.edit("添加失败")
+                    await context.edit("函数添加失败")
                     await del_msg(context, 5)
             else:
-                await context.edit("未回复信息或回复信息中不包含文件")
+
+                await context.edit("未回复消息或回复的消息中不包含文件")
                 await del_msg(context, 5)
             return
+        elif len(cmd) == 2 and cmd[0] == "install":
+            fun_name = cmd[1]
+            fun_online = \
+                json.loads(
+                    requests.get("https://raw.githubusercontent.com/xtaodada/PagerMaid_Plugins/master/keyword_func/list.json").content)[
+                    'list']
+            if fun_name in fun_online:
+                fun_directory = f"{working_dir}/plugins/keyword_func/"
+                file_path = fun_name + ".py"
+                fun_content = requests.get(
+                    f"https://raw.githubusercontent.com/xtaodada/PagerMaid_Plugins/master/keyword_func/{fun_name}.py").content
+                with open(file_path, 'wb') as f:
+                    f.write(fun_content)
+                if path.exists(f"{fun_directory}{file_path}"):
+                    remove(f"{fun_directory}{file_path}")
+                    move(file_path, fun_directory)
+                else:
+                    move(file_path, fun_directory)
+                await context.edit(f"函数 {path.basename(file_path)[:-3]} 已添加，PagerMaid-Modify 正在重新启动。")
+                await log(f"成功安装函数 {path.basename(file_path)[:-3]}.")
+                await context.client.disconnect()
         elif len(cmd) == 1 and cmd[0] == "help":
             await context.edit("""
 `-funcset new <func_name>` (要回复带有文件的信息或自己附带文件)
+`-funcset install <func_name>` （云端获取函数文件）
 `-funcset del <func_name>`
 `-funcset show <func_name>` (发送文件)
 `-funcset ls` (列出所有函数)""")
