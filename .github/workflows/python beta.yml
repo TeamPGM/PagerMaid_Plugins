@@ -1,4 +1,4 @@
-name: Github commit to telegram
+name: Github Beta commit to telegram
 
 on:
   push:
@@ -26,7 +26,6 @@ jobs:
         mkdir tmp && cd tmp
         python -m pip install --upgrade pip
         pip install requests
-
     # 发送通知
     - name: Send notice
       run: |
