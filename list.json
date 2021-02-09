@@ -152,10 +152,10 @@
         },
         {
             "name": "portball",
-            "version": "1.41",
+            "version": "1.42",
             "section": "chat",
             "maintainer": "Pentacene",
-            "size": "4.3 kb",
+            "size": "2.8 kb",
             "supported": true,
             "des-short": "回复你要临时禁言的人的消息来实现XX秒的禁言。",
             "des": "portball <原因> <秒数>"
