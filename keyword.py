@@ -216,11 +216,9 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                     if could_send_msg:
                         update_last_time = True
                         re_data = re_msg.split(" ")
-                        cache_exists, cache_path = has_cache(chat_id, mode, trigger, re_data[0])
+                        cache_exists, filename = has_cache(chat_id, mode, trigger, re_data[0])
                         is_opened = cache_opened(chat_id, mode, trigger)
-                        filename = "/tmp/" + re_data[0]
                         if is_opened:
-                            filename = cache_path
                             if not cache_exists:
                                 if re_data[1][0:7] == "file://":
                                     re_data[1] = re_data[1][7:]
@@ -247,34 +245,44 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                 elif ("tgfile" in type_parse or "tgphoto" in type_parse) and len(re_msg.split()) >= 2:
                     if could_send_msg:
                         update_last_time = True
-                        if not path.exists("/tmp"):
-                            mkdir("/tmp")
-                        re_data = re_msg.split()
-                        file_name = "/tmp/" + re_data[0]
+                        re_data = re_msg.split(" ")
+                        re_data[0] = " ".join(re_data[0:-1])
+                        re_data[1] = re_data[-1:][0].split("/")[-2:]
+                        cache_exists, filename = has_cache(chat_id, mode, trigger, re_data[0])
+                        is_opened = cache_opened(chat_id, mode, trigger)
                         _data = BytesIO()
-                        re_data[1] = re_data[1].split("/")[-2:]
                         try:
                             msg_chat_id = int(re_data[1][0])
                         except:
                             async with bot.conversation(re_data[1][0]) as conversation:
                                 msg_chat_id = conversation.chat_id
                         msg_id_inchat = int(re_data[1][1])
-                        await bot.send_message(chat_id, f"{msg_chat_id, msg_id_inchat}")
-                        media_msg = (await bot.get_messages(msg_chat_id, msg_id_inchat))[0]
-                        _data = BytesIO()
-                        if media_msg and media_msg.media:
-                            if "tgfile" in type_parse:
-                                await bot.download_file(media_msg.media.document, _data)
-                            else:
-                                await bot.download_file(media_msg.photo, _data)
-                            with open(file_name, "wb") as f:
-                                f.write(_data.getvalue())
-                            reply_to = None
-                            if "reply" in type_parse:
-                                reply_to = context.id 
-                            message_list.append(await bot.send_file(chat_id, file_name, reply_to=reply_to,
-                                                force_document=("tgfile" in type_parse)))
-                            remove(file_name)
+                        if is_opened:
+                            if not cache_exists:
+                                media_msg = await bot.get_messages(msg_chat_id, ids=msg_id_inchat, offset_id=0)
+                                if media_msg and media_msg.media:
+                                    try:
+                                        await bot.download_file(media_msg.media.document, _data)
+                                    except:
+                                        await bot.download_file(media_msg.photo, _data)
+                                    with open(filename, "wb") as f:
+                                        f.write(_data.getvalue())
+                        else:
+                            media_msg = await bot.get_messages(msg_chat_id, ids=msg_id_inchat, offset_id=0)
+                            if media_msg and media_msg.media:
+                                try:
+                                    await bot.download_file(media_msg.media.document, _data)
+                                except:
+                                    await bot.download_file(media_msg.photo, _data)
+                                with open(filename, "wb") as f:
+                                    f.write(_data.getvalue())
+                        reply_to = None
+                        if "reply" in type_parse:
+                            reply_to = context.id 
+                        message_list.append(await bot.send_file(chat_id, filename, reply_to=reply_to,
+                                            force_document=("tgfile" in type_parse)))
+                        if not is_opened:
+                            remove(filename)
                 elif "plain" in type_parse:
                     if could_send_msg:
                         update_last_time = True
@@ -739,7 +747,7 @@ async def funcset(context):
         pass
 
 
-@listener(incoming=True, ignore_edited=True)
+@listener(incoming=True, ignore_edited=False)
 async def auto_reply(context):
     if not redis_status():
         return
@@ -799,7 +807,5 @@ async def auto_reply(context):
                             v = v.replace("${regex_%s}" % group_name, capture_data)
                             count += 1
                         await send_reply(chat_id, k, "regex", parse_multi(v), context)
-        else:
-            del read_context[f"{chat_id}:{context.id}"]
     except:
         pass
