@@ -22,15 +22,15 @@ def is_num(x: str):
 
 
 def encode(s: str):
-    return str(b64encode(s.encode('utf-8')), 'utf-8')
+    return str(b64encode(s.encode("utf-8")), "utf-8")
 
 
 def decode(s: str):
-    return str(b64decode(s.encode('utf-8')), 'utf-8')
+    return str(b64decode(s.encode("utf-8")), "utf-8")
 
 
 def random_str():
-    return str(uuid4()).replace('-', '')
+    return str(uuid4()).replace("-", "")
 
 
 def parse_rules(rules: str):
@@ -82,7 +82,7 @@ def parse_multi(rule: str):
         p = r.split("::")
         p = [i.replace(sep_ph, "||") for i in p]
         p = [i.replace(col_ph, "::") for i in p]
-        data = ['plain', '']
+        data = ["plain", ""]
         if len(p) == 2:
             data = p
         else:
@@ -743,14 +743,14 @@ async def funcset(context):
                 func_online = \
                     json.loads(
                         requests.get("https://raw.githubusercontent.com/xtaodada/PagerMaid_Plugins/master"
-                                    "/keyword_func/list.json").content)['list']
+                                    "/keyword_func/list.json").content)["list"]
                 if func_name in func_online:
                     func_directory = f"data/keyword_func/"
                     file_path = func_name + ".py"
                     func_content = requests.get(
                         f"https://raw.githubusercontent.com/xtaodada/PagerMaid_Plugins/master"
                         f"/keyword_func/{func_name}.py").content
-                    with open(file_path, 'wb') as f:
+                    with open(file_path, "wb") as f:
                         f.write(func_content)
                     if path.exists(f"{func_directory}{file_path}"):
                         remove(f"{func_directory}{file_path}")
