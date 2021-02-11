@@ -443,7 +443,7 @@ async def reply_set(context):
             redis_data = f"keyword.{chat_id}.single.{params[0]}.{rule_data}"
             del params[0:2]
     settings_dict = get_redis(redis_data)
-    cmd_list = ["help", "mode", "list", "freq", "show", "cache", "clear"]
+    cmd_list = ["help", "mode", "list", "freq", "show", "cache", "status", "clear"]
     cmd_dict = {
         "help": (1,),
         "mode": (2,),
@@ -451,6 +451,7 @@ async def reply_set(context):
         "freq": (2,),
         "show": (1,),
         "cache": (2,),
+        "status": (2,),
         "clear": (1,)
     }
     if len(params) < 1:
@@ -464,7 +465,9 @@ async def reply_set(context):
 `-replyset clear` 或
 `-replyset mode <0/1/clear>` ( 0 表示黑名单，1 表示白名单 ) 或
 `-replyset list <add/del/show/clear> [user_id]` 或
-`-replyset freq <float/clear>` ( float 表示一个正的浮点数，clear 为清除 )。
+`-replyset freq <float/clear>` ( float 表示一个正的浮点数，clear 为清除 ) 或
+`-replyset cache <0/1/clear>` ( 0 为关闭，1 为开启 ) 或
+`-replyset status <0/1/clear>` ( 0 为关闭，1 为开启 ) 。
 在 `-replyset` 后面加上 `global` 即为全局设置。
 在 `-replyset` 后面加上 `plain/regex` 规则序号 可以单独设置一条规则。''')
             await del_msg(context, 15)
@@ -474,7 +477,8 @@ async def reply_set(context):
                 "mode": "未设置 (默认黑名单)",
                 "list": "未设置 (默认为空)",
                 "freq": "未设置 (默认为 1)",
-                "cache": "未设置 (默认关闭)"
+                "cache": "未设置 (默认关闭)",
+                "status": "未设置 (默认开启)"
             }
             msg = "Settings: \n"
             for k, v in defaults.items():
@@ -566,30 +570,34 @@ async def reply_set(context):
                 await del_msg(context, 5)
                 return
         elif params[0] == "freq":
-            if params[1] == "clear":
-                if "freq" in settings_dict:
-                    del settings_dict["freq"]
-                redis.set(redis_data, save_rules(settings_dict, None))
-                await context.edit("清除成功")
-                await del_msg(context, 5)
-                return
-            else:
-                try:
-                    tmp = float(params[1])
-                    if tmp > 0:
-                        settings_dict["freq"] = params[1]
-                        redis.set(redis_data, save_rules(settings_dict, None))
-                        await context.edit("设置成功")
-                        await del_msg(context, 5)
-                        return
-                    else:
+            if redis_data == f"keyword.{chat_id}.settings":
+                if params[1] == "clear":
+                    if "freq" in settings_dict:
+                        del settings_dict["freq"]
+                    redis.set(redis_data, save_rules(settings_dict, None))
+                    await context.edit("清除成功")
+                    await del_msg(context, 5)
+                    return
+                else:
+                    try:
+                        tmp = float(params[1])
+                        if tmp > 0:
+                            settings_dict["freq"] = params[1]
+                            redis.set(redis_data, save_rules(settings_dict, None))
+                            await context.edit("设置成功")
+                            await del_msg(context, 5)
+                            return
+                        else:
+                            await context.edit("频率需为正数")
+                            await del_msg(context, 5)
+                            return
+                    except:
                         await context.edit("频率需为正数")
                         await del_msg(context, 5)
                         return
-                except:
-                    await context.edit("频率需为正数")
-                    await del_msg(context, 5)
-                    return
+            else:
+                await context.edit("此项无法使用全局设置和单独设置")
+                return
         elif params[0] == "cache":
             if params[1] == "0":
                 settings_dict["cache"] = "0"
@@ -622,8 +630,36 @@ async def reply_set(context):
                 await del_msg(context, 5)
                 return
             else:
-                await context.edit(f"参数错误")
+                await context.edit("参数错误")
                 await del_msg(context, 5)
+                return
+        elif params[0] == "status":
+            if redis_data == f"keyword.{chat_id}.settings":
+                if params[1] == "0":
+                    settings_dict["status"] = "0"
+                    redis.set(redis_data, save_rules(settings_dict, None))
+                    await context.edit("已关闭此群组的关键词回复")
+                    await del_msg(context, 5)
+                    return
+                elif params[1] == "1":
+                    settings_dict["status"] = "1"
+                    redis.set(redis_data, save_rules(settings_dict, None))
+                    await context.edit("已开启此群组的关键词回复")
+                    await del_msg(context, 5)
+                    return
+                elif params[1] == "clear":
+                    if "status" in settings_dict:
+                        del settings_dict["status"]
+                    redis.set(redis_data, save_rules(settings_dict, None))
+                    await context.edit("已清除此设置")
+                    await del_msg(context, 5)
+                    return
+                else:
+                    await context.edit("参数错误")
+                    await del_msg(context, 5)
+                    return
+            else:
+                await context.edit("此项无法使用全局设置和单独设置")
                 return
         elif params[0] == "clear":
             redis.delete(redis_data)
@@ -755,10 +791,12 @@ async def auto_reply(context):
         chat_id = context.chat_id
         sender_id = context.sender_id
         if f"{chat_id}:{context.id}" not in read_context:
+            n_settings = get_redis(f"keyword.{chat_id}.settings")
+            if n_settings.get("status", "1") == "0":
+                return
+            g_settings = get_redis("keyword.settings")
             plain_dict = get_redis(f"keyword.{chat_id}.plain")
             regex_dict = get_redis(f"keyword.{chat_id}.regex")
-            g_settings = get_redis("keyword.settings")
-            n_settings = get_redis(f"keyword.{chat_id}.settings")
             g_mode = g_settings.get("mode", None)
             n_mode = n_settings.get("mode", None)
             mode = "0"
