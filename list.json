@@ -409,6 +409,16 @@
             "supported": true,
             "des-short": "随机小姐姐或纸片人写真。",
             "des": "命令: xjj"
+        },
+        {
+            "name": "forcesend",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "fruitymelon",
+            "size": "1.3 kb",
+            "supported": true,
+            "des-short": "无需进群，向频道附属群内发送消息",
+            "des": "命令：forcesend"
         }
     ]
 }
