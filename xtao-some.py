@@ -1,11 +1,10 @@
 """ Pagermaid plugin base. """
 import json, requests, re
-from translate import Translator as trans
 from urllib.parse import urlparse
 from pagermaid import bot, log
 from pagermaid.listener import listener, config
 from pagermaid.utils import clear_emojis, obtain_message, attach_log
-from telethon.tl.types import ChannelParticipantsAdmins
+from telethon.errors import ChatAdminRequiredError
 from os import remove
 
 
@@ -254,3 +253,24 @@ async def tx_t(context):
         await attach_log(result, context.chat_id, "translation.txt", context.id)
         return
     await context.edit(result)
+
+
+@listener(is_plugin=True, outgoing=True, command="getdel",
+          description="获取当前群组/频道的死号数。")
+async def getdel(context):
+    """ PagerMaid getdel. """
+    cid = str(context.chat_id)
+    pri = cid.startswith('-100')
+    if pri:
+        member_count = 0
+        try:
+            await context.edit('遍历成员中。。。')
+            chat = await context.get_chat()
+            async for member in bot.iter_participants(chat):
+                if member.deleted:
+                    member_count += 1
+            await context.edit(f'此频道/群组的死号数：`{member_count}`')
+        except ChatAdminRequiredError:
+            await context.edit('未加入此频道。')
+    else:
+        await context.edit("请在在群组/频道发送。")

@@ -62,13 +62,13 @@
         },
         {
             "name": "xtao-some",
-            "version": "1.14",
+            "version": "1.154",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "18.8 kb",
             "supported": true,
             "des-short": "一大堆便民功能。",
-            "des": "超多功能 例如 -ip -ipping -guess 等。"
+            "des": "超多功能 例如 -ip -ipping -guess -t -getdel 等。"
         },
         {
             "name": "yb-dl",
@@ -362,7 +362,7 @@
         },
         {
             "name": "keyword",
-            "version": "2.55",
+            "version": "2.551",
             "section": "chat",
             "maintainer": "c3b2a,xtaodada",
             "size": "36.7 kb",
