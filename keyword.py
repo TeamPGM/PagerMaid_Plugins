@@ -638,13 +638,13 @@ async def reply_set(context):
                 if params[1] == "0":
                     settings_dict["status"] = "0"
                     redis.set(redis_data, save_rules(settings_dict, None))
-                    await context.edit("已关闭此群组的关键词回复")
+                    await context.edit("已关闭此聊天的关键词回复")
                     await del_msg(context, 5)
                     return
                 elif params[1] == "1":
                     settings_dict["status"] = "1"
                     redis.set(redis_data, save_rules(settings_dict, None))
-                    await context.edit("已开启此群组的关键词回复")
+                    await context.edit("已开启此聊天的关键词回复")
                     await del_msg(context, 5)
                     return
                 elif params[1] == "clear":
