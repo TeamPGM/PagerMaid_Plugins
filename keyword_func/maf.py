@@ -11,11 +11,16 @@ async def del_msg(context, t):
 
 async def main(context, text, tgurl, mode=0, re=1, t=-1):
     ids = tgurl.split("/")[-2:]
-    message = await context.client.get_messages(int(ids[0]), ids=int(ids[1]))
-    re_id = context.id
     try:
-        data = message.photo
+        ids[0] = int(ids[0])
     except:
+        async with context.client.conversation(ids[0]) as conv:
+            ids[0] = conv.chat_id
+    message = await context.client.get_messages(ids[0], ids=int(ids[1]))
+    re_id = context.id
+    if message.photo:
+        data = message.photo
+    else:
         data = message.media.document
     if context.is_reply:
         me = await context.client.get_me()
