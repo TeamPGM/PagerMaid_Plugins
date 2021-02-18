@@ -406,6 +406,7 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                             " ".join(re_msg.split("\n")[0].split(" ")[1:])
                         ]
                         await eval(f"aexec(args[0]{f', {args[1]}' if args[1] else ''})")
+                        chdir(working_dir)
             except:
                 pass
             chat_id = real_chat_id
