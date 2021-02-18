@@ -160,6 +160,28 @@ def cache_opened(chat_id, mode, trigger):
     return False
 
 
+def getsetting(chat_id, mode, trigger, name, default):
+    g_settings = get_redis("keyword.settings")
+    n_settings = get_redis(f"keyword.{chat_id}.settings")
+    s_settings = get_redis(f"keyword.{chat_id}.single.{mode}.{encode(trigger)}")
+    final = default
+    if s_settings.get(name, None):
+        final = s_settings[name]
+    elif n_settings.get(name, None):
+        final = n_settings[name]
+    elif g_settings.get(name, None):
+        final = g_settings[name]
+    return final
+
+
+async def aexec(code, *args, **kwargs):
+    exec(
+        f"async def func(*args, **kwargs):" +
+        "".join(f"\n {p}" for p in code.split("\n"))
+    )
+    return await locals()["func"](*args, **kwargs)
+
+
 async def del_msg(context, t_lim):
     await asyncio.sleep(t_lim)
     try:
@@ -259,6 +281,10 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                         reply_to = None
                         if "reply" in type_parse:
                             reply_to = context.id
+                            redir = getsetting(chat_id, mode, trigger, "redir", "0")
+                            reply = await context.get_reply_message()
+                            if redir == "1" and reply:
+                                reply_to = reply.id
                         if edit_id == -1:
                             message_list.append(await bot.send_file(
                                 chat_id,
@@ -311,6 +337,10 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                         reply_to = None
                         if "reply" in type_parse:
                             reply_to = context.id
+                            redir = getsetting(chat_id, mode, trigger, "redir", "0")
+                            reply = await context.get_reply_message()
+                            if redir == "1" and reply:
+                                reply_to = reply.id
                         if edit_id == -1:
                             message_list.append(await bot.send_file(
                                 chat_id,
@@ -344,10 +374,15 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                     if could_send_msg:
                         update_last_time = True
                         if edit_id == -1:
+                            reply_to = context.id
+                            redir = getsetting(chat_id, mode, trigger, "redir", "0")
+                            reply = await context.get_reply_message()
+                            if redir == "1" and reply:
+                                reply_to = reply.id
                             message_list.append(await bot.send_message(
                                 chat_id,
                                 re_msg,
-                                reply_to=context.id,
+                                reply_to=reply_to,
                                 link_preview=("nopreview" not in type_parse)
                             ))
                         else:
@@ -365,6 +400,12 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                         await message_list[int(re_msg.split()[1])].delete()
                     elif re_msg.split()[0] == "trigger" and len(re_msg.split()) == 2:
                         await auto_reply(message_list[int(re_msg.split()[1])])
+                    elif re_msg.split("\n")[0].startswith("exec") and len(re_msg.split("\n")) >= 2:
+                        args = [
+                            "\n".join(re_msg.split("\n")[1:]),
+                            " ".join(re_msg.split("\n")[0].split(" ")[1:])
+                        ]
+                        await eval(f"aexec(args[0]{f', {args[1]}' if args[1] else ''})")
             except:
                 pass
             chat_id = real_chat_id
@@ -515,6 +556,7 @@ async def reply_set(context):
         "trig": (2,),
         "show": (1,),
         "cache": (2,),
+        "redir": (2,),
         "status": (2,),
         "clear": (1,)
     }
@@ -542,8 +584,9 @@ async def reply_set(context):
                 "mode": "未设置 (默认黑名单)",
                 "list": "未设置 (默认为空)",
                 "freq": "未设置 (默认为 1)",
-                "trig": "未设置 (默认为 0)",
+                "trig": "未设置 (默认关闭)",
                 "cache": "未设置 (默认关闭)",
+                "redir": "未设置 (默认关闭)",
                 "status": "未设置 (默认开启)"
             }
             msg = "Settings: \n"
@@ -717,6 +760,30 @@ async def reply_set(context):
                     del settings_dict["cache"]
                 redis.set(redis_data, save_rules(settings_dict, None))
                 await context.edit("清除成功")
+                await del_msg(context, 5)
+                return
+            else:
+                await context.edit("参数错误")
+                await del_msg(context, 5)
+                return
+        elif params[0] == "redir":
+            if params[1] == "0":
+                settings_dict["redir"] = "0"
+                redis.set(redis_data, save_rules(settings_dict, None))
+                await context.edit("已关闭回复穿透")
+                await del_msg(context, 5)
+                return
+            elif params[1] == "1":
+                settings_dict["redir"] = "1"
+                redis.set(redis_data, save_rules(settings_dict, None))
+                await context.edit("已开启回复穿透")
+                await del_msg(context, 5)
+                return
+            elif params[1] == "clear":
+                if "redir" in settings_dict:
+                    del settings_dict["redir"]
+                redis.set(redis_data, save_rules(settings_dict, None))
+                await context.edit("已清除回复穿透设置")
                 await del_msg(context, 5)
                 return
             else:
