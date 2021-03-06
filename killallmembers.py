@@ -37,7 +37,8 @@ async def killallmembers(context):
                     if i == len(users_wo_admins):
                         await context.edit(f'完成！\n进度:{i}/{len(users_wo_admins)}')
                     elif (i < 10) or (i % 10 == 0):
-                        await context.edit(f'进度:{i}/{len(users_wo_admins)}\n{'percent: {:.0f}%'.format(i/len(users_wo_admins))')
+                        await context.edit(f'进度:{i}/{len(users_wo_admins)}'
+                        "{'percent: {:.0f}%'.format(i/len(users_wo_admins))")
                 except:
                     await context.edit('发生错误')
                     await sleep(10)
