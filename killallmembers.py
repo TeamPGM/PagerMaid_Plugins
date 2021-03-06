@@ -35,7 +35,8 @@ async def killallmembers(context):
                 try:
                     await bot.edit_permissions(context.chat_id, user_id, view_messages=False)
                     i += 1
-                    await context.edit(f'进度:{i}/{len(users_wo_admins)}')
+                    if i % 10 == 0:
+                        await context.edit(f'进度:{i}/{len(users_wo_admins)}')
                 except:
                     await context.edit('发生错误')
                     await sleep(10)

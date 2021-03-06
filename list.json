@@ -292,7 +292,7 @@
         },
         {
             "name": "killallmembers",
-            "version": "1.01",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "idk",
