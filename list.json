@@ -302,7 +302,7 @@
         },
         {
             "name": "videodl",
-            "version": "0.1",
+            "version": "0.1.1",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
             "size": "5.3 kb",
