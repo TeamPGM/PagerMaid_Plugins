@@ -145,7 +145,7 @@ async def ars(context):
     elif context.parameter[0] == 'help':
         await ars_help(context)
 
-@listener(incoming=True)
+@listener(incoming=True, ignore_edited=True)
 async def process_message(context):
     reply_user_id = 0
     link = process_link(context.chat_id, context.id)
