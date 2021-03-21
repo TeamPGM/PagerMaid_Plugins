@@ -361,6 +361,16 @@
             "des": "paolu。"
         },
         {
+            "name": "autoreplysticker",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "Pentacene",
+            "size": "6.8 kb",
+            "supported": true,
+            "des-short": "自动回复sticker",
+            "des": "-ars"
+        },
+        {
             "name": "keyword",
             "version": "2.61",
             "section": "chat",
