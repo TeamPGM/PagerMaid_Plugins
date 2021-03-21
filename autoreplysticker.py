@@ -58,7 +58,14 @@ async def ars_getall(context):
     await context.delete()
 
 async def ars_help(context):
-    await context.reply('111')
+    await context.reply(
+        '欢迎使用自动回复贴纸\n'
+        '设置方法为\n'
+        '先使用 `-ars getall` 获取贴纸包的id和hash\n'
+        '之后使用 `-ars set` 贴纸包id 贴纸包hash 自动删除时间 第i张贴纸 第j张贴纸 ...\n'
+        '比如 `-ars set 000 001 10 0 1 2 3` 的意义为\n'
+        '设置贴纸包id为000, hash为001, 自动回复10秒后删除, 随机从第0, 1, 2, 3张贴纸中选择一张自动回复\n\n'
+        '如有使用问题,请前往 [这里](https://t.me/PagerMaid_Modify) 请求帮助')
     await context.delete()
 
 def set_state(name, state):
