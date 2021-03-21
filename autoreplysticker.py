@@ -153,7 +153,7 @@ async def process_message(context):
     try:
         reply = await context.get_reply_message()
         reply_user_id = reply.sender.id
-        if reply.sticker:
+        if context.sticker:
             return
     except:
         pass
