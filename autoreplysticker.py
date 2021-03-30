@@ -180,9 +180,6 @@ async def process_message(context):
                 reply_to=context.id)
             await sleep(_time)
             await sticker.delete()
-            if context.chat_id < 0:
-                await log(
-                    f'#被回复\n在 [{context.chat.title}]({process_link(context.chat_id, context.id)})\n'
-                    f'获得了 {get_name(context.sender)} 的回复')
+            await log(f'#被回复\n在 [{context.chat.title}]({process_link(context.chat_id, context.id)})\n获得了 {get_name(context.sender)} 的回复')
         except:
             pass
