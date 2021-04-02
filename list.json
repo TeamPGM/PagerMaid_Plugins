@@ -362,10 +362,10 @@
         },
         {
             "name": "autoreplysticker",
-            "version": "1.02",
+            "version": "1.10",
             "section": "chat",
             "maintainer": "Pentacene",
-            "size": "6.8 kb",
+            "size": "8.3 kb",
             "supported": true,
             "des-short": "自动回复sticker",
             "des": "-ars"
