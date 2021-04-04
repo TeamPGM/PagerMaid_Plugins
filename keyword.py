@@ -972,14 +972,15 @@ async def setdata(context):
         return
 
 
-@listener(incoming=True, outgoing=True, ignore_edited=False)
+@listener(incoming=True, outgoing=True, ignore_edited=True)
 async def auto_reply(context):
+    global read_context
     if not redis_status():
         return
     try:
         chat_id = context.chat_id
         sender_id = context.sender_id
-        if f"{chat_id}:{context.id}" not in read_context:
+        if (chat_id, context.id) not in read_context:
             n_settings = get_redis(f"keyword.{chat_id}.settings")
             if n_settings.get("status", "1") == "0":
                 return
@@ -1019,7 +1020,7 @@ async def auto_reply(context):
                     if tmp:
                         could_reply = validate(str(sender_id), int(tmp.get("mode", "0")), tmp.get("list", []))
                     if could_reply and (not self_sent or validsent(int(trig), tmp)):
-                        read_context[f"{chat_id}:{context.id}"] = None
+                        read_context[(chat_id, context.id)] = None
                         await send_reply(chat_id, k, "plain", parse_multi(v), context)
             for k, v in regex_dict.items():
                 pattern = re.compile(k)
@@ -1029,7 +1030,7 @@ async def auto_reply(context):
                     if tmp:
                         could_reply = validate(str(sender_id), int(tmp.get("mode", "0")), tmp.get("list", []))
                     if could_reply and (not self_sent or validsent(int(trig), tmp)):
-                        read_context[f"{chat_id}:{context.id}"] = None
+                        read_context[(chat_id, context.id)] = None
                         catch_pattern = r"\$\{regex_(?P<str>((?!\}).)+)\}"
                         count = 0
                         while re.search(catch_pattern, v) and count < 20:
