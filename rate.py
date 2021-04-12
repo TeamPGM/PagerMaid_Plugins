@@ -53,10 +53,10 @@ async def rate(context):
         return
     if not context.parameter:
         await context.edit(
-            f"{lang_rate["help"]}{', '.join(currencies)}")
+            f"{lang_rate['help']}{', '.join(currencies)}")
         return
     if len(context.parameter) != 3:
-        await context.edit(f"{lang_rate["help"]}{', '.join(currencies)}")
+        await context.edit(f"{lang_rate['help']}{', '.join(currencies)}")
         return
     FROM = context.parameter[0].upper().strip()
     TO = context.parameter[1].upper().strip()
@@ -66,10 +66,10 @@ async def rate(context):
         NB = 1.0
     if currencies.count(FROM) == 0:
         await context.edit(
-            f"{FROM}{lang_rate["nc"]}{', '.join(currencies)}")
+            f"{FROM}{lang_rate['nc']}{', '.join(currencies)}")
         return
     if currencies.count(TO) == 0:
-        await context.edit(f"{TO}{lang_rate["nc"]}{', '.join(currencies)}")
+        await context.edit(f"{TO}{lang_rate['nc']}{', '.join(currencies)}")
         return
     rate_num = round(rates[TO] / rates[FROM] * NB, 2)
     await context.edit(f'{FROM} : {TO} = {NB} : {rate_num}')
