@@ -66,7 +66,7 @@ def validate(user_id: str, mode: int, user_list: list):
 
 def validsent(trig: int, tmp):
     if tmp:
-        return tmp.get("trig", "0")
+        return int(tmp.get("trig", "0"))
     else:
         return trig
 
