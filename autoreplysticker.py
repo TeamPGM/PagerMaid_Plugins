@@ -193,6 +193,8 @@ async def process_message(context):
         reply_user_id = reply.sender.id
         if context.sticker:
             return
+        if context.chat_id > 0:
+            return
     except:
         pass
     
