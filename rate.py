@@ -41,10 +41,10 @@ last_init = time.time()
 
 @listener(incoming=True, ignore_edited=True)
 async def refresher(context):
+  global last_init
   if time.time() - last_init > 24 * 60 * 60:
     # we'd better do this to prevent ruining the log file with massive fail logs
     # as this `refresher` would be called frequently
-    global last_init
     last_init = time.time()
     try:
       init()
