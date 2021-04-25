@@ -39,8 +39,7 @@ def process_web_data(num, req):
 
 
 @listener(is_plugin=True, outgoing=True, command="diy",
-          description="多个随机api。",
-          parameters="<'sao', 'qh', 'zn', 'tg', 'ba', 'gs'> (可选，用于自定义 api)")
+          description="多个随机api。")
 async def diy(context):
     short_name = ['sao', 'qh', 'zn', 'tg', 'ba', 'gs']
     try:
@@ -54,17 +53,17 @@ async def diy(context):
                 await context.edit("正在掷🎲 . . .")
                 num = randint(0, 5)
                 api_url, name = get_api(num)
-                text = f"🎲点数为 `{str(num) + 1}` 正在编{name}"
+                text = f"🎲点数为 `{str(num + 1)}` 正在编{name}"
         else:
             await context.edit("正在掷🎲 . . .")
             num = randint(0, 5)
             api_url, name = get_api(num)
-            text = f"🎲点数为 `{str(num) + 1}` 正在编{name}"
+            text = f"🎲点数为 `{str(num + 1)}` 正在编{name}"
     except:
         await context.edit("正在掷🎲 . . .")
         num = randint(0, 5)
         api_url, name = get_api(num)
-        text = f"🎲点数为 `{str(num) + 1}` 正在编{name}"
+        text = f"🎲点数为 `{str(num + 1)}` 正在编{name}"
     await context.edit(text)
     status = False
     for _ in range(20):  # 最多尝试20次
