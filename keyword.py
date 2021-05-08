@@ -418,7 +418,7 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
 
 
 @listener(is_plugin=True, outgoing=True, command="keyword",
-          description="关键词自动回复",
+          description="关键词自动回复 [教程](https://telegra.ph/Keyword-插件使用教程-02-07)",
           parameters="``new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 `list` 或者 "
                      "`clear <plain|regex>")
 async def reply(context):
