@@ -13,6 +13,7 @@ from time import strftime
 import json
 import urllib.request
 import time
+from telethon.tl.custom.message import Message
 from pagermaid import log
 from pagermaid.listener import listener
 from pagermaid.utils import execute
@@ -52,7 +53,7 @@ def init() -> None:
           command="bc",
           description="coins",
           parameters="<num> <coin1> <coin2>")
-async def coin(context) -> None:
+async def coin(context: Message) -> None:
     """ coin change """
     if not imported:
         await context.edit("支持库 `python-binance` `xmltodict` 未安装...\n正在尝试自动安装...")
