@@ -13,6 +13,7 @@ from time import strftime
 import json
 import urllib.request
 import time
+from telethon.tl.custom.message import Message
 from pagermaid import log
 from pagermaid.listener import listener
 from pagermaid.utils import execute
@@ -31,7 +32,7 @@ BINANCE_API_KEY = '8PDfQ2lSIyHPWdNAHNIaIoNy3MiiMuvgwYADbmtsKo867B0xnIhIGjPULsOtv
 BINANCE_API_SECRET = 'tbUiyZ94l0zpYOlKs3eO1dvLNMOSbOb2T1T0eT0I1eogH9Fh8Htvli05eZ1iDvra'
 
 
-def init():
+def init() -> None:
     """ INIT """
     with urllib.request.urlopen(API) as response:
         result = response.read()
@@ -52,7 +53,7 @@ def init():
           command="bc",
           description="coins",
           parameters="<num> <coin1> <coin2>")
-async def coin(context):
+async def coin(context: Message) -> None:
     """ coin change """
     if not imported:
         await context.edit("支持库 `python-binance` `xmltodict` 未安装...\n正在尝试自动安装...")
@@ -84,15 +85,18 @@ async def coin(context):
         price = 0.0
 
         if ((CURRENCIES.count(_from) != 0) and (CURRENCIES.count(_to) != 0)):
-            text = f'{action[0]} {action[1].upper().strip()} = {round(float(action[0])*DATA[_to]/DATA[_from], 2)} {action[2].upper().strip()}'
+            # both are real currency
+            text = f'{action[0]} {action[1].upper().strip()} = {float(action[0])*DATA[_to]/DATA[_from]:.2f} {action[2].upper().strip()}'
 
         else:
             if CURRENCIES.count(_from) != 0:
+                # from virtual currency to real currency
                 number = number * DATA["USD"] / DATA[_from]
                 _from = 'USDT'
                 front_text = f'{action[0]} {action[1]} = \n'
 
             if CURRENCIES.count(_to) != 0:
+                # from real currency to virtual currency
                 _to_USD_rate = DATA[_to] / DATA["USD"]
                 _to = 'USDT'
 
@@ -101,18 +105,17 @@ async def coin(context):
                     price = _a['price']
                     if _to == 'USDT':
                         if action[2].upper().strip() == 'USDT':
-                            rear_text = f'\n= {round(number * float(price) * DATA["CNY"]/DATA["USD"], 2)} CNY'
+                            rear_text = f'\n= {number * float(price) * DATA["CNY"]/DATA["USD"]:.2f} CNY'
                         else:
-                            rear_text = f'\n= {round(number * float(price) * _to_USD_rate, 2)} {action[2]}'
-                        _r = 2
+                            rear_text = f'\n= {number * float(price) * _to_USD_rate:.2f} {action[2].upper().strip()}'
+                    if float(price) < 1:
+                        text = f'{number} {_from} = {number * float(price):.8f} {_to}'
                     else:
-                        _r = 8
-                    text = f'{number} {_from} = {round(number * float(price), _r)} {_to}'
+                        text = f'{number} {_from} = {number * float(price):.2f} {_to}'
                     break
                 elif _a['symbol'] == str(f'{_to}{_from}'):
                     price = 1 / float(_a['price'])
-                    _r = 8
-                    text = f'{number} {_from} = {round(number * float(price), _r)} {_to}'
+                    text = f'{number} {_from} = {number * float(price):.8f} {_to}'
                     break
                 else:
                     price = None
