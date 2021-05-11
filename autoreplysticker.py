@@ -70,7 +70,7 @@ async def ars_help(message: Message) -> None:
         '之后使用 `-ars set` 贴纸包id 贴纸包hash 自动删除时间 第i张贴纸 第j张贴纸 ...\n'
         '比如 `-ars set 000 001 10 0 1 2 3` 的意义为\n'
         '设置贴纸包id为000, hash为001, 自动回复10秒后删除, 随机从第0, 1, 2, 3张贴纸中选择一张自动回复\n\n'
-        '如果您想要在某个群内设置自动回复白名单,请在该群中回复`-ars w`'
+        '如果您想要对某个群或某个人禁用自动回复,请在该群中回复`-ars w` 或使用`-ars w <数字>` 进行设置. 该数字可通过-id命令查询'
         '如有使用问题,请前往 [这里](https://t.me/PagerMaid_Modify) 请求帮助')
     await message.delete()
 
@@ -87,8 +87,17 @@ async def ars_whitelist(message: Message) -> None:
         white_list = ['0']
         set_state('whitelist', white_list)
         _white = config['whitelist']
-    
-    _white.append(chat_id)
+    if len(message.parameter) == 1:
+        white_id = chat_id
+    else:
+        try:
+            white_id = str(message.parameter[1])
+        except:
+            _noti = await message.edit('您输入的不是一个合理的数字')
+            await sleep(5)
+            await _noti.delete()
+            return
+    _white.append(white_id)
     try:
         _white.remove('0')
     except:
@@ -209,8 +218,13 @@ async def process_message(context):
     except:
         return
 
-    if str(context.chat_id) in _whitelist:
-        return
+    try:
+        if str(context.chat_id) in _whitelist:
+            return
+        if str(context.sender.id) in _whitelist:
+            return
+    except:
+        pass
 
     if (reply and reply_user_id == me.id):
         stickers = await context.client(
