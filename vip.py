@@ -15,7 +15,7 @@ async def weather(context):
         await context.edit("出错了呜呜呜 ~ 无效的参数。")
         return
     async with bot.conversation('PagerMaid_Modify_bot') as conversation:
-        await conversation.send_message('/weather ' + message)
+        await conversation.send_message('/weather_api ' + message)
         chat_response = await conversation.get_response()
         await bot.send_read_acknowledge(conversation.chat_id)
         weather_text = chat_response.text
