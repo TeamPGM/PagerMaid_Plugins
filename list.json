@@ -362,13 +362,23 @@
         },
         {
             "name": "autoreplysticker",
-            "version": "1.20",
+            "version": "1.21",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "12 kb",
             "supported": true,
             "des-short": "自动回复sticker",
             "des": "-ars"
+        },
+        {
+            "name": "deletemsgsfromgrps",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "Pentacene",
+            "size": "4 kb",
+            "supported": true,
+            "des-short": "删除所有群内消息或所有与他人对话",
+            "des": "-dmfg"
         },
         {
             "name": "keyword",
