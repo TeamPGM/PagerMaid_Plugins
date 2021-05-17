@@ -223,6 +223,8 @@ async def process_message(context):
             return
         if str(context.sender.id) in _whitelist:
             return
+        if context.sender.bot:
+            return
     except:
         pass
 
