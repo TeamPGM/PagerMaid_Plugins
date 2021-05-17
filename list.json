@@ -469,6 +469,16 @@
             "supported": true,
             "des-short": "api 聚合",
             "des": "命令：diy ['sao', 'qh', 'zn', 'tg', 'ba', 'gs']"
+        },
+        {
+            "name": "bingwall",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "ahhhiiii",
+            "size": "1.9 kb",
+            "supported": true,
+            "des-short": "获取Bing每日壁纸",
+            "des": "命令：bing"
         }
     ]
 }
