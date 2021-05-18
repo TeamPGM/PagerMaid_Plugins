@@ -27,6 +27,8 @@ async def dmfg(context: Message) -> None:
             if dialog.id > 0:
                 continue
             async for message in context.client.iter_messages(dialog.id, from_user="me"):
+                if dialog.id == context.chat_id and message.id == context.id:
+                    continue
                 if count_buffer == count:
                     break
                 await message.delete()
@@ -42,6 +44,8 @@ async def dmfg(context: Message) -> None:
         async for dialog in context.client.iter_dialogs():
             if dialog.id > 0:
                 async for message in context.client.iter_messages(dialog.id, from_user="me"):
+                    if dialog.id == context.chat_id and message.id == context.id:
+                        continue
                     if count_buffer == count:
                         break
                     await message.delete() 
