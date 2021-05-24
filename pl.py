@@ -43,7 +43,10 @@ async def pl(context):
                         txt = a.text.replace("嘌呤含量", "➟ ")
                         result = f"{result}{txt}\n"
                 status = True
-                await context.edit(result)
+                if result == "":
+                    await context.edit("没有查到结果")
+                else:
+                    await context.edit(result)
                 break
             except:
                 pass
