@@ -34,7 +34,7 @@ async def pl(context):
         for _ in range(3):  # 最多重试3次
             try:
                 plhtml = get(f"http://www.gd2063.com/pl/?{s}")
-                htmlStr = plhtml.content.decode("gb2312")
+                htmlStr = plhtml.content.decode("gbk")
                 soup = BeautifulSoup(htmlStr, 'html.parser')
                 arr = soup.find_all(name='a', attrs={"class": "heise"}, limit=10)
                 result = ""
