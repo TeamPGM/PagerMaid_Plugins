@@ -479,6 +479,16 @@
             "supported": true,
             "des-short": "获取Bing每日壁纸",
             "des": "命令：bing"
+        },
+        {
+            "name": "pl",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "lowking",
+            "size": "4.0 kb",
+            "supported": true,
+            "des-short": "查询食物嘌呤含量",
+            "des": "命令：pl"
         }
     ]
 }
