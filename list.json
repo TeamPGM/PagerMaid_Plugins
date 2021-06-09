@@ -489,6 +489,26 @@
             "supported": true,
             "des-short": "查询食物嘌呤含量",
             "des": "命令：pl"
+        },
+        {
+            "name": "rape",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "Pentacene",
+            "size": "4.0 kb",
+            "supported": true,
+            "des-short": "只踢出不ban群成员",
+            "des": "命令：(在群内回复该人)-rape 或 -rape <telegramID> "
+        },
+        {
+            "name": "fuck",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "Pentacene",
+            "size": "4.0 kb",
+            "supported": true,
+            "des-short": "踢出并ban群成员",
+            "des": "命令：(在群内回复该人)-fuck 或 -fuck <telegramID> "
         }
     ]
 }
