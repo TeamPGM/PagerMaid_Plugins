@@ -62,13 +62,13 @@
         },
         {
             "name": "xtao-some",
-            "version": "1.17",
+            "version": "1.18",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "18.8 kb",
             "supported": true,
             "des-short": "一大堆便民功能。",
-            "des": "超多功能 例如 -ip -ipping -guess -t -getdel 等。"
+            "des": "超多功能 例如 -ip -ipping -guess -t -getdel -get_bots 等。"
         },
         {
             "name": "yb-dl",

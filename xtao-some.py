@@ -5,7 +5,8 @@ from pagermaid import bot, log
 from pagermaid.listener import listener, config
 from pagermaid.utils import clear_emojis, obtain_message, attach_log, alias_command
 from telethon.errors import ChatAdminRequiredError
-from telethon.tl.types import ChannelParticipantsAdmins
+from telethon.errors.rpcerrorlist import FloodWaitError
+from telethon.tl.types import ChannelParticipantsAdmins, ChannelParticipantsBots, ChannelParticipantAdmin
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("guess"),
@@ -291,7 +292,11 @@ async def getdel(context):
                 if member.deleted:
                     member_count += 1
                     if need_kick:
-                        await context.client.kick_participant(context.chat_id, member.id)
+                        try:
+                            await context.client.kick_participant(context.chat_id, member.id)
+                        except FloodWaitError:
+                            await context.edit(context.chat_id, '处理失败，您已受到 TG 服务器限制。')
+                            return
             if need_kick:
                 await context.edit(f'此频道/群组的死号数：`{member_count}`，并且已经清理完毕。')
             else:
@@ -299,4 +304,28 @@ async def getdel(context):
         except ChatAdminRequiredError:
             await context.edit('未加入此频道。')
     else:
-        await context.edit("请在在群组/频道发送。")
+        await context.edit("请在群组/频道发送。")
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("get_bots"),
+          description="获取当前群组/频道的Bot列表。")
+async def get_bots(context):
+    cid = str(context.chat_id)
+    pri = cid.startswith('-100')
+    mentions = '以下是当前群组/频道的 Bot 列表：\n'
+    admins = []
+    members = []
+    if pri:
+        try:
+            await context.edit('遍历成员中。。。')
+            async for x in context.client.iter_participants(context.chat, filter=ChannelParticipantsBots):
+                if isinstance(x.participant, ChannelParticipantAdmin):
+                    admins.append("⚜️ [{}](tg://user?id={})".format(x.first_name, x.id))
+                else:
+                    members.append("[{}](tg://user?id={})".format(x.first_name, x.id))
+            mentions = mentions + '\n'.join(admins) + '\n' + '\n'.join(members)
+        except Exception as e:
+            mentions += " " + str(e) + "\n"
+        await context.edit(mentions)
+    else:
+        await context.edit("请在群组/频道发送。")
