@@ -5,6 +5,7 @@ from pagermaid import bot, log
 from pagermaid.listener import listener, config
 from pagermaid.utils import clear_emojis, obtain_message, attach_log, alias_command
 from telethon.errors import ChatAdminRequiredError
+from telethon.tl.types import ChannelParticipantsAdmins
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("guess"),
@@ -282,10 +283,19 @@ async def getdel(context):
         try:
             await context.edit('遍历成员中。。。')
             chat = await context.get_chat()
+            admins = await context.client.get_participants(context.chat, filter=ChannelParticipantsAdmins)
+            need_kick = False
+            if context.sender in admins:
+                need_kick = True
             async for member in bot.iter_participants(chat):
                 if member.deleted:
                     member_count += 1
-            await context.edit(f'此频道/群组的死号数：`{member_count}`')
+                    if need_kick:
+                        await context.client.kick_participant(context.chat_id, member.id)
+            if need_kick:
+                await context.edit(f'此频道/群组的死号数：`{member_count}`，并且已经清理完毕。')
+            else:
+                await context.edit(f'此频道/群组的死号数：`{member_count}`。')
         except ChatAdminRequiredError:
             await context.edit('未加入此频道。')
     else:

@@ -19,11 +19,11 @@ async def rape(context):
     reply = await context.get_reply_message()
     if context.is_group:
         if reply:
-            if reply.sender.last_name == None:
+            if reply.sender.last_name is None:
                 reply_last_name = ''
             else:
                 reply_last_name = reply.sender.last_name
-            if context.sender.last_name == None:
+            if context.sender.last_name is None:
                 context_last_name = ''
             else:
                 context_last_name = context.sender.last_name
@@ -48,13 +48,18 @@ async def rape(context):
                                                           pin_messages=False)
                     await context.client.send_message(
                         context.chat_id,
-                        f'[{context.sender.first_name} {context_last_name}](tg://user?id={context.sender.id}) 由于乱玩管理员命令 已被禁言60秒',
+                        f'[{context.sender.first_name} {context_last_name}](tg://user?id={context.sender.id}) '
+                        f'由于乱玩管理员命令 已被禁言60秒',
                         reply_to=reply.id
                     )
                     await context.delete()
                 except:
                     pass
         else:
+            if context.sender.last_name is None:
+                context_last_name = ''
+            else:
+                context_last_name = context.sender.last_name
             if context.arguments == '':
                 return
             else:
@@ -80,7 +85,8 @@ async def rape(context):
                                                               change_info=False, pin_messages=False)
                         await context.client.send_message(
                             context.chat_id,
-                            f'[{context.sender.first_name}{context_last_name}](tg://user?id={context.sender.id}) 由于乱玩管理员命令 已被禁言60秒',
+                            f'[{context.sender.first_name}{context_last_name}](tg://user?id={context.sender.id}) '
+                            f'由于乱玩管理员命令 已被禁言60秒',
                             reply_to=context.id
                         )
                         await context.delete()
