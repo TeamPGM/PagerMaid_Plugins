@@ -295,7 +295,7 @@ async def getdel(context):
                         try:
                             await context.client.kick_participant(context.chat_id, member.id)
                         except FloodWaitError:
-                            await context.edit(context.chat_id, '处理失败，您已受到 TG 服务器限制。')
+                            await context.edit('处理失败，您已受到 TG 服务器限制。')
                             return
             if need_kick:
                 await context.edit(f'此频道/群组的死号数：`{member_count}`，并且已经清理完毕。')
