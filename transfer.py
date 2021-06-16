@@ -1,12 +1,13 @@
 import asyncio, zipfile, os
 from io import BytesIO
-from uuid import uuid4
 from os.path import exists, isfile
 from pagermaid import bot
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
+
 
 async def make_zip(source_dir, output_filename):
-    zipf = zipfile.ZipFile(output_filename, "w")    
+    zipf = zipfile.ZipFile(output_filename, "w")
     pre_len = len(os.path.dirname(source_dir))
     for parent, dirnames, filenames in os.walk(source_dir):
         for filename in filenames:
@@ -15,6 +16,7 @@ async def make_zip(source_dir, output_filename):
             zipf.write(pathfile, arcname)
     zipf.close()
 
+
 async def del_msg(context, t_lim):
     await asyncio.sleep(t_lim)
     try:
@@ -22,7 +24,8 @@ async def del_msg(context, t_lim):
     except:
         pass
 
-@listener(is_plugin=True, outgoing=True, command="transfer",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("transfer"),
           description="上传 / 下载文件",
           parameters="upload <filepath>` 或 `download <filepath>")
 async def transfer(context):

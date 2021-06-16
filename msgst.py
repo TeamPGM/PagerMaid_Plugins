@@ -1,6 +1,8 @@
 import time, asyncio
 from pagermaid import bot, redis, redis_status
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
+
 
 def is_num(x: str):
     try:
@@ -8,6 +10,7 @@ def is_num(x: str):
         return isinstance(x, int)
     except ValueError:
         return False
+
 
 def get_bot():
     data = [1527463252, "msg_schedule_bot"]
@@ -18,14 +21,16 @@ def get_bot():
         if n_un: data[1] = str(n_un, "ascii")
     return data
 
+
 async def del_msg(context, t_lim):
     await asyncio.sleep(t_lim)
     await context.delete()
 
-@listener(is_plugin=True, outgoing=True, command="msgst",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("msgst"),
           description="消息每天定时发送",
           parameters="new 时:分:秒 消息` 或 `del <msg_id>` 或 `list")
-async def process(context):
+async def msgst(context):
     params = []
     for p in context.parameter:
         if len(p.split()) != 0:
@@ -43,10 +48,11 @@ async def process(context):
         await context.edit(response.text)
     if len(params) > 0 and params[0] != "list": await del_msg(context, 10)
 
-@listener(is_plugin=True, outgoing=True, command="msgset",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("msgset"),
           description="定时发送 bot 服务端设置",
           parameters="bot <bot_id> <bot_username>` 或 `bot clear")
-async def settings(context):
+async def msgset(context):
     if not redis_status():
         await context.edit("出错了呜呜呜 ~ Redis 离线，无法运行")
         await del_msg(context, 10)
@@ -69,6 +75,7 @@ async def settings(context):
     else:
         await context.edit("参数错误")
         await del_msg(context, 10)
+
 
 @listener(incoming=True, ignore_edited=True)
 async def sendmsg(context):

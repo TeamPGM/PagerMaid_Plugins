@@ -1,11 +1,11 @@
 import random
-from time import sleep
 from requests import get
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 from os import remove
 
 
-@listener(is_plugin=True, outgoing=True, command="zpr",
+@listener(is_plugin=True, outgoing=True, command=alias_command("zpr"),
           description="随机小姐姐或纸片人写真")
 async def ghs(context):
     await context.edit("拍小姐姐或纸片人写真中 . . .")

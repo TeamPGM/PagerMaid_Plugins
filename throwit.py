@@ -9,9 +9,12 @@ from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
 from struct import error as StructError
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
+
 
 def crop_max_square(pil_img):
     return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
+
 
 def crop_center(pil_img, crop_width, crop_height):
     img_width, img_height = pil_img.size
@@ -19,6 +22,7 @@ def crop_center(pil_img, crop_width, crop_height):
                          (img_height - crop_height) // 2,
                          (img_width + crop_width) // 2,
                          (img_height + crop_height) // 2))
+
 
 def mask_circle_transparent(pil_img, blur_radius, offset=0):
     offset = blur_radius * 2 + offset
@@ -31,7 +35,8 @@ def mask_circle_transparent(pil_img, blur_radius, offset=0):
     result.putalpha(mask)
     return result
 
-@listener(is_plugin=True, outgoing=True, command="diu",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("diu"),
           description="生成一张 扔头像 图片，（可选：当第二个参数存在时，旋转用户头像 180°）",
           parameters="<username/uid> [随意内容]")
 async def throwit(context):
@@ -75,10 +80,10 @@ async def throwit(context):
                 return
             raise exception
     photo = await context.client.download_profile_photo(
-              target_user.user.id,
-              "plugins/throwit/" + str(target_user.user.id) + ".jpg",
-              download_big=True
-               )
+        target_user.user.id,
+        "plugins/throwit/" + str(target_user.user.id) + ".jpg",
+        download_big=True
+    )
     reply_to = context.message.reply_to_msg_id
     if exists("plugins/throwit/" + str(target_user.user.id) + ".jpg"):
         if not exists('plugins/throwit/1.png'):
@@ -94,7 +99,7 @@ async def throwit(context):
             with open("plugins/throwit/3.png", "wb") as code:
                 code.write(r.content)
         # 随机数生成
-        randint_r = randint(1,3)
+        randint_r = randint(1, 3)
         # 将头像转为圆形
         markImg = Image.open("plugins/throwit/" + str(target_user.user.id) + ".jpg")
         if randint_r == 1:

@@ -1,9 +1,10 @@
 import json
 from requests import get
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
 
-@listener(is_plugin=True, outgoing=True, command="mjx",
+@listener(is_plugin=True, outgoing=True, command=alias_command("mjx"),
           description="随机一个淘宝带图评价。")
 async def mjx(context):
     await context.edit("获取中 . . .")
@@ -16,7 +17,7 @@ async def mjx(context):
         await context.edit("出错了呜呜呜 ~ 无法访问到 API 服务器 。")
 
 
-@listener(is_plugin=True, outgoing=True, command="sqmjx",
+@listener(is_plugin=True, outgoing=True, command=alias_command("sqmjx"),
           description="一个淘宝涩气买家秀。")
 async def sqmjx(context):
     await context.edit("获取中 . . .")

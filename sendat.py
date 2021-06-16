@@ -13,15 +13,19 @@ except ImportError:
     imported = False
 
 import asyncio
-from pagermaid import log 
+from pagermaid import log
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
 DAY_SECS = 24 * 60 * 60
+
 
 def logsync(message):
     sys.stdout.writelines(f"{message}\n")
 
+
 logsync("sendat: loading... If failed, please install dateparser first.")
+
 
 # https://stackoverflow.com/questions/1111056/get-time-zone-information-of-the-system-in-python
 def local_time_offset(t=None):
@@ -34,6 +38,7 @@ def local_time_offset(t=None):
         return -time.altzone
     else:
         return -time.timezone
+
 
 offset = local_time_offset() // 3600
 sign = "+" if offset >= 0 else "-"
@@ -65,11 +70,13 @@ i.e.
 -sendat 10 minutes | -autorespond 我暂时有事离开一下。
 """
 
-@listener(is_plugin=True, outgoing=True, command="sendat", diagnostics=True, ignore_edited=True,
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("sendat"), diagnostics=True, ignore_edited=True,
           description=helpmsg,
           parameters="<atmsg>")
 async def sendatwrap(context):
     await sendat(context)
+
 
 async def sendat(context):
     if not context.parameter:
@@ -135,7 +142,7 @@ async def sendat(context):
                 return
             sleep_time = time.time() - dateparser.parse(time_str, settings=settings).timestamp()
             if sleep_time < 5:
-                await context.edit(f"Sleep time too short. Should be longer than 5 seconds. Got {sleep_time}") 
+                await context.edit(f"Sleep time too short. Should be longer than 5 seconds. Got {sleep_time}")
                 return
             mem[mem_id] = "|".join(args)
             await context.edit(f"Registered: id {mem_id}. You can use this id to cancel the timer.")
@@ -201,7 +208,7 @@ async def sendat(context):
                 return
             mem[mem_id] = "|".join(args)
             await context.edit(f"Registered: id {mem_id}. You can use this id to cancel the timer.")
-            while dt.timestamp() + 2*delta > time.time() and mem[mem_id] != "":
+            while dt.timestamp() + 2 * delta > time.time() and mem[mem_id] != "":
                 await asyncio.sleep(2)
             if mem[mem_id] != "":
                 await sendmsg(context, chat, args[1])
@@ -227,7 +234,7 @@ async def sendat(context):
         return
 
 
-@listener(outgoing=True, command="sendatdump", diagnostics=True, ignore_edited=True,
+@listener(outgoing=True, command=alias_command("sendatdump"), diagnostics=True, ignore_edited=True,
           description="导出并转储内存中的 sendat 配置")
 async def sendatdump(context):
     clean_mem = mem[:]
@@ -237,7 +244,8 @@ async def sendatdump(context):
         clean_mem.remove("")
     await context.edit(".\n-sendat " + "\n-sendat ".join(clean_mem))
 
-@listener(outgoing=True, command="sendatparse", diagnostics=True, ignore_edited=True,
+
+@listener(outgoing=True, command=alias_command("sendatparse"), diagnostics=True, ignore_edited=True,
           description="导入已导出的 sendat 配置。用法：-sendatparse 在此处粘贴 -sendatdump 命令的输出结果")
 async def sendatparse(context):
     chat = await context.get_chat()
@@ -255,10 +263,12 @@ async def sendatparse(context):
         pms.append(sendat(sent))
     await asyncio.wait(pms)
 
+
 """ Modified pagermaid autorespond plugin. """
 
 from telethon.events import StopPropagation
 from pagermaid import persistent_vars
+
 
 async def autorespond(context):
     """ Enables the auto responder. """
@@ -269,7 +279,9 @@ async def autorespond(context):
     await log(f"启用自动响应器，将自动回复 `{message}`.")
     persistent_vars.update({'autorespond': {'enabled': True, 'message': message, 'amount': 0}})
 
+
 from pagermaid import redis, redis_status
+
 
 async def ghost(context):
     """ Toggles ghosting of a user. """

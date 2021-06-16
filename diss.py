@@ -1,18 +1,20 @@
 from time import sleep
 from requests import get
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
-@listener(is_plugin=True, outgoing=True, command="diss",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("diss"),
           description="儒雅随和版祖安语录。")
 async def diss(context):
     await context.edit("获取中 . . .")
-    status=False
-    for _ in range(20): #最多尝试20次
+    status = False
+    for _ in range(20):  # 最多尝试20次
         req = get("https://nmsl.shadiao.app/api.php?level=min&from=tntcrafthim")
         if req.status_code == 200:
             res = req.text
             await context.edit(res, parse_mode='html', link_preview=False)
-            status=True
+            status = True
             break
         else:
             continue
@@ -21,17 +23,18 @@ async def diss(context):
         sleep(2)
         await context.delete()
 
-@listener(is_plugin=True, outgoing=True, command="biss",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("biss"),
           description="加带力度版祖安语录。")
 async def biss(context):
     await context.edit("获取中 . . .")
-    status=False
-    for _ in range(20): #最多尝试20次
+    status = False
+    for _ in range(20):  # 最多尝试20次
         req = get("https://nmsl.shadiao.app/api.php?from=tntcrafthim")
         if req.status_code == 200:
             res = req.text
             await context.edit(res, parse_mode='html', link_preview=False)
-            status=True
+            status = True
             break
         else:
             continue

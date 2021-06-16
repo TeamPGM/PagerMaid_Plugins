@@ -3,12 +3,11 @@ import json, requests, re
 from urllib.parse import urlparse
 from pagermaid import bot, log
 from pagermaid.listener import listener, config
-from pagermaid.utils import clear_emojis, obtain_message, attach_log
+from pagermaid.utils import clear_emojis, obtain_message, attach_log, alias_command
 from telethon.errors import ChatAdminRequiredError
-from os import remove
 
 
-@listener(is_plugin=True, outgoing=True, command="guess",
+@listener(is_plugin=True, outgoing=True, command=alias_command("guess"),
           description="能不能好好说话？ - 拼音首字母缩写释义工具（需要回复一句话）")
 async def guess(context):
     reply = await context.get_reply_message()
@@ -37,7 +36,7 @@ async def guess(context):
         await context.edit("没有匹配到拼音首字母缩写")
 
 
-@listener(is_plugin=True, outgoing=True, command="wiki",
+@listener(is_plugin=True, outgoing=True, command=alias_command("wiki"),
           description="查询维基百科词条",
           parameters="<词组>")
 async def wiki(context):
@@ -77,7 +76,7 @@ async def wiki(context):
         await context.edit("没有匹配到相关词条")
 
 
-@listener(is_plugin=True, outgoing=True, command="ip",
+@listener(is_plugin=True, outgoing=True, command=alias_command("ip"),
           description="IPINFO （或者回复一句话）",
           parameters="<ip/域名>")
 async def ipinfo(context):
@@ -170,7 +169,7 @@ async def ipinfo(context):
         await context.edit('没有找到要查询的 ip/域名 ...')
 
 
-@listener(is_plugin=True, outgoing=True, command="ipping",
+@listener(is_plugin=True, outgoing=True, command=alias_command("ipping"),
           description="Ping （或者回复一句话）",
           parameters="<ip/域名>")
 async def ipping(context):
@@ -272,7 +271,7 @@ async def tx_t(context):
     await context.edit(result)
 
 
-@listener(is_plugin=True, outgoing=True, command="getdel",
+@listener(is_plugin=True, outgoing=True, command=alias_command("getdel"),
           description="获取当前群组/频道的死号数。")
 async def getdel(context):
     """ PagerMaid getdel. """

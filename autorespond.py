@@ -3,11 +3,12 @@
 from telethon.events import StopPropagation
 from pagermaid import persistent_vars, log
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
 persistent_vars.update({'autorespond': {'enabled': False, 'message': None, 'amount': 0}})
 
 
-@listener(is_plugin=True, outgoing=True, command="autorespond",
+@listener(is_plugin=True, outgoing=True, command=alias_command("autorespond"),
           description="启用自动回复。",
           parameters="<message>")
 async def autorespond(context):

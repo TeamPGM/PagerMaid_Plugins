@@ -1,12 +1,12 @@
 import re, time, asyncio, requests, os, json, random
 from io import BytesIO
-from os import path, mkdir, remove, makedirs, chdir
+from os import path, remove, makedirs, chdir
 from shutil import copyfile, move, rmtree
 from uuid import uuid4
 from base64 import b64encode, b64decode
-from importlib import import_module
 from pagermaid import bot, redis, log, redis_status, working_dir
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
 msg_freq = 1
 group_last_time = {}
@@ -417,7 +417,7 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
         pass
 
 
-@listener(is_plugin=True, outgoing=True, command="keyword",
+@listener(is_plugin=True, outgoing=True, command=alias_command("keyword"),
           description="关键词自动回复 [教程](https://telegra.ph/Keyword-插件使用教程-02-07)",
           parameters="``new <plain|regex> '<规则>' '<回复信息>'` 或者 `del <plain|regex> '<规则>'` 或者 `list` 或者 "
                      "`clear <plain|regex>")
@@ -529,7 +529,7 @@ async def reply(context):
         return
 
 
-@listener(outgoing=True, command="replyset",
+@listener(outgoing=True, command=alias_command("replyset"),
           description="自动回复设置",
           parameters="help")
 async def reply_set(context):
@@ -830,7 +830,7 @@ async def reply_set(context):
         return
 
 
-@listener(outgoing=True, command="funcset",
+@listener(outgoing=True, command=alias_command("funcset"),
           description="设置自定义函数",
           parameters="help")
 async def funcset(context):
@@ -941,7 +941,7 @@ async def funcset(context):
         pass
 
 
-@listener(outgoing=True, command="keydata",
+@listener(outgoing=True, command=alias_command("keydata"),
           description="设置规则数据",
           parameters="dump / load")
 async def setdata(context):

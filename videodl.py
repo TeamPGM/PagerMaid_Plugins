@@ -6,11 +6,12 @@ from os.path import exists
 from re import compile as regex_compile
 from pagermaid import bot, log
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 from telethon.tl.types import DocumentAttributeVideo
 from time import sleep
 
 
-@listener(outgoing=True, command="vdl",
+@listener(outgoing=True, command=alias_command("vdl"),
           description="下载 YouTube/bilibili 视频并上传",
           parameters="<url>")
 async def vdl(context):
@@ -33,7 +34,8 @@ async def vdl(context):
             from pytube import YouTube
         except ImportError:
             await context.edit('`pytube`支持库未安装，YouTube视频无法下载\n请使用 `-sh pip3 install --user '
-                               'git+https://github.com/nficano/pytube 或 -sh pip3 install pytube --upgrade ` 安装，或自行ssh安装\n\n已安装过 `pytube3` 的用户请使用 `-sh pip3 '
+                               'git+https://github.com/nficano/pytube 或 -sh pip3 install pytube --upgrade ` '
+                               '安装，或自行ssh安装\n\n已安装过 `pytube3` 的用户请使用 `-sh pip3 '
                                'uninstall pytube3 -y` 进行卸载')
             return
         url = url.replace('www.youtube.com/watch?v=', 'youtu.be/')

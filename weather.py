@@ -2,7 +2,7 @@ import json
 import datetime
 from requests import get
 from pagermaid.listener import listener
-from pagermaid.utils import obtain_message
+from pagermaid.utils import obtain_message, alias_command
 
 icons = {
     "01d": "🌞",
@@ -25,15 +25,19 @@ icons = {
     "50n": "🌫",
 }
 
+
 def timestamp_to_time(timestamp, timeZoneShift):
     timeArray = datetime.datetime.utcfromtimestamp(timestamp) + datetime.timedelta(seconds=timeZoneShift)
     return timeArray.strftime("%H:%M")
+
+
 def calcWindDirection(windDirection):
     dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
     ix = round(windDirection / (360. / len(dirs)))
     return dirs[ix % len(dirs)]
 
-@listener(is_plugin=True, outgoing=True, command="weather",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("weather"),
           description="查询天气",
           parameters="<城市>")
 async def weather(context):
@@ -44,7 +48,9 @@ async def weather(context):
         await context.edit("出错了呜呜呜 ~ 无效的参数。")
         return
     try:
-        req = get("http://api.openweathermap.org/data/2.5/weather?appid=973e8a21e358ee9d30b47528b43a8746&units=metric&lang=zh_cn&q=" + message)
+        req = get(
+            "http://api.openweathermap.org/data/2.5/weather?appid=973e8a21e358ee9d30b47528b43a8746&units=metric&lang"
+            "=zh_cn&q=" + message)
         if req.status_code == 200:
             data = json.loads(req.text)
             cityName = "{}, {}".format(data["name"], data["sys"]["country"])
@@ -55,7 +61,7 @@ async def weather(context):
             humidity = data["main"]["humidity"]
             windSpeed = data["wind"]["speed"]
             windDirection = calcWindDirection(data["wind"]["deg"])
-            sunriseTimeunix  = data["sys"]["sunrise"]
+            sunriseTimeunix = data["sys"]["sunrise"]
             sunriseTime = timestamp_to_time(sunriseTimeunix, timeZoneShift)
             sunsetTimeunix = data["sys"]["sunset"]
             sunsetTime = timestamp_to_time(sunsetTimeunix, timeZoneShift)
@@ -65,7 +71,8 @@ async def weather(context):
             icon = data["weather"][0]["icon"]
             desc = data["weather"][0]["description"]
             res = "{} {}{} 💨{} {}m/s\n大气🌡 {}℃ ({}℉) 💦 {}% \n体感🌡 {}℃\n气压 {}hpa\n🌅{} 🌇{} ".format(
-                cityName, icons[icon], desc, windDirection, windSpeed, tempInC, tempInF, humidity, fellsTemp, pressure, sunriseTime, sunsetTime
+                cityName, icons[icon], desc, windDirection, windSpeed, tempInC, tempInF, humidity, fellsTemp, pressure,
+                sunriseTime, sunsetTime
             )
             await context.edit(res)
         if req.status_code == 404:

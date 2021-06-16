@@ -18,6 +18,8 @@ from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputStickerSetID
 from pagermaid import log
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
+
 
 async def ars_check(message: Message) -> None:
     try:
@@ -43,14 +45,15 @@ async def ars_check(message: Message) -> None:
     await sleep(15)
     await _noti.delete()
 
+
 async def ars_getall(message: Message) -> None:
     sticker_sets = await message.client(GetAllStickersRequest(0))
     sticker_pack_list = []
     for sticker_set in sticker_sets.sets:
         if len(sticker_pack_list) < 10:
             text = "我发现了一个Sticker Pack，名为\n" + sticker_set.title + "\n" + "ID为： `" + \
-                str(sticker_set.id) + "` \n" + "Hash为： `" + str(sticker_set.access_hash) + \
-                "` \n" + "共有" + str(sticker_set.count) + "张"
+                   str(sticker_set.id) + "` \n" + "Hash为： `" + str(sticker_set.access_hash) + \
+                   "` \n" + "共有" + str(sticker_set.count) + "张"
             sticker_pack_list.extend([text])
         else:
             sticker_pack_list_old = sticker_pack_list
@@ -61,6 +64,7 @@ async def ars_getall(message: Message) -> None:
     sendtext = '\n\n'.join(sticker_pack_list)
     await message.client.send_message(message.chat_id, sendtext)
     await message.delete()
+
 
 async def ars_help(message: Message) -> None:
     await message.reply(
@@ -73,6 +77,7 @@ async def ars_help(message: Message) -> None:
         '如果您想要对某个群或某个人禁用自动回复,请在该群中回复`-ars w` 或使用`-ars w <数字>` 进行设置. 该数字可通过-id命令查询'
         '如有使用问题,请前往 [这里](https://t.me/PagerMaid_Modify) 请求帮助')
     await message.delete()
+
 
 async def ars_whitelist(message: Message) -> None:
     chat_id = str(message.chat_id)
@@ -108,6 +113,7 @@ async def ars_whitelist(message: Message) -> None:
     await sleep(5)
     await _noti.delete()
 
+
 def set_state(name: str, state: list) -> None:
     file_name = "./plugins/autoreplysticker/config.yml"
     if exists(file_name):
@@ -121,11 +127,12 @@ def set_state(name: str, state: list) -> None:
         with open(file_name, 'w', encoding='utf-8') as f:
             yaml.dump(dc, f)
 
+
 def get_name(sender: Message.sender) -> str:
     """
     get_name(Message.sender)
     """
-    username = sender.username 
+    username = sender.username
     first_name = sender.first_name
     last_name = sender.last_name
     _id = sender.id
@@ -137,6 +144,7 @@ def get_name(sender: Message.sender) -> str:
     else:
         name = f'@{username}'
     return name
+
 
 def process_link(chatid: int, msgid: int) -> str:
     """
@@ -152,11 +160,12 @@ def process_link(chatid: int, msgid: int) -> str:
     link = f'https://t.me/c/{chatid}/{msgid}'
     return link
 
-@listener(is_plugin=True, outgoing=True, command="ars")
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("ars"))
 async def ars(context):
     if not exists('./plugins/autoreplysticker'):
         mkdir('./plugins/autoreplysticker')
-    
+
     if len(context.parameter) == 0:
         await ars_help(context)
         return
@@ -183,7 +192,7 @@ async def ars(context):
         await sleep(10)
         await _noti.delete()
         await ars_check(context)
-    
+
     elif context.parameter[0] == 'check':
         await ars_check(context)
     elif context.parameter[0] == 'getall':
@@ -193,13 +202,14 @@ async def ars(context):
     elif context.parameter[0] == 'w':
         await ars_whitelist(context)
 
+
 @listener(incoming=True, ignore_edited=True)
 async def process_message(context):
     reply_user_id = 0
     link = process_link(context.chat_id, context.id)
     me = await context.client.get_me()
+    reply = await context.get_reply_message()
     try:
-        reply = await context.get_reply_message()
         reply_user_id = reply.sender.id
         if context.sticker:
             return
@@ -207,7 +217,7 @@ async def process_message(context):
             return
     except:
         pass
-    
+
     try:
         config = yaml.load(open(r"./plugins/autoreplysticker/config.yml"), Loader=yaml.FullLoader)
         _sticker_id = int(config['sticker_id'])
@@ -228,19 +238,20 @@ async def process_message(context):
     except:
         pass
 
-    if (reply and reply_user_id == me.id):
+    if reply and reply_user_id == me.id:
         stickers = await context.client(
             GetStickerSetRequest(
                 stickerset=InputStickerSetID(
                     id=_sticker_id, access_hash=_sticker_hash)))
         try:
-            i = randint(0, len(_num)-1)
+            i = randint(0, len(_num) - 1)
             sticker = await context.client.send_file(
                 context.chat_id,
                 stickers.documents[int(_num[i])],
                 reply_to=context.id)
             await sleep(_time)
             await sticker.delete()
-            await log(f'#被回复\n在 [{context.chat.title}]({process_link(context.chat_id, context.id)})\n获得了 {get_name(context.sender)} 的回复')
+            await log(
+                f'#被回复\n在 [{context.chat.title}]({process_link(context.chat_id, context.id)})\n获得了 {get_name(context.sender)} 的回复')
         except:
             pass

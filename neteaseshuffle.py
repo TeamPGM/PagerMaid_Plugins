@@ -3,9 +3,10 @@ import requests
 from time import sleep
 from pagermaid.listener import listener
 from os import remove, path
+from pagermaid.utils import alias_command
 
 
-@listener(is_plugin=True, outgoing=True, command="ns",
+@listener(is_plugin=True, outgoing=True, command=alias_command("ns"),
           description="随机网抑云热歌。")
 async def ns(context):
     await context.edit("获取中 . . .")
@@ -23,8 +24,10 @@ async def ns(context):
             req = json.loads(req.content)
             songid = req["data"]["url"][45:]
             music = req['data']['url']
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
-                       "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"}
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
+                                     'like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+                       "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,"
+                                 "*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"}
             music = requests.request("GET", music, headers=headers)
             name = str(req['data']['name']) + ".mp3"
             with open(name, 'wb') as f:
@@ -65,7 +68,7 @@ async def ns(context):
             break
         else:
             continue
-    if status == False:
+    if not status:
         await context.edit("出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。")
         sleep(2)
     await context.delete()

@@ -6,9 +6,10 @@ from youtube_dl import YoutubeDL
 from re import compile as regex_compile
 from pagermaid import bot, log
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
 
-@listener(outgoing=True, command="ybdl",
+@listener(outgoing=True, command=alias_command("ybdl"),
           description="上传 Youtube、Bilibili 视频到 telegram",
           parameters="<url>.")
 async def ybdl(context):

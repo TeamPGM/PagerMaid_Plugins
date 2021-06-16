@@ -1,14 +1,15 @@
 from time import sleep
 from os.path import exists
 from os import mkdir, remove
-from pagermaid import redis, log, redis_status
+from pagermaid.utils import alias_command
 from pagermaid.listener import listener
 
-@listener(is_plugin=True, outgoing=True, command="aff",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("aff"),
           description="在别人要打算买机场的时候光速发出自己的aff信息(请尽量配合短链接)",
           parameters="<save|remove> (可选，用于保存|删除aff信息)")
 async def aff(context):
-    if not context.parameter: #发送aff信息
+    if not context.parameter:  # 发送aff信息
         try:
             with open("plugins/AffExtra/aff.txt", "r", encoding="UTF-8") as f:
                 msg = f.read()
@@ -23,7 +24,7 @@ async def aff(context):
             await context.edit("出错了呜呜呜 ~ 信息无变化。")
             sleep(3)
             await context.delete()
-    elif context.parameter[0] == "save": #保存aff信息
+    elif context.parameter[0] == "save":  # 保存aff信息
         reply = await context.get_reply_message()
         if not reply:
             await context.edit("出错了呜呜呜 ~ 请回复一条消息以保存新的Aff信息。")
@@ -36,7 +37,7 @@ async def aff(context):
         await context.edit("好耶 ！ Aff信息保存成功。")
         sleep(3)
         await context.delete()
-    elif context.parameter[0] == "remove": #删除aff信息
+    elif context.parameter[0] == "remove":  # 删除aff信息
         try:
             remove("plugins/AffExtra/aff.txt")
             await context.edit("好耶 ！ Aff信息删除成功。")

@@ -7,6 +7,7 @@ from telethon.tl.functions.account import UpdateProfileRequest
 from emoji import emojize
 from pagermaid import bot, log
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
 dizzy = emojize(":dizzy:", use_aliases=True)
 cake = emojize(":cake:", use_aliases=True)
@@ -14,7 +15,7 @@ all_time_emoji_name = ["clock12", "clock1230", "clock1", "clock130", "clock2", "
 time_emoji_symb = [emojize(":%s:" %s, use_aliases=True) for s in all_time_emoji_name]
 
 
-@listener(is_plugin=True, outgoing=True, command="autochangename",
+@listener(is_plugin=True, outgoing=True, command=alias_command("autochangename"),
           description="每 30 秒更新一次 last_name")
 async def change_name_auto(context):
     await context.delete()

@@ -10,8 +10,10 @@
 from asyncio import sleep
 from telethon.tl.custom.message import Message
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
-@listener(is_plugin=True, outgoing=True, command="dmfg")
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("dmfg"))
 async def dmfg(context: Message) -> None:
     if len(context.parameter) == 0:
         await context.edit('您没有输入参数.\n`-dmfg group` 删除所有群内发言\n`-dmfg private` 删除所有与人的对话消息')
@@ -48,7 +50,7 @@ async def dmfg(context: Message) -> None:
                         continue
                     if count_buffer == count:
                         break
-                    await message.delete() 
+                    await message.delete()
                     count_buffer += 1
         await context.edit('成功!')
         await sleep(5)

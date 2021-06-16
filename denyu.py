@@ -4,8 +4,10 @@
 
 from pagermaid import redis, log, redis_status
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
-@listener(is_plugin=True, outgoing=True, command="denyu",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("denyu"),
           description="在某群中强制禁言某用户，需要删除他人消息权限，需要 redis。强制禁言全群请使用 `-deny`。",
           parameters="<userid> <true|false|status> 或直接回复用户并指定 <true|false|status>")
 async def denyu(context):
@@ -52,6 +54,7 @@ async def denyu(context):
             await context.edit("emm...当前对话不存在于自动拒绝对话列表中。")
     else:
         await context.edit("出错了呜呜呜 ~ 无效的参数。只能为 `<true|false|status>`。")
+
 
 @listener(incoming=True, ignore_edited=True)
 async def message_removal_user(context):

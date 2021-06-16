@@ -3,8 +3,10 @@ from asyncio import sleep
 from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors.rpcerrorlist import FloodWaitError
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
-@listener(is_plugin=True, outgoing=True, command="killallmembers",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("killallmembers"),
           description="⚠⚠慎用! 一件扬了群内所有成员⚠⚠")
 async def killallmembers(context):
     """ PagerMaid Plugin killallmembers """

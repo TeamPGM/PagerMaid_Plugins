@@ -9,7 +9,7 @@ import math
 from time import sleep
 from pagermaid.listener import listener
 from pagermaid import bot
-from pagermaid.utils import obtain_message
+from pagermaid.utils import alias_command
 from os import remove, path, mkdir, getcwd
 from os.path import exists
 from collections import defaultdict
@@ -20,16 +20,21 @@ class RetryError(Exception):  # 重试错误，用于再次重试
     pass
 
 
-@listener(is_plugin=True, outgoing=True, command="nem",
-          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索在s后添加数字如`-nem` `s8` `<关键词>`调整结果数量\n搜索灰色歌曲请尽量**指定歌手**\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌",
+@listener(is_plugin=True, outgoing=True, command=alias_command("nem"),
+          description="网易云搜/点歌。\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索在s后添加数字如`-nem` `s8` "
+                      "`<关键词>`调整结果数量\n搜索灰色歌曲请尽量**指定歌手**\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌",
           parameters="<指令> <关键词>")
 async def nem(context):
     proxies = {}
     proxynum = 0
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
-               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9", "X-Real-IP": "223.252.199.66"}
-    proxy = [{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'}, {'http': 'http://netease.unlock.feiwuis.me:6958', 'https': 'https://netease.unlock.feiwuis.me:6958'}]
-    helptext = "**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索在s后添加数字如`-nem` `s8` `<关键词>`调整结果数量\n搜索灰色歌曲请尽量**指定歌手**\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                             'Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,"
+                         "application/signed-exchange;v=b3;q=0.9", "X-Real-IP": "223.252.199.66"}
+    proxy = [{'http': 'http://music.lolico.me:39000', 'https': 'http://music.lolico.me:39000'},
+             {'http': 'http://netease.unlock.feiwuis.me:6958', 'https': 'https://netease.unlock.feiwuis.me:6958'}]
+    helptext = "**使用方法:** `-nem` `<指令>` `<关键词>`\n\n指令s为搜索，p为点歌，id为歌曲ID点歌，r为随机热歌(无关键词)\n搜索在s后添加数字如`-nem` `s8` " \
+               "`<关键词>`调整结果数量\n搜索灰色歌曲请尽量**指定歌手**\n可回复搜索结果消息`-nem` `p` `<歌曲数字序号>`点歌 "
     apifailtext = "出错了呜呜呜 ~ 试了好多好多次都无法访问到 API 服务器 。"
 
     if len(context.parameter) < 2:
@@ -182,7 +187,8 @@ async def nem(context):
             imported = True
         except ImportError:
             imported = False
-            await bot.send_message(context.chat_id, '(`eyeD3`支持库未安装，歌曲文件信息将无法导入\n请使用 `-sh` `pip3` `install` `eyed3` 安装，或自行ssh安装)')
+            await bot.send_message(context.chat_id, '(`eyeD3`支持库未安装，歌曲文件信息将无法导入\n请使用 `-sh` `pip3` `install` `eyed3` '
+                                                    '安装，或自行ssh安装)')
         url = "http://music.163.com/api/search/pc?&s=" + \
             keyword + "&offset=0&limit=1&type=1"
         for _ in range(20):  # 最多尝试20次
@@ -208,13 +214,10 @@ async def nem(context):
                 else:
                     result = False
                 if result:
-                    info = {'id': '', 'title': '', 'alias': '',
-                            'album': '', 'albumpic': '', 'artist': '', 'br': ''}
-                    info['id'] = req['result']['songs'][0]['id']
-                    info['title'] = req['result']['songs'][0]['name']
-                    info['alias'] = req['result']['songs'][0]['alias']
-                    info['album'] = req['result']['songs'][0]['album']['name']
-                    info['albumpic'] = req['result']['songs'][0]['album']['picUrl']
+                    info = {'id': req['result']['songs'][0]['id'], 'title': req['result']['songs'][0]['name'],
+                            'alias': req['result']['songs'][0]['alias'],
+                            'album': req['result']['songs'][0]['album']['name'],
+                            'albumpic': req['result']['songs'][0]['album']['picUrl'], 'artist': '', 'br': ''}
                     if req['result']['songs'][0]['hMusic']:
                         info['br'] = req['result']['songs'][0]['hMusic']['bitrate']
                     elif req['result']['songs'][0]['mMusic']:
@@ -236,7 +239,8 @@ async def nem(context):
                         ccimported = True
                     except ImportError:
                         ccimported = False
-                        await bot.send_message(context.chat_id, '(`PyCryptodome`支持库未安装，音乐曲库/音质受限\n请使用 `-sh` `pip3` `install` `pycryptodome` 安装，或自行ssh安装)')
+                        await bot.send_message(context.chat_id, '(`PyCryptodome`支持库未安装，音乐曲库/音质受限\n请使用 `-sh` `pip3` '
+                                                                '`install` `pycryptodome` 安装，或自行ssh安装)')
                     name = info['title'].replace('/', " ") + ".mp3"
                     name = name.encode('utf-8').decode('utf-8')
                     if ccimported:  # 尝试使用高清音质下载
@@ -246,14 +250,19 @@ async def nem(context):
                             def __init__(self):
                                 self.key = '0CoJUm6Qyw8W8jud'
                                 self.public_key = "010001"
-                                self.modulus = '00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7'
+                                self.modulus = '00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b72515' \
+                                               '2b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92' \
+                                               '557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d' \
+                                               '3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7 '
                                 # 偏移量
                                 self.iv = "0102030405060708"
                                 # 请求头
                                 self.headers = {
-                                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+                                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ('
+                                                  'KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
                                     # 传入登录cookie,
-                                    'Cookie': 'MUSIC_U=f52f220df171da480dbf33ce89947961585a7fdf08c89a2a4bdd6efebd86544233a649814e309366;',
+                                    'Cookie': 'MUSIC_U=f52f220df171da480dbf33ce899479615'
+                                              '85a7fdf08c89a2a4bdd6efebd86544233a649814e309366;',
                                     "X-Real-IP": "223.252.199.66",
                                 }
                                 # 请求url
@@ -325,7 +334,8 @@ async def nem(context):
                                     random_num=random_num)
                                 # 调用两次AES加密生成params
                                 # 初始化歌曲song_info
-                                song_info = '{"ids":"[%s]","level":"exhigh","encodeType":"mp3","csrf_token":"477c1bd99fddedb3adc074f47fee2d35"}' % song_id
+                                song_info = '{"ids":"[%s]","level":"exhigh","encodeType":"mp3",' \
+                                            '"csrf_token":"477c1bd99fddedb3adc074f47fee2d35"}' % song_id
                                 # 第一次加密,传入encText, key和iv
                                 first_encryption = self.AES_encrypt(
                                     msg=song_info, key=self.key, iv=self.iv)
@@ -432,7 +442,8 @@ async def nem(context):
                         res = '或者你可以点击<a href="https://music.163.com/#/song?id=' + \
                             str(info['id']) + '">' + \
                             ' <strong>这里</strong> ' + '</a>' + '前往网页版收听'
-                        await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" + "歌曲获取失败，资源获取可能受限，你可以再次尝试。\n" + res, parse_mode='html', link_preview=True)
+                        await bot.send_message(context.chat_id, f"<strong>【{info['title']}】</strong>\n" +
+                                               "歌曲获取失败，资源获取可能受限，你可以再次尝试。\n" + res, parse_mode='html', link_preview=True)
                         return
                     duration = 0
                     imagedata = requests.get(
@@ -465,7 +476,9 @@ async def nem(context):
                             mkdir("plugins/NeteaseMusicExtra")
                         for ____ in range(6):  # 最多尝试6次
                             faster = requests.request(
-                                "GET", "https://gist.githubusercontent.com/TNTcraftHIM/ca2e6066ed5892f67947eb2289dd6439/raw/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py")
+                                "GET", "https://gist.githubusercontent.com/TNTcraftHIM"
+                                       "/ca2e6066ed5892f67947eb2289dd6439/raw"
+                                       "/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py")
                             if faster.status_code == 200:
                                 with open("plugins/NeteaseMusicExtra/FastTelethon.py", "wb") as f:
                                     f.write(faster.content)
@@ -480,8 +493,14 @@ async def nem(context):
                         file = name
                         if not exists("plugins/NeteaseMusicExtra/NoFastTelethon.txt"):
                             with open("plugins/NeteaseMusicExtra/NoFastTelethon.txt", "w") as f:
-                                f.write("此文件出现表示FastTelethon支持文件在首次运行NeteaseMusic插件时导入失败\n这可能是因为Github服务器暂时性的访问出错导致的\nFastTelethon可以提升低网络性能机型在上传文件时的效率，但是正常情况提升并不明显\n如想要手动导入，可以手动下载：\nhttps://gist.githubusercontent.com/TNTcraftHIM/ca2e6066ed5892f67947eb2289dd6439/raw/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py\n并放入当前文件夹")
-                            await bot.send_message(context.chat_id, '`FastTelethon`支持文件导入失败，上传速度可能受到影响\n此提示仅出现**一次**，手动导入可参考：\n`' + getcwd() + '/plugins/NeteaseMusicExtra/NoFastTelethon.txt`')
+                                f.write("此文件出现表示FastTelethon支持文件在首次运行NeteaseMusic插件时导入失败\n这可能是因为Github"
+                                        "服务器暂时性的访问出错导致的\nFastTelethon可以提升低网络性能机型在上传文件时的效率，但是正常情况提升并不明显\n"
+                                        "如想要手动导入，可以手动下载：\nhttps://gist.githubusercontent.com/TNTcraftHIM"
+                                        "/ca2e6066ed5892f67947eb2289dd6439/raw"
+                                        "/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py\n并放入当前文件夹")
+                            await bot.send_message(context.chat_id, '`FastTelethon`支持文件导入失败，上传速度可能受到影响\n'
+                                                                    '此提示仅出现**一次**，手动导入可参考：\n`' + getcwd() +
+                                                   '/plugins/NeteaseMusicExtra/NoFastTelethon.txt`')
 
                     await context.client.send_file(
                         context.chat_id,

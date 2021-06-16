@@ -1,11 +1,13 @@
 from asyncio import sleep
 from pagermaid import log
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
-@listener(is_plugin=True, outgoing=True, command="da",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("da"),
           description="以此命令删除所有消息。（非群组管理员只删除自己的消息）",
           parameters="<text>")
-async def prune(context):
+async def da(context):
     if len(context.parameter) > 2 or len(context.parameter) == 0:
         await context.edit("\n呜呜呜，请执行 `-da true` 来删除所有消息。")
         return
@@ -30,6 +32,7 @@ async def prune(context):
     notification = await send_prune_notify(context, count)
     await sleep(.5)
     await notification.delete()
+
 
 async def send_prune_notify(context, count):
     return await context.client.send_message(

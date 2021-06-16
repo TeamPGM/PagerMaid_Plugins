@@ -5,14 +5,15 @@
 
 try:
     import dateparser
+
     imported = True
 except ImportError:
     imported = False
 
 import asyncio, time, traceback
-from pagermaid import log
 from pagermaid.listener import listener
-from datetime import datetime
+from pagermaid.utils import alias_command
+
 
 # https://stackoverflow.com/questions/1111056/get-time-zone-information-of-the-system-in-python
 def local_time_offset(t=None):
@@ -25,6 +26,7 @@ def local_time_offset(t=None):
         return -time.altzone
     else:
         return -time.timezone
+
 
 offset = local_time_offset() // 3600
 sign = "+" if offset >= 0 else "-"
@@ -56,6 +58,7 @@ i.e.
 取消所有群和全局 -autorm cancelall
 """
 
+
 @listener(outgoing=True, ignore_edited=True)
 async def remove_message(context):
     """ Event handler to infinitely remove messages. """
@@ -82,11 +85,14 @@ async def remove_message(context):
     except Exception as e:
         await sendmsg(context, await context.get_chat(), str(e))
 
-@listener(is_plugin=True, outgoing=True, command="autorm", diagnostics=True, ignore_edited=False,
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("autorm"),
+          diagnostics=True, ignore_edited=False,
           description=helpmsg,
           parameters="<time>")
 async def autorm_wrap(context):
     return await autorm(context)
+
 
 async def autorm(context):
     try:
@@ -96,7 +102,7 @@ async def autorm(context):
 
         args = context.arguments if context.arguments is not None else ""
         args = args.strip()
-    
+
         if not imported:
             await edit(context, "Please install dateparser first: python3 -m pip install dateparser")
             return
@@ -123,13 +129,13 @@ async def autorm(context):
                     all_chat_delta = None
                     await edit(context, "成功为所有群取消自动删除消息。")
                 return
-        
+
             dt = dateparser.parse(time_str, settings=settings)
             if dt is None:
                 await edit(context, "无法解析所指定的时间长度。")
                 return
 
-            delta = time.time() - dt.timestamp()        
+            delta = time.time() - dt.timestamp()
             if delta <= 3:
                 await edit(context, "所指定的时间长度过短。")
                 return
@@ -169,7 +175,7 @@ async def autorm(context):
         if delta <= 3:
             await edit(context, "所指定的时间长度过短。")
             return
-    
+
         if chats.count(chat_id) != 0:
             index = chats.index(chat_id)
             chats.pop(index)
@@ -182,6 +188,7 @@ async def autorm(context):
         await edit(context, f"Error: {str(e)}")
     return
 
+
 async def edit(context, text):
     chat = await context.get_chat()
     try:
@@ -193,8 +200,8 @@ async def edit(context, text):
         else:
             return context
 
+
 async def sendmsg(context, chat, origin_text):
     text = origin_text.strip()
     msg = await context.client.send_message(chat, text)
     return msg
-

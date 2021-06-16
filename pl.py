@@ -13,11 +13,13 @@ except ImportError:
 from asyncio import sleep
 from requests import get
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 from urllib import parse
 
-@listener(is_plugin=True, outgoing=True, command="pl",
-    description="输入【-pl 食物名】查询食物嘌呤含量",
-    parameters="<食物名>")
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("pl"),
+          description="输入【-pl 食物名】查询食物嘌呤含量",
+          parameters="<食物名>")
 async def pl(context):
     if not imported:
         await context.edit("请先安装依赖：\n`python3 -m pip install bs4`\n随后，请重启 pagermaid。")
@@ -29,7 +31,7 @@ async def pl(context):
 
         st = action[0]
         st = st.encode('gb2312')
-        m = {'tj_so':st,}
+        m = {'tj_so': st, }
         s = parse.urlencode(m)
         for _ in range(3):  # 最多重试3次
             try:
@@ -56,7 +58,7 @@ async def pl(context):
     else:
         await context.edit(f"乱写什么东西呀！格式如下：\n"
                            f"【-pl 食物名】查询食物嘌呤含量")
-        
+
     try:
         if not status:
             await sleep(2)

@@ -1,11 +1,13 @@
 import json
-import os,sys,codecs
+import sys, codecs
+
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 from requests import get
 from pagermaid.listener import listener
-from pagermaid.utils import obtain_message
+from pagermaid.utils import obtain_message, alias_command
 
-@listener(outgoing=True, command="tel",
+
+@listener(outgoing=True, command=alias_command("tel"),
           description="手机号码归属地等信息查询。")
 async def tel(context):
     await context.edit("获取中 . . .")

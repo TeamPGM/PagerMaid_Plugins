@@ -9,6 +9,8 @@ from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
 from struct import error as StructError
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
+
 
 positions = {
     "1": [297, 288],
@@ -37,7 +39,7 @@ def eat_it(base, mask, photo, number):
     return base
 
 
-@listener(is_plugin=True, outgoing=True, command="eat",
+@listener(is_plugin=True, outgoing=True, command=alias_command("eat"),
           description="生成一张 吃头像 图片，（可选：当第二个参数存在时，旋转用户头像 180°）",
           parameters="<username/uid> [随意内容]")
 async def eat(context):

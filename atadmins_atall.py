@@ -1,12 +1,10 @@
 from telethon.tl.types import ChannelParticipantsAdmins
-from pagermaid import bot
+from pagermaid.utils import alias_command
 from pagermaid.listener import listener
-from telethon.errors.rpcbaseerrors import BadRequestError
-from os import remove
-import re
 import time
 
-@listener(is_plugin=True, outgoing=True, command="atadmins",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("atadmins"),
           description="一键 AT 本群管理员（仅在群组中有效）",
           parameters="回复消息(可选) <要说的话(可选)>")
 async def atadmins(context):
@@ -25,7 +23,7 @@ async def atadmins(context):
     for admin in admins:
         if not admin.bot:
             if admin.username is not None:
-                admin_list.extend(['@'+ admin.username])
+                admin_list.extend(['@' + admin.username])
             elif admin.first_name is not None:
                 admin_list.extend(['[' + admin.first_name + '](tg://user?id=' + str(admin.id) + ')'])
     send_list = ' , '.join(admin_list)
@@ -36,7 +34,8 @@ async def atadmins(context):
         await context.reply(f'{say}:\n{send_list}')
     await context.delete()
 
-@listener(is_plugin=True, outgoing=True, command="atall",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("atall"),
           description="一键 AT 本群成员（仅在群组中有效）",
           parameters="回复消息(可选) <要说的话(可选)>")
 async def atall(context):
@@ -56,7 +55,7 @@ async def atall(context):
         if not user.bot:
             if len(user_list) < 128:
                 if user.username is not None:
-                    user_list.extend(['@'+ user.username])
+                    user_list.extend(['@' + user.username])
                 elif user.first_name is not None:
                     user_list.extend(['[' + user.first_name + '](tg://user?id=' + str(user.id) + ')'])
             else:

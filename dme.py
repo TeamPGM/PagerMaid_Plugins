@@ -5,12 +5,14 @@ from os.path import exists
 from PIL import Image
 from pagermaid import redis, log, redis_status
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
 
-@listener(is_plugin=True, outgoing=True, command="dme",
-          description="编辑并删除当前对话您发送的特定数量的消息。限制：基于消息 ID 的 1000 条消息，大于 1000 条可能会触发删除消息过快限制。入群消息非管理员无法删除。（倒序）当数字足够大时即可实现删除所有消息。",
+@listener(is_plugin=True, outgoing=True, command=alias_command("dme"),
+          description="编辑并删除当前对话您发送的特定数量的消息。限制：基于消息 ID 的 1000 条消息，大于 1000 "
+                      "条可能会触发删除消息过快限制。入群消息非管理员无法删除。（倒序）当数字足够大时即可实现删除所有消息。",
           parameters="<数量> [文本]")
-async def selfprune(context):
+async def dme(context):
     """ Deletes specific amount of messages you sent. """
     reply = await context.get_reply_message()
     if reply and reply.photo:

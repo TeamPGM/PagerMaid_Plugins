@@ -1,9 +1,10 @@
 import json
 from requests import get
 from pagermaid.listener import listener
+from pagermaid.utils import alias_command
 
 
-@listener(is_plugin=True, outgoing=True, command="zhrs",
+@listener(is_plugin=True, outgoing=True, command=alias_command("zhrs"),
           description="知乎热搜。")
 async def netease(context):
     await context.edit("获取中 . . .")
@@ -26,7 +27,7 @@ async def netease(context):
         await context.edit("出错了呜呜呜 ~ 无法访问到 API 服务器 。")
 
 
-@listener(is_plugin=True, outgoing=True, command="wbrs",
+@listener(is_plugin=True, outgoing=True, command=alias_command("wbrs"),
           description="微博热搜。")
 async def netease(context):
     await context.edit("获取中 . . .")
@@ -53,7 +54,7 @@ async def netease(context):
         await context.edit("出错了呜呜呜 ~ 无法访问到 API 服务器 。")
 
 
-@listener(is_plugin=True, outgoing=True, command="dyrs",
+@listener(is_plugin=True, outgoing=True, command=alias_command("dyrs"),
           description="抖音热搜。")
 async def netease(context):
     await context.edit("获取中 . . .")
@@ -74,7 +75,8 @@ async def netease(context):
     else:
         await context.edit("出错了呜呜呜 ~ 无法访问到 API 服务器 。")
 
-@listener(is_plugin=True, outgoing=True, command="brank",
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("brank"),
           description="B站排行榜。")
 async def brank(context):
     await context.edit("获取中 . . .")
