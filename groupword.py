@@ -51,7 +51,7 @@ async def group_word(context):
     words = defaultdict(int)
     count = 0
     try:
-        async for msg in context.client.iter_messages(context.chat, limit=300):
+        async for msg in context.client.iter_messages(context.chat, limit=500):
             if msg.id == context.id:
                 continue
             if msg.text:
@@ -69,12 +69,16 @@ async def group_word(context):
                 return
             except:
                 return
-    image = WordCloud(font_path="plugins/groupword/wqy-microhei.ttc", width=800, height=400).generate_from_frequencies(
-        words).to_image()
-    stream = BytesIO()
-    image.save(stream, 'PNG')
     try:
-        await context.client.send_message(context.chat, '', file=stream.getvalue())
+        image = WordCloud(font_path="plugins/groupword/wqy-microhei.ttc", width=800, height=400).generate_from_frequencies(
+            words).to_image()
+        stream = BytesIO()
+        image.save(stream, 'PNG')
+    except:
+        await context.edit('词云生成失败。')
+        return
+    try:
+        await context.client.send_message(context.chat, f'对最近的 {count} 条消息进行了分析。', file=stream.getvalue())
         await context.delete()
     except:
         return
