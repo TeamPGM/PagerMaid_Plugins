@@ -69,7 +69,7 @@ async def group_word(context):
                 return
             except:
                 return
-    image = WordCloud(font_path="plugins/wordcloud/wqy-microhei.ttc", width=800, height=400).generate_from_frequencies(
+    image = WordCloud(font_path="plugins/groupword/wqy-microhei.ttc", width=800, height=400).generate_from_frequencies(
         words).to_image()
     stream = BytesIO()
     image.save(stream, 'PNG')
