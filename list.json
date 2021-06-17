@@ -509,6 +509,16 @@
             "supported": true,
             "des-short": "踢出并ban群成员",
             "des": "命令：(在群内回复该人)-fuck 或 -fuck <telegramID> "
+        },
+        {
+            "name": "groupword",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "2.41 kb",
+            "supported": true,
+            "des-short": "将聊天内容生成为词云",
+            "des": "拉取最新 300 条消息生成一张词云图片。\n\n命令：-groupword"
         }
     ]
 }
