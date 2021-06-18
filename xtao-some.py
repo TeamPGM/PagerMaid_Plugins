@@ -279,6 +279,9 @@ async def getdel(context):
     """ PagerMaid getdel. """
     cid = str(context.chat_id)
     pri = cid.startswith('-100')
+    parameter = None
+    if len(context.parameter) == 1:
+        parameter = context.parameter[0]
     if pri:
         member_count = 0
         try:
@@ -291,13 +294,13 @@ async def getdel(context):
             async for member in bot.iter_participants(chat):
                 if member.deleted:
                     member_count += 1
-                    if need_kick:
+                    if need_kick and parameter:
                         try:
                             await context.client.kick_participant(context.chat_id, member.id)
                         except FloodWaitError:
                             await context.edit('处理失败，您已受到 TG 服务器限制。')
                             return
-            if need_kick:
+            if need_kick and parameter:
                 await context.edit(f'此频道/群组的死号数：`{member_count}`，并且已经清理完毕。')
             else:
                 await context.edit(f'此频道/群组的死号数：`{member_count}`。')
