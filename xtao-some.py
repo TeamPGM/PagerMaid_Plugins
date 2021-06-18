@@ -305,7 +305,7 @@ async def getdel(context):
             else:
                 await context.edit(f'此频道/群组的死号数：`{member_count}`。')
         except ChatAdminRequiredError:
-            await context.edit('未加入此频道。')
+            await context.edit('你好像并不拥有封禁用户权限。')
     else:
         await context.edit("请在群组/频道发送。")
 
