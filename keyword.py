@@ -975,7 +975,7 @@ async def setdata(context):
 @listener(incoming=True, outgoing=True, ignore_edited=True)
 async def auto_reply(context):
     global read_context
-    asyncio.sleep(random.randint(0, 100) / 1000)
+    await asyncio.sleep(random.randint(0, 100) / 1000)
     if (context.chat_id, context.id) in read_context:
         return
     read_context[(context.chat_id, context.id)] = True
