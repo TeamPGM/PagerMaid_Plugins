@@ -70,7 +70,11 @@ async def coin(context: Message) -> None:
         return
     else:
         prices = binanceclient.get_all_tickers()
-        number = float(action[0])
+        try:
+            number = float(action[0])
+        except ValueError:
+            await context.edit('输入错误.\n-bc 数量 币种1 币种2')
+            return
         _from = action[1].upper().strip()
         _to = action[2].upper().strip()
         front_text = ''
