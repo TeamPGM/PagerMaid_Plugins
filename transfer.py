@@ -57,7 +57,11 @@ async def transfer(context):
         message = await context.get_reply_message()
         if message and message.media:
             _file = BytesIO()
-            await bot.download_file(message.media.document, _file)
+            try:
+                await bot.download_file(message.media.document, _file)
+            except AttributeError:
+                await context.edit('无法下载此类型的文件。')
+                return
             if not exists(file_list[0]):
                 with open(file_list[0], "wb") as f:
                     f.write(_file.getvalue())

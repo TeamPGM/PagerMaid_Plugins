@@ -60,7 +60,11 @@ async def fuck(context):
             if context.arguments == '':
                 return
             else:
-                userid = int(context.arguments)
+                try:
+                    userid = int(context.arguments)
+                except ValueError:
+                    await context.edit('输入值错误。')
+                    return
                 admins = await context.client.get_participants(context.chat, filter=ChannelParticipantsAdmins)
                 if context.sender in admins:
                     try:

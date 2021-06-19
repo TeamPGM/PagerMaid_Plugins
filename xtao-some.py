@@ -5,7 +5,7 @@ from pagermaid import bot, log
 from pagermaid.listener import listener, config
 from pagermaid.utils import clear_emojis, obtain_message, attach_log, alias_command
 from telethon.errors import ChatAdminRequiredError
-from telethon.errors.rpcerrorlist import FloodWaitError
+from telethon.errors.rpcerrorlist import FloodWaitError, UserAdminInvalidError
 from telethon.tl.types import ChannelParticipantsAdmins, ChannelParticipantsBots, ChannelParticipantAdmin
 
 
@@ -300,6 +300,8 @@ async def getdel(context):
                         except FloodWaitError:
                             await context.edit('处理失败，您已受到 TG 服务器限制。')
                             return
+                        except UserAdminInvalidError:
+                            pass
             if need_kick and parameter:
                 await context.edit(f'此频道/群组的死号数：`{member_count}`，并且已经清理完毕。')
             else:

@@ -35,7 +35,7 @@ async def killallmembers(context):
         await context.delete()
         return False
 
-    if (not is_channel) and (context.sender.id not in admins_ids):
+    if (not is_channel) and (context.sender_id not in admins_ids):
         await context.edit('你又不是管理员,你在这儿干个屁?')
         await sleep(10)
         await context.delete()

@@ -62,7 +62,7 @@
         },
         {
             "name": "xtao-some",
-            "version": "1.201",
+            "version": "1.202",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "18.8 kb",
@@ -152,7 +152,7 @@
         },
         {
             "name": "portball",
-            "version": "1.43",
+            "version": "1.44",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "2.8 kb",
@@ -292,7 +292,7 @@
         },
         {
             "name": "killallmembers",
-            "version": "1.11",
+            "version": "1.12",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "idk",
@@ -362,7 +362,7 @@
         },
         {
             "name": "autoreplysticker",
-            "version": "1.22",
+            "version": "1.23",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "12 kb",
@@ -392,7 +392,7 @@
         },
         {
             "name": "transfer",
-            "version": "1.01",
+            "version": "1.02",
             "section": "daily",
             "maintainer": "c3b2a",
             "size": "2.7 kb",
@@ -492,7 +492,7 @@
         },
         {
             "name": "fuck",
-            "version": "1.01",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "4.0 kb",

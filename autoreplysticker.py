@@ -12,6 +12,7 @@ from os.path import exists
 from asyncio import sleep
 from random import randint
 import yaml
+from telethon.errors.rpcerrorlist import StickersetInvalidError
 from telethon.tl.custom.message import Message
 from telethon.tl.functions.messages import GetAllStickersRequest
 from telethon.tl.functions.messages import GetStickerSetRequest
@@ -239,10 +240,14 @@ async def process_message(context):
         pass
 
     if reply and reply_user_id == me.id:
-        stickers = await context.client(
-            GetStickerSetRequest(
-                stickerset=InputStickerSetID(
-                    id=_sticker_id, access_hash=_sticker_hash)))
+        try:
+            stickers = await context.client(
+                GetStickerSetRequest(
+                    stickerset=InputStickerSetID(
+                        id=_sticker_id, access_hash=_sticker_hash)))
+        except StickersetInvalidError:
+            await log('配置错误。')
+            return
         try:
             i = randint(0, len(_num) - 1)
             sticker = await context.client.send_file(

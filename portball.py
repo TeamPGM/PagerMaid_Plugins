@@ -14,7 +14,7 @@ async def portball(context):
         reply = await context.get_reply_message()
         if reply:
             action = context.arguments.split()
-            if reply.sender.last_name == None:
+            if reply.sender.last_name is None:
                 last_name = ''
             else:
                 last_name = reply.sender.last_name
@@ -58,6 +58,10 @@ async def portball(context):
                 await notification.delete()
             except rpcerrorlist.ChatAdminRequiredError:
                 notification = await bot.send_message(context.chat_id, '错误：我没有管理员权限或我的权限比被封禁的人要小', reply_to=context.id)
+                await sleep(10)
+                await notification.delete()
+            except OverflowError:
+                notification = await bot.send_message(context.chat_id, '错误：封禁值太大了', reply_to=context.id)
                 await sleep(10)
                 await notification.delete()
         else:
