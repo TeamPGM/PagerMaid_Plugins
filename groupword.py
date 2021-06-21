@@ -35,9 +35,8 @@ async def group_word(context):
         imported_1 = True
     if not imported:
         try:
-            await context.edit("支持库 `jieba` `paddlepaddle-tiny` 未安装...\n正在尝试自动安装...")
+            await context.edit("支持库 `jieba` 未安装...\n正在尝试自动安装...")
             await execute(f'{executable} -m pip install jieba')
-            await execute(f'{executable} -m pip install paddlepaddle-tiny')
             await sleep(10)
             result = await execute(f'{executable} -m pip show jieba')
             if len(result) > 0:
