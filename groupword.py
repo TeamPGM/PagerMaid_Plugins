@@ -27,8 +27,12 @@ except ImportError:
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("groupword"),
-          description="拉取最新 300 条消息生成词云。")
+          description="拉取最新 300 条消息生成词云。",
+          parameters="[任意内容启用AI分词]")
 async def group_word(context):
+    imported_1 = False
+    if len(context.parameter) >= 1:
+        imported_1 = True
     if not imported:
         try:
             await context.edit("支持库 `jieba` `paddlepaddle-tiny` 未安装...\n正在尝试自动安装...")
@@ -44,7 +48,7 @@ async def group_word(context):
                 return
         except:
             return
-    if not imported_:
+    if not imported_ and imported_1:
         try:
             await context.edit("支持库 `paddlepaddle-tiny` 未安装...\n正在尝试自动安装...")
             await execute(f'{executable} -m pip install paddlepaddle-tiny')
@@ -73,14 +77,17 @@ async def group_word(context):
     words = defaultdict(int)
     count = 0
     try:
-        if imported_:
-            jieba.enable_paddle()
+        if imported_ and imported_1:
+            try:
+                jieba.enable_paddle()
+            except:
+                imported_1 = False
         async for msg in context.client.iter_messages(context.chat, limit=500):
             if msg.id == context.id:
                 continue
             if msg.text and not msg.text.startswith('/') and not msg.text.startswith('-') and not '//' in msg.text:
                 try:
-                    if imported_:
+                    if imported_ and imported_1:
                         for word in jieba.cut(msg.text.translate(punctuation), use_paddle=True):
                             word = word.lower()
                             words[word] += 1
