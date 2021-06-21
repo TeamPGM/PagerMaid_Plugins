@@ -12,6 +12,7 @@ except ImportError:
 
 from asyncio import sleep
 from requests import get
+from sys import executable
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from urllib import parse
@@ -22,7 +23,7 @@ from urllib import parse
           parameters="<食物名>")
 async def pl(context):
     if not imported:
-        await context.edit("请先安装依赖：\n`python3 -m pip install bs4`\n随后，请重启 pagermaid。")
+        await context.edit(f"请先安装依赖：\n`{executable} -m pip install bs4`\n随后，请重启 pagermaid。")
         return
     action = context.arguments.split()
     if len(action) == 1:

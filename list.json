@@ -32,7 +32,7 @@
         },
         {
             "name": "autorm",
-            "version": "1.01",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "fruitymelon",
             "size": "6.7 kb",
@@ -42,7 +42,7 @@
         },
         {
             "name": "sendat",
-            "version": "1.31",
+            "version": "1.32",
             "section": "chat",
             "maintainer": "fruitymelon",
             "size": "15.0 kb",
@@ -442,7 +442,7 @@
         },
         {
             "name": "bc",
-            "version": "1.22",
+            "version": "1.23",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "8.0 kb",
@@ -472,7 +472,7 @@
         },
         {
             "name": "pl",
-            "version": "1.01",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "lowking",
             "size": "4.0 kb",
@@ -502,7 +502,7 @@
         },
         {
             "name": "groupword",
-            "version": "1.03",
+            "version": "1.04",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "3.32 kb",

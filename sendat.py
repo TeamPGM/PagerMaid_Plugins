@@ -87,7 +87,7 @@ async def sendat(context):
     chat = await context.get_chat()
     args = " ".join(context.parameter).split("|")
     if not imported:
-        await context.edit("请先安装依赖：`python3 -m pip install dateparser`\n随后，请重启 pagermaid。")
+        await context.edit(f"请先安装依赖：`{sys.executable} -m pip install dateparser`\n随后，请重启 pagermaid。")
         return
     await context.edit(f"debug: tz data: {time.timezone} {time.tzname} {sign}{offset}")
     if len(args) != 2:

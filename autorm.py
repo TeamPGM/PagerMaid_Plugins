@@ -10,7 +10,7 @@ try:
 except ImportError:
     imported = False
 
-import asyncio, time, traceback
+import asyncio, time, traceback, sys
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 
@@ -104,7 +104,7 @@ async def autorm(context):
         args = args.strip()
 
         if not imported:
-            await edit(context, "Please install dateparser first: python3 -m pip install dateparser")
+            await edit(context, f"Please install dateparser first: {sys.executable} -m pip install dateparser")
             return
         if len(args) == 0:
             await edit(context, "参数不能为空。使用 -help autorm 以查看帮助。")

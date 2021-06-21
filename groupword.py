@@ -3,12 +3,14 @@ from wordcloud import WordCloud
 from io import BytesIO
 from os.path import exists
 from os import makedirs
+from sys import executable
 from collections import defaultdict
 from requests import get
 from pagermaid.utils import execute, alias_command
 from pagermaid.listener import listener
 
 imported = True
+imported_ = True
 punctuation = {33: ' ', 34: ' ', 35: ' ', 36: ' ', 37: ' ', 38: ' ', 39: ' ', 40: ' ', 41: ' ', 42: ' ', 43: ' ',
                44: ' ', 45: ' ', 46: ' ', 47: ' ', 58: ' ', 59: ' ', 60: ' ', 61: ' ', 62: ' ', 63: ' ', 64: ' ',
                91: ' ', 92: ' ', 93: ' ', 94: ' ', 95: ' ', 96: ' ', 123: ' ', 124: ' ', 125: ' ', 126: ' ',
@@ -18,6 +20,10 @@ try:
     import jieba
 except ImportError:
     imported = False
+try:
+    import paddle
+except ImportError:
+    imported_ = False
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("groupword"),
@@ -25,16 +31,32 @@ except ImportError:
 async def group_word(context):
     if not imported:
         try:
-            await context.edit("支持库 `jieba` 未安装...\n正在尝试自动安装...")
-            await execute('python3 -m pip install jieba')
+            await context.edit("支持库 `jieba` `paddlepaddle-tiny` 未安装...\n正在尝试自动安装...")
+            await execute(f'{executable} -m pip install jieba')
+            await execute(f'{executable} -m pip install paddlepaddle-tiny')
             await sleep(10)
-            result = await execute('python3 show jieba')
+            result = await execute(f'{executable} -m pip show jieba')
             if len(result) > 0:
                 await context.edit('支持库 `jieba` 安装成功...\n正在尝试自动重启...')
                 await context.client.disconnect()
             else:
-                await context.edit("自动安装失败..请尝试手动安装 `python3 -m pip install jieba` 随后，请重启 PagerMaid-Modify 。")
+                await context.edit(f"自动安装失败..请尝试手动安装 `{executable} -m pip install jieba` 随后，请重启 PagerMaid-Modify 。")
                 return
+        except:
+            return
+    if not imported_:
+        try:
+            await context.edit("支持库 `paddlepaddle-tiny` 未安装...\n正在尝试自动安装...")
+            await execute(f'{executable} -m pip install paddlepaddle-tiny')
+            await sleep(10)
+            result = await execute(f'{executable} -m pip show paddlepaddle-tiny')
+            if len(result) > 0 and not 'WARNING' in result:
+                await context.edit('支持库 `paddlepaddle-tiny` 安装成功...\n正在尝试自动重启...')
+                await context.client.disconnect()
+            else:
+                await context.edit(f"自动安装失败，可能是系统不支持..\nAI 分词不可用，切换到基础分词。\n"
+                                   f"您可以尝试手动安装 `{executable} -m pip install paddlepaddle-tiny` 。")
+                await sleep(4)
         except:
             return
     try:
@@ -51,14 +73,21 @@ async def group_word(context):
     words = defaultdict(int)
     count = 0
     try:
+        if imported_:
+            jieba.enable_paddle()
         async for msg in context.client.iter_messages(context.chat, limit=500):
             if msg.id == context.id:
                 continue
-            if msg.text:
+            if msg.text and not msg.text.startswith('/') and not msg.text.startswith('-') and not '//' in msg.text:
                 try:
-                    for word in jieba.cut(msg.text.translate(punctuation)):
-                        word = word.lower()
-                        words[word] += 1
+                    if imported_:
+                        for word in jieba.cut(msg.text.translate(punctuation), use_paddle=True):
+                            word = word.lower()
+                            words[word] += 1
+                    else:
+                        for word in jieba.cut(msg.text.translate(punctuation)):
+                            word = word.lower()
+                            words[word] += 1
                     count += 1
                 except:
                     pass
@@ -70,7 +99,8 @@ async def group_word(context):
             except:
                 return
     try:
-        image = WordCloud(font_path="plugins/groupword/wqy-microhei.ttc", width=800, height=400).generate_from_frequencies(
+        image = WordCloud(font_path="plugins/groupword/wqy-microhei.ttc", width=800,
+                          height=400).generate_from_frequencies(
             words).to_image()
         stream = BytesIO()
         image.save(stream, 'PNG')
