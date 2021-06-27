@@ -232,6 +232,24 @@ async def ned(context):
         await context.edit("**使用方法:** `-ned` `<关键词/id>`")
         return
     else:
+        if not eyed3_imported and not cc_imported:
+            try:
+                await context.edit("支持库 `eyed3` `PyCryptodome` 未安装...\n正在尝试自动安装...")
+                await execute(f'{executable} -m pip install eyed3')
+                await execute(f'{executable} -m pip install pycryptodome')
+                await sleep(10)
+                result = await execute(f'{executable} -m pip show eyed3')
+                result_1 = await execute(f'{executable} -m pip show pycryptodome')
+                if len(result) > 0 and len(result_1) > 0:
+                    await context.edit('支持库 `eyed3` `pycryptodome` 安装成功...\n正在尝试自动重启...')
+                    await context.client.disconnect()
+                else:
+                    await context.edit(
+                        f"自动安装失败..\n请尝试手动安装 `-sh {executable} -m pip install eyed3` 和 "
+                        f"`-sh {executable} -m pip install pycryptodome` 随后，请重启 PagerMaid-Modify 。")
+                    return
+            except:
+                return
         type = 'keyword'
         id = context.parameter[0]
         # 测试是否为 id
@@ -293,72 +311,53 @@ async def ned(context):
                 else:
                     await context.edit("出错了呜呜呜 ~ 无效的参数。")
                     return
-            if eyed3_imported and cc_imported:
-                await context.edit("获取中 . . .")
-                try:
-                    data = netease_single(id)
-                    await context.edit(f"【{data['title']}】下载中 . . .")
-                    img_data = netease_down(data)
-                except DataError:
-                    await context.edit(f"【{id}】获取失败。")
-                    return
-                await context.edit(f"【{data['title']}】发送中 . . .")
-                cap = data['singer'] + " - " + "**" + data['title'] + f"**\n#NeteaseMusic #{data['rate']}kbps "
-                if not exists("plugins/NeteaseMusicExtra/FastTelethon.py"):
-                    if not exists("plugins/NeteaseMusicExtra"):
-                        os.mkdir("plugins/NeteaseMusicExtra")
-                    faster = requests.request(
-                        "GET", "https://gist.githubusercontent.com/TNTcraftHIM"
-                               "/ca2e6066ed5892f67947eb2289dd6439/raw"
-                               "/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py")
-                    if faster.status_code == 200:
-                        with open("plugins/NeteaseMusicExtra/FastTelethon.py", "wb") as f:
-                            f.write(faster.content)
-                    else:
-                        pass
-                try:
-                    from NeteaseMusicExtra.FastTelethon import upload_file
-                    file = await upload_file(context.client, open('data/' + data['title'] + '.mp3', 'rb'),
-                                             'data/' + data['title'] + '.mp3')
-                except:
-                    file = 'data/' + data['title'] + '.mp3'
-                    if not exists("plugins/NeteaseMusicExtra/NoFastTelethon.txt"):
-                        with open("plugins/NeteaseMusicExtra/NoFastTelethon.txt", "w") as f:
-                            f.write("此文件出现表示 FastTelethon 支持文件在首次运行 NeteaseMusic 插件时导入失败\n这可能是因为Github"
-                                    "服务器暂时性的访问出错导致的\nFastTelethon可以提升低网络性能机型在上传文件时的效率，但是正常情况提升并不明显\n"
-                                    "如想要手动导入，可以手动下载：\nhttps://gist.githubusercontent.com/TNTcraftHIM"
-                                    "/ca2e6066ed5892f67947eb2289dd6439/raw"
-                                    "/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py\n并放入当前文件夹")
-                        await bot.send_message(context.chat_id, '`FastTelethon`支持文件导入失败，上传速度可能受到影响\n'
-                                                                '此提示仅出现**一次**，手动导入可参考：\n`' + os.getcwd() +
-                                               '/plugins/NeteaseMusicExtra/NoFastTelethon.txt`')
-                await context.client.send_file(
-                    context.chat_id,
-                    file,
-                    caption=cap,
-                    link_preview=False,
-                    force_document=False,
-                    thumb=img_data,
-                    attributes=(DocumentAttributeAudio(
-                        data['duration'], False, data['title'], data['singer']),)
-                )
-                await context.delete()
+            await context.edit("获取中 . . .")
+            try:
+                data = netease_single(id)
+                await context.edit(f"【{data['title']}】下载中 . . .")
+                img_data = netease_down(data)
+            except DataError:
+                await context.edit(f"【{id}】获取失败。")
                 return
-            else:
-                try:
-                    await context.edit("支持库 `eyed3` `PyCryptodome` 未安装...\n正在尝试自动安装...")
-                    await execute(f'{executable} -m pip install eyed3')
-                    await execute(f'{executable} -m pip install pycryptodome')
-                    await sleep(10)
-                    result = await execute(f'{executable} -m pip show eyed3')
-                    result_1 = await execute(f'{executable} -m pip show pycryptodome')
-                    if len(result) > 0 and len(result_1) > 0:
-                        await context.edit('支持库 `eyed3` `pycryptodome` 安装成功...\n正在尝试自动重启...')
-                        await context.client.disconnect()
-                    else:
-                        await context.edit(
-                            f"自动安装失败..\n请尝试手动安装 `-sh {executable} -m pip install eyed3` 和 "
-                            f"`-sh {executable} -m pip install pycryptodome` 随后，请重启 PagerMaid-Modify 。")
-                        return
-                except:
-                    return
+            await context.edit(f"【{data['title']}】发送中 . . .")
+            cap = data['singer'] + " - " + "**" + data['title'] + f"**\n#NeteaseMusic #{data['rate']}kbps "
+            if not exists("plugins/NeteaseMusicExtra/FastTelethon.py"):
+                if not exists("plugins/NeteaseMusicExtra"):
+                    os.mkdir("plugins/NeteaseMusicExtra")
+                faster = requests.request(
+                    "GET", "https://gist.githubusercontent.com/TNTcraftHIM"
+                           "/ca2e6066ed5892f67947eb2289dd6439/raw"
+                           "/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py")
+                if faster.status_code == 200:
+                    with open("plugins/NeteaseMusicExtra/FastTelethon.py", "wb") as f:
+                        f.write(faster.content)
+                else:
+                    pass
+            try:
+                from NeteaseMusicExtra.FastTelethon import upload_file
+                file = await upload_file(context.client, open('data/' + data['title'] + '.mp3', 'rb'),
+                                         'data/' + data['title'] + '.mp3')
+            except:
+                file = 'data/' + data['title'] + '.mp3'
+                if not exists("plugins/NeteaseMusicExtra/NoFastTelethon.txt"):
+                    with open("plugins/NeteaseMusicExtra/NoFastTelethon.txt", "w") as f:
+                        f.write("此文件出现表示 FastTelethon 支持文件在首次运行 NeteaseMusic 插件时导入失败\n这可能是因为Github"
+                                "服务器暂时性的访问出错导致的\nFastTelethon可以提升低网络性能机型在上传文件时的效率，但是正常情况提升并不明显\n"
+                                "如想要手动导入，可以手动下载：\nhttps://gist.githubusercontent.com/TNTcraftHIM"
+                                "/ca2e6066ed5892f67947eb2289dd6439/raw"
+                                "/86244b02c7824a3ca32ce01b2649f5d9badd2e49/FastTelethon.py\n并放入当前文件夹")
+                    await bot.send_message(context.chat_id, '`FastTelethon`支持文件导入失败，上传速度可能受到影响\n'
+                                                            '此提示仅出现**一次**，手动导入可参考：\n`' + os.getcwd() +
+                                           '/plugins/NeteaseMusicExtra/NoFastTelethon.txt`')
+            await context.client.send_file(
+                context.chat_id,
+                file,
+                caption=cap,
+                link_preview=False,
+                force_document=False,
+                thumb=img_data,
+                attributes=(DocumentAttributeAudio(
+                    data['duration'], False, data['title'], data['singer']),)
+            )
+            await context.delete()
+            return
