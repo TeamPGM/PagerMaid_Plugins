@@ -6,6 +6,7 @@ import base64
 import json
 import copy
 import requests
+from time import sleep
 from sys import executable
 from os.path import exists
 from telethon.tl.types import DocumentAttributeAudio
