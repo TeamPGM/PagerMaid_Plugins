@@ -209,18 +209,21 @@ def netease_single(id):
         data=data,
     ).get("data", [])
     if len(res_data_detail) > 0 and len(res_data) > 0:
-        item = res_data_detail[0]
-        singers = [s.get("name", "") for s in item.get("ar", {})]
-        song = {"id": item.get("id", ""),
-                "title": item.get("name", ""),
-                "singers": singers,
-                "singer": "、".join(singers),
-                "album": item.get("al", {}).get("name", ""),
-                "duration": int(item.get("dt", 0) / 1000),
-                "cover_url": item.get("al", {}).get("picUrl", ""),
-                "song_url": res_data[0].get("url", ""),
-                "rate": int(res_data[0].get("br", 0) / 1000)}
-        return song
+        try:
+            item = res_data_detail[0]
+            singers = [s.get("name", "") for s in item.get("ar", {})]
+            song = {"id": item.get("id", ""),
+                    "title": item.get("name", ""),
+                    "singers": singers,
+                    "singer": "、".join(singers),
+                    "album": item.get("al", {}).get("name", ""),
+                    "duration": int(item.get("dt", 0) / 1000),
+                    "cover_url": item.get("al", {}).get("picUrl", ""),
+                    "song_url": res_data[0].get("url", ""),
+                    "rate": int(res_data[0].get("br", 0) / 1000)}
+            return song
+        except TypeError:
+            raise DataError("Get song detail failed.")
     else:
         raise DataError("Get song detail failed.")
 
