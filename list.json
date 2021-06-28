@@ -526,7 +526,7 @@
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.0 kb",
-            "supported": true,
+            "supported": false,
             "des-short": "打字带空格",
             "des": "需要 pypi 前置 jieba 。"
         }
