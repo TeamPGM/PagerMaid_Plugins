@@ -11,7 +11,10 @@ except ImportError:
 @listener(is_plugin=True, outgoing=True, ignore_edited=True)
 async def kongge(context):
     if jieba_imported and context.text:
+        if context.text.startswith('-'):
+            return
         seg_list = jieba.cut(context.text)
         seg_txt = ' '.join(seg_list)
+        seg_txt.replace('@ ', '@')
         if not seg_txt == context.text:
             await context.edit(seg_txt)
