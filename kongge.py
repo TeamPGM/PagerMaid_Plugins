@@ -10,7 +10,7 @@ except ImportError:
 
 @listener(is_plugin=True, outgoing=True, ignore_edited=True)
 async def kongge(context):
-    if jieba_imported and context.text:
+    if jieba_imported and context.text and not context.via_bot:
         if context.text.startswith('-') or context.text.startswith('/'):
             return
         seg_list = jieba.cut(context.text)
