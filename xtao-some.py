@@ -216,63 +216,6 @@ async def ipping(context):
         await context.edit('没有找到要查询的 ip/域名 ...')
 
 
-@listener(is_plugin=True, outgoing=True, command="t",
-          description="通过腾讯AI开放平台将目标消息翻译成指定的语言。"
-                      "目前支持的语言有 zh, en, jp, kr, fr, es, it, de, tr, ru, pt, vi, id, ms, th。",
-          parameters="<回复消息/文本> <指定语言>")
-async def tx_t(context):
-    """ PagerMaid universal translator. """
-    reply = await context.get_reply_message()
-    message = context.arguments
-    lang = 'zh'
-    USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0"
-    headers = {"user-agent": USER_AGENT}
-    api_lang = ['zh', 'en', 'jp', 'kr', 'fr', 'es', 'it', 'de', 'tr', 'ru', 'pt', 'vi', 'id', 'ms', 'th']
-    if reply:
-        message = reply.text
-        if context.parameter:
-            if re.search(r'[a-z]{2}', context.parameter[0]):
-                if context.parameter[0] in api_lang:
-                    lang = context.parameter[0]
-                else:
-                    await context.edit("指定语言未支持，使用默认语言")
-        else:
-            await context.edit("未指定语言，使用默认语言")
-    elif context.parameter:
-        message = context.parameter[0]
-        try:
-            if re.search(r'[a-z]{2}', context.parameter[1]):
-                if context.parameter[1] in api_lang:
-                    lang = context.parameter[1]
-                else:
-                    await context.edit("指定语言未支持，使用默认语言")
-        except IndexError:
-            await context.edit("未指定语言，使用默认语言")
-    else:
-        await context.edit("出错了呜呜呜 ~ 无效的参数。")
-        return
-    try:
-        await context.edit("正在生成翻译中 . . .")
-        tx_json = json.loads(requests.get(
-            "https://xtaolink.cn/git/m/t.php?lang=" + lang + '&text=' + clear_emojis(message),
-            headers=headers).content.decode(
-            "utf-8"))
-        if not tx_json['msg'] == 'ok':
-            context.edit("出错了呜呜呜 ~ 翻译出错")
-            return True
-        else:
-            result = '文本翻译：\n' + tx_json['data']['target_text']
-    except ValueError:
-        await context.edit("出错了呜呜呜 ~ 找不到目标语言，请更正配置文件中的错误。")
-        return
-
-    if len(result) > 4096:
-        await context.edit("输出超出 TG 限制，正在尝试上传文件。")
-        await attach_log(result, context.chat_id, "translation.txt", context.id)
-        return
-    await context.edit(result)
-
-
 @listener(is_plugin=True, outgoing=True, command=alias_command("getdel"),
           description="获取当前群组/频道的死号数。")
 async def getdel(context):
