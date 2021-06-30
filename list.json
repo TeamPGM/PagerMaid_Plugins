@@ -348,7 +348,7 @@
             "size": "4.0 kb",
             "supported": true,
             "des-short": "vip 捐赠用户功能",
-            "des": "命令：天气：baidu weather Pixiv：pixiv。与 weather 插件冲突"
+            "des": "命令：天气：weather Pixiv：pixiv 百度：baidu。与 weather 插件冲突"
         },
         {
             "name": "calculator",
@@ -529,6 +529,16 @@
             "supported": false,
             "des-short": "打字带空格",
             "des": "需要 pypi 前置 jieba 。"
+        },
+        {
+            "name": "getstickers",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "5.4 kb",
+            "supported": true,
+            "des-short": "贴纸包批量导出",
+            "des": "可选 pypi 前置 lottie[gif] 。"
         }
     ]
 }
