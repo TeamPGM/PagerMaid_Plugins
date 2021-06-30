@@ -2,10 +2,28 @@ from requests import get
 from os import remove
 from pagermaid import bot
 from pagermaid.listener import listener
-from pagermaid.utils import obtain_message
+from pagermaid.utils import obtain_message, alias_command
 
 
-@listener(is_plugin=True, outgoing=True, command="baidu",
+@listener(is_plugin=True, outgoing=True, command=alias_command("duckduckgo"),
+          description="Duckduckgo 搜索",
+          parameters="<query>")
+async def baidu(context):
+    await context.edit("获取中 . . .")
+    try:
+        message = await obtain_message(context)
+    except ValueError:
+        await context.edit("出错了呜呜呜 ~ 无效的参数。")
+        return
+    async with bot.conversation('PagerMaid_Modify_bot') as conversation:
+        await conversation.send_message('/duckduckgo ' + message)
+        chat_response = await conversation.get_response()
+        await bot.send_read_acknowledge(conversation.chat_id)
+        duckduckgo_text = chat_response.text
+    await context.edit(duckduckgo_text)
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("baidu"),
           description="百度搜索",
           parameters="<query>")
 async def baidu(context):
@@ -23,7 +41,7 @@ async def baidu(context):
     await context.edit(baidu_text)
 
 
-@listener(is_plugin=True, outgoing=True, command="weather",
+@listener(is_plugin=True, outgoing=True, command=alias_command("weather"),
           description="使用彩云天气 api 查询国内实时天气。",
           parameters="<城市>")
 async def weather(context):
@@ -41,7 +59,7 @@ async def weather(context):
     await context.edit(weather_text)
 
 
-@listener(is_plugin=True, outgoing=True, command="pixiv",
+@listener(is_plugin=True, outgoing=True, command=alias_command("pixiv"),
           description="查询插画信息 （或者回复一条消息）",
           parameters="[<图片链接>] <图片序号>")
 async def pixiv(context):

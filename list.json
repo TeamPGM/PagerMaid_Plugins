@@ -342,13 +342,13 @@
         },
         {
             "name": "vip",
-            "version": "0.23",
+            "version": "0.3",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.0 kb",
             "supported": true,
             "des-short": "vip 捐赠用户功能",
-            "des": "命令：天气：weather Pixiv：pixiv 百度：baidu。与 weather 插件冲突"
+            "des": "命令：天气：weather Pixiv：pixiv 百度：baidu Duckduckgo：duckduckgo。与 weather 插件冲突"
         },
         {
             "name": "calculator",
