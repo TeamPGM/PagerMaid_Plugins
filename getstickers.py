@@ -69,8 +69,7 @@ async def getstickers(context):
                 animated = import_tgs(os.path.join(path, file))
                 export_gif(animated, os.path.join(path, file)[:-3] + 'gif')
             elif file_ext_ns_ion == 'webp':
-                im = Image.open(os.path.join(path, file)).convert('RGB')
-                im.save(os.path.join(path, file)[:-4] + 'png', 'png')
+                convert_png(os.path.join(path, file))
 
         pending_tasks = [
             asyncio.ensure_future(
@@ -143,3 +142,15 @@ def zipdir(path, ziph):
         for file in files:
             ziph.write(os.path.join(root, file))
             os.remove(os.path.join(root, file))
+
+
+def convert_png(path):
+    im = Image.open(path)
+    im.load()
+    alpha = im.split()[-1]
+    im = im.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=255)
+    mask = Image.eval(alpha, lambda a: 255 if a <=128 else 0)
+    im.paste(255, mask)
+    new_path = path.replace(".webp", ".png")
+    im.save(new_path, transparency=255)
+    return new_path
