@@ -146,11 +146,7 @@ def zipdir(path, ziph):
 
 def convert_png(path):
     im = Image.open(path)
-    im.load()
-    alpha = im.split()[-1]
-    im = im.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=255)
-    mask = Image.eval(alpha, lambda a: 255 if a <=128 else 0)
-    im.paste(255, mask)
+    im = im.convert('RGBA')
     new_path = path.replace(".webp", ".png")
-    im.save(new_path, transparency=255)
+    im.save(new_path, 'PNG')
     return new_path
