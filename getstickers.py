@@ -2,6 +2,7 @@ import asyncio
 from collections import defaultdict
 import os
 import zipfile
+from PIL import Image
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.errors import MessageNotModifiedError
 from pagermaid import working_dir
@@ -26,7 +27,7 @@ except ImportError:
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("getstickers"),
-          description="获取整个贴纸包的贴纸，任意值开启 tgs 转 gif 需要手动安装 pypi 依赖 lottie[gif] 。",
+          description="获取整个贴纸包的贴纸，任意值开启 tgs 转 gif；转 gif 需要手动安装 pypi 依赖 lottie[gif] 。",
           parameters="<任意值>")
 async def getstickers(context):
     tgs_gif = True
@@ -67,6 +68,9 @@ async def getstickers(context):
             if file_ext_ns_ion == 'tgs' and lottie_import and tgs_gif:
                 animated = import_tgs(os.path.join(path, file))
                 export_gif(animated, os.path.join(path, file)[:-3] + 'gif')
+            elif file_ext_ns_ion == 'webp':
+                im = Image.open(os.path.join(path, file)).convert('RGB')
+                im.save(os.path.join(path, file)[:-4] + 'png', 'png')
 
         pending_tasks = [
             asyncio.ensure_future(
