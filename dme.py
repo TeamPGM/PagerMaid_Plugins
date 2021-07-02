@@ -2,7 +2,7 @@
 from asyncio import sleep
 from os import path, remove
 from os.path import exists
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from pagermaid import redis, log, redis_status
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
@@ -20,14 +20,18 @@ async def dme(context):
             remove('plugins/dme.jpg')
         target_file = reply.photo
         await context.client.download_media(
-            await context.get_reply_message(), file = "plugins/dme.jpg"
+            await context.get_reply_message(), file="plugins/dme.jpg"
         )
         await context.edit("替换图片设置完成。")
     elif reply and reply.sticker:
         if exists('plugins/dme.jpg'):
             remove('plugins/dme.jpg')
-        await context.client.download_media(reply.media.document, file = "plugins/dme.webp")
-        im = Image.open("plugins/dme.webp")
+        await context.client.download_media(reply.media.document, file="plugins/dme.webp")
+        try:
+            im = Image.open("plugins/dme.webp")
+        except UnidentifiedImageError:
+            await context.edit("替换图片设置发生错误。")
+            return
         im.save('plugins/dme.png', "png")
         remove('plugins/dme.webp')
         target_file = await context.client.upload_file('plugins/dme.png')

@@ -17,6 +17,10 @@ async def nthmsg(context):
     m = object()
     async for m in context.client.iter_messages(context.chat_id, from_user="me", reverse=True, limit=n):
         pass
-    r = await context.client(
-        functions.channels.ExportMessageLinkRequest(channel=m.to_id, id=m.id, grouped=True))
+    try:
+        r = await context.client(
+            functions.channels.ExportMessageLinkRequest(channel=m.to_id, id=m.id, grouped=True))
+    except AttributeError:
+        await context.edit('获取失败。')
+        return
     await context.edit(r.link)

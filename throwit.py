@@ -7,6 +7,7 @@ from requests import get
 from random import randint
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
+from telethon.errors.rpcerrorlist import ChatSendStickersForbiddenError
 from struct import error as StructError
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
@@ -158,6 +159,8 @@ async def throwit(context):
             return
         except TypeError:
             await context.edit("此用户未设置头像或头像对您不可见。")
+        except ChatSendStickersForbiddenError:
+            await context.edit("此群组无法发送贴纸。")
     else:
         try:
             await context.client.send_file(
@@ -174,3 +177,5 @@ async def throwit(context):
             return
         except TypeError:
             await context.edit("此用户未设置头像或头像对您不可见。")
+        except ChatSendStickersForbiddenError:
+            await context.edit("此群组无法发送贴纸。")

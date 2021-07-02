@@ -12,7 +12,7 @@
         },
         {
             "name": "dme",
-            "version": "1.11",
+            "version": "1.12",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.3 kb",
@@ -72,7 +72,7 @@
         },
         {
             "name": "yb-dl",
-            "version": "1.01",
+            "version": "1.02",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "18.8 kb",
@@ -82,7 +82,7 @@
         },
         {
             "name": "throwit",
-            "version": "1.611",
+            "version": "1.612",
             "section": "profile",
             "maintainer": "xtaodada",
             "size": "6.9 kb",
@@ -142,7 +142,7 @@
         },
         {
             "name": "nthmsg",
-            "version": "1.01",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "seiuneko",
             "size": "0.9 kb",
@@ -192,7 +192,7 @@
         },
         {
             "name": "whois",
-            "version": "1.13",
+            "version": "1.131",
             "section": "daily",
             "maintainer": "KorenKrita",
             "size": "1.1 kb",
@@ -202,7 +202,7 @@
         },
         {
             "name": "eat",
-            "version": "1.02",
+            "version": "1.03",
             "section": "profile",
             "maintainer": "SF_PICK",
             "size": "6.4 kb",
@@ -342,7 +342,7 @@
         },
         {
             "name": "vip",
-            "version": "0.3",
+            "version": "0.31",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.0 kb",
@@ -492,7 +492,7 @@
         },
         {
             "name": "rape",
-            "version": "1.02",
+            "version": "1.03",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "4.0 kb",

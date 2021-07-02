@@ -3,6 +3,7 @@
 from os import remove
 from os.path import exists
 from youtube_dl import YoutubeDL
+from youtube_dl.utils import DownloadError
 from re import compile as regex_compile
 from pagermaid import bot, log
 from pagermaid.listener import listener
@@ -26,15 +27,19 @@ async def ybdl(context):
     bilibili_pattern = regex_compile(r"^(http(s)?://)?((w){3}.)?bilibili(\.com)?/.+")
     youtube_pattern = regex_compile(r"^(http(s)?://)?((w){3}.)?youtu(be|.be)?(\.com)?/.+")
     if youtube_pattern.match(url):
-        if not await fetch_video(url, context.chat_id, reply_id):
-            await context.edit("出错了呜呜呜 ~ 视频下载失败。")
-        await log(f"已拉取UTB视频，地址： {url}.")
-        await context.edit("视频获取成功！")
+        try:
+            if not await fetch_video(url, context.chat_id, reply_id):
+                await context.edit("出错了呜呜呜 ~ 视频下载失败。")
+            await log(f"已拉取UTB视频，地址： {url}.")
+            await context.edit("视频获取成功！")
+        except DownloadError:
+            await context.edit("视频下载失败，可能是视频受到 DRM 保护。")
     if bilibili_pattern.match(url):
         if not await fetch_video(url, context.chat_id, reply_id):
             await context.edit("出错了呜呜呜 ~ 视频下载失败。")
         await log(f"已拉取 Bilibili 视频，地址： {url}.")
         await context.edit("视频获取成功！")
+
 
 async def fetch_video(url, chat_id, reply_id):
     """ Extracts and uploads YouTube video. """

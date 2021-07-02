@@ -79,13 +79,15 @@ async def pixiv(context):
         pixiv_albums = pixiv_list[1].split('|||')
         pixiv_album = []
         await context.edit("下载图片中 . . .")
-        for i in range(0, len(pixiv_albums)):
+        if len(pixiv_albums) > 8:
+            await context.edit('获取的图片数大于 8 ，将只发送前8张图片，下载图片中 . . .')
+        for i in range(0, min(len(pixiv_albums), 8)):
             r = get(pixiv_albums[i])
             with open("pixiv." + str(i) + ".jpg", "wb") as code:
                   code.write(r.content)
             pixiv_album.extend(["pixiv." + str(i) + ".jpg"])
         await context.client.send_file(context.chat_id, pixiv_album,
-                                 caption=pixiv_list[0])
+                                       caption=pixiv_list[0])
         await context.delete()
         for i in pixiv_album:
             try:
