@@ -216,11 +216,13 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                 if not last_name:
                     last_name = ""
                 replace_data["chat_name"] = f"{chat.first_name} {last_name}"
-        update_last_time = False
         could_send_msg = valid_time(chat_id)
+        if not could_send_msg:
+            return
         message_list = []
         for re_type, re_msg in reply_msg:
             try:
+                update_last_time = False
                 catch_pattern = r"\$\{func_(?P<str>((?!\}).)+)\}"
                 count = 0
                 bracket_str = random_str()
@@ -256,21 +258,12 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                         edit_id = int(s[5:])
                         type_parse.remove(s)
                 if ("file" in type_parse or "photo" in type_parse) and len(re_msg.split()) >= 2:
-                    if could_send_msg:
-                        update_last_time = True
-                        re_data = re_msg.split(" ")
-                        cache_exists, filename = has_cache(chat_id, mode, trigger, re_data[0])
-                        is_opened = cache_opened(chat_id, mode, trigger)
-                        if is_opened:
-                            if not cache_exists:
-                                if re_data[1][0:7] == "file://":
-                                    re_data[1] = re_data[1][7:]
-                                    copyfile(" ".join(re_data[1:]), filename)
-                                else:
-                                    fileget = requests.get(" ".join(re_data[1:]))
-                                    with open(filename, "wb") as f:
-                                        f.write(fileget.content)
-                        else:
+                    update_last_time = True
+                    re_data = re_msg.split(" ")
+                    cache_exists, filename = has_cache(chat_id, mode, trigger, re_data[0])
+                    is_opened = cache_opened(chat_id, mode, trigger)
+                    if is_opened:
+                        if not cache_exists:
                             if re_data[1][0:7] == "file://":
                                 re_data[1] = re_data[1][7:]
                                 copyfile(" ".join(re_data[1:]), filename)
@@ -278,54 +271,52 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                                 fileget = requests.get(" ".join(re_data[1:]))
                                 with open(filename, "wb") as f:
                                     f.write(fileget.content)
-                        reply_to = None
-                        if "reply" in type_parse:
-                            reply_to = context.id
-                            redir = getsetting(chat_id, mode, trigger, "redir", "0")
-                            reply = await context.get_reply_message()
-                            if redir == "1" and reply:
-                                reply_to = reply.id
-                        if edit_id == -1:
-                            message_list.append(await bot.send_file(
-                                chat_id,
-                                filename,
-                                reply_to=reply_to,
-                                force_document=("file" in type_parse)
-                            ))
+                    else:
+                        if re_data[1][0:7] == "file://":
+                            re_data[1] = re_data[1][7:]
+                            copyfile(" ".join(re_data[1:]), filename)
                         else:
-                            edit_file = await bot.upload_file(filename)
-                            message_list[edit_id] = await message_list[edit_id].edit(
-                                file=edit_file,
-                                force_document=("file" in type_parse)
-                            )
-                        if not is_opened:
-                            remove(filename)
+                            fileget = requests.get(" ".join(re_data[1:]))
+                            with open(filename, "wb") as f:
+                                f.write(fileget.content)
+                    reply_to = None
+                    if "reply" in type_parse:
+                        reply_to = context.id
+                        redir = getsetting(chat_id, mode, trigger, "redir", "0")
+                        reply = await context.get_reply_message()
+                        if redir == "1" and reply:
+                            reply_to = reply.id
+                    if edit_id == -1:
+                        message_list.append(await bot.send_file(
+                            chat_id,
+                            filename,
+                            reply_to=reply_to,
+                            force_document=("file" in type_parse)
+                        ))
+                    else:
+                        edit_file = await bot.upload_file(filename)
+                        message_list[edit_id] = await message_list[edit_id].edit(
+                            file=edit_file,
+                            force_document=("file" in type_parse)
+                        )
+                    if not is_opened:
+                        remove(filename)
                 elif ("tgfile" in type_parse or "tgphoto" in type_parse) and len(re_msg.split()) >= 2:
-                    if could_send_msg:
-                        update_last_time = True
-                        re_data = re_msg.split(" ")
-                        re_data[0] = " ".join(re_data[0:-1])
-                        re_data[1] = re_data[-1:][0].split("/")[-2:]
-                        cache_exists, filename = has_cache(chat_id, mode, trigger, re_data[0])
-                        is_opened = cache_opened(chat_id, mode, trigger)
-                        _data = BytesIO()
-                        try:
-                            msg_chat_id = int(re_data[1][0])
-                        except:
-                            async with bot.conversation(re_data[1][0]) as conversation:
-                                msg_chat_id = conversation.chat_id
-                        msg_id_inchat = int(re_data[1][1])
-                        if is_opened:
-                            if not cache_exists:
-                                media_msg = await bot.get_messages(msg_chat_id, ids=msg_id_inchat, offset_id=0)
-                                if media_msg and media_msg.media:
-                                    try:
-                                        await bot.download_file(media_msg.media.document, _data)
-                                    except:
-                                        await bot.download_file(media_msg.photo, _data)
-                                    with open(filename, "wb") as f:
-                                        f.write(_data.getvalue())
-                        else:
+                    update_last_time = True
+                    re_data = re_msg.split(" ")
+                    re_data[0] = " ".join(re_data[0:-1])
+                    re_data[1] = re_data[-1:][0].split("/")[-2:]
+                    cache_exists, filename = has_cache(chat_id, mode, trigger, re_data[0])
+                    is_opened = cache_opened(chat_id, mode, trigger)
+                    _data = BytesIO()
+                    try:
+                        msg_chat_id = int(re_data[1][0])
+                    except:
+                        async with bot.conversation(re_data[1][0]) as conversation:
+                            msg_chat_id = conversation.chat_id
+                    msg_id_inchat = int(re_data[1][1])
+                    if is_opened:
+                        if not cache_exists:
                             media_msg = await bot.get_messages(msg_chat_id, ids=msg_id_inchat, offset_id=0)
                             if media_msg and media_msg.media:
                                 try:
@@ -334,62 +325,69 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                                     await bot.download_file(media_msg.photo, _data)
                                 with open(filename, "wb") as f:
                                     f.write(_data.getvalue())
-                        reply_to = None
-                        if "reply" in type_parse:
-                            reply_to = context.id
-                            redir = getsetting(chat_id, mode, trigger, "redir", "0")
-                            reply = await context.get_reply_message()
-                            if redir == "1" and reply:
-                                reply_to = reply.id
-                        if edit_id == -1:
-                            message_list.append(await bot.send_file(
-                                chat_id,
-                                filename,
-                                reply_to=reply_to,
-                                force_document=("tgfile" in type_parse)
-                            ))
-                        else:
-                            edit_file = await bot.upload_file(filename)
-                            message_list[edit_id] = await message_list[edit_id].edit(
-                                file=edit_file,
-                                force_document=("tgfile" in type_parse)
-                            )
-                        if not is_opened:
-                            remove(filename)
+                    else:
+                        media_msg = await bot.get_messages(msg_chat_id, ids=msg_id_inchat, offset_id=0)
+                        if media_msg and media_msg.media:
+                            try:
+                                await bot.download_file(media_msg.media.document, _data)
+                            except:
+                                await bot.download_file(media_msg.photo, _data)
+                            with open(filename, "wb") as f:
+                                f.write(_data.getvalue())
+                    reply_to = None
+                    if "reply" in type_parse:
+                        reply_to = context.id
+                        redir = getsetting(chat_id, mode, trigger, "redir", "0")
+                        reply = await context.get_reply_message()
+                        if redir == "1" and reply:
+                            reply_to = reply.id
+                    if edit_id == -1:
+                        message_list.append(await bot.send_file(
+                            chat_id,
+                            filename,
+                            reply_to=reply_to,
+                            force_document=("tgfile" in type_parse)
+                        ))
+                    else:
+                        edit_file = await bot.upload_file(filename)
+                        message_list[edit_id] = await message_list[edit_id].edit(
+                            file=edit_file,
+                            force_document=("tgfile" in type_parse)
+                        )
+                    if not is_opened:
+                        remove(filename)
                 elif "plain" in type_parse:
-                    if could_send_msg:
-                        update_last_time = True
-                        if edit_id == -1:
-                            message_list.append(await bot.send_message(
-                                chat_id,
-                                re_msg,
-                                link_preview=("nopreview" not in type_parse)
-                            ))
-                        else:
-                            message_list[edit_id] = await message_list[edit_id].edit(
-                                re_msg,
-                                link_preview=("nopreview" not in type_parse)
-                            )
+                    update_last_time = True
+                    if edit_id == -1:
+                        message_list.append(await bot.send_message(
+                            chat_id,
+                            re_msg,
+                            link_preview=("nopreview" not in type_parse)
+                        ))
+                    else:
+                        message_list[edit_id] = await message_list[edit_id].edit(
+                            re_msg,
+                            link_preview=("nopreview" not in type_parse)
+                        )
                 elif "reply" in type_parse and chat_id == real_chat_id:
-                    if could_send_msg:
-                        update_last_time = True
-                        if edit_id == -1:
-                            reply_to = context.id
-                            redir = getsetting(chat_id, mode, trigger, "redir", "0")
-                            reply = await context.get_reply_message()
-                            if redir == "1" and reply:
-                                reply_to = reply.id
-                            message_list.append(await bot.send_message(
-                                chat_id,
-                                re_msg,
-                                reply_to=reply_to,
-                                link_preview=("nopreview" not in type_parse)
-                            ))
-                        else:
-                            message_list[edit_id] = await message_list[edit_id].edit(
-                                re_msg,
-                                link_preview=("nopreview" not in type_parse)
-                            )
+                    update_last_time = True
+                    if edit_id == -1:
+                        reply_to = context.id
+                        redir = getsetting(chat_id, mode, trigger, "redir", "0")
+                        reply = await context.get_reply_message()
+                        if redir == "1" and reply:
+                            reply_to = reply.id
+                        message_list.append(await bot.send_message(
+                            chat_id,
+                            re_msg,
+                            reply_to=reply_to,
+                            link_preview=("nopreview" not in type_parse)
+                        ))
+                    else:
+                        message_list[edit_id] = await message_list[edit_id].edit(
+                            re_msg,
+                            link_preview=("nopreview" not in type_parse)
+                        )
                 elif "op" in type_parse:
                     if re_msg == "delete":
                         await context.delete()
@@ -407,12 +405,12 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                         ]
                         await eval(f"aexec(args[0]{f', {args[1]}' if args[1] else ''})")
                         chdir(working_dir)
+                if update_last_time:
+                    global group_last_time
+                    group_last_time[int(chat_id)] = time.time()
             except:
                 pass
             chat_id = real_chat_id
-        if update_last_time:
-            global group_last_time
-            group_last_time[int(chat_id)] = time.time()
     except:
         pass
 
