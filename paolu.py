@@ -8,6 +8,7 @@
 #
 
 from asyncio import sleep
+from telethon.errors.common import MultiError
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 
@@ -31,7 +32,10 @@ async def paolu(context):
             pin_messages=False)
     except:
         pass
-    await context.client.delete_messages(context.chat_id, list(range(1, context.message.id)))
+    try:
+        await context.client.delete_messages(context.chat_id, list(range(1, context.message.id)))
+    except MultiError:
+        pass
     try:
         await context.client.edit_permissions(
             entity=context.chat_id,
