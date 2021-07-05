@@ -539,6 +539,16 @@
             "supported": true,
             "des-short": "贴纸包批量导出",
             "des": "可选 pypi 前置 lottie[gif] 。"
+        },
+        {
+            "name": "fucksticker",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "1.14 kb",
+            "supported": true,
+            "des-short": "删除烦人的贴纸",
+            "des": "删除最近 50 条消息中的 sticker 。"
         }
     ]
 }
