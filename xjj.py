@@ -15,7 +15,7 @@ async def ghs(context):
         filename = "xjj" + str(random.random())[2:] + ".png"
         try:
             if website == 0:
-                img = get("https://api.pixivweb.com/api.php?return=img")
+                img = get("https://acg.toubiec.cn/random.php")
             if img.status_code == 200:
                 with open(filename, 'wb') as f:
                     f.write(img.content)
