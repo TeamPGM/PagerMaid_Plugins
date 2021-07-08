@@ -5,6 +5,7 @@ import zipfile
 from PIL import Image
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.errors import MessageNotModifiedError
+from telethon.errors.rpcerrorlist import StickersetInvalidError
 from pagermaid import working_dir
 from telethon.tl.types import (
     DocumentAttributeFilename,
@@ -51,7 +52,11 @@ async def getstickers(context):
             file_ext_ns_ion = "tgs"
             if tgs_gif and not lottie_import:
                 await context.reply('`lottie[gif]` 依赖未安装，tgs 无法转换为 gif ，进行标准格式导出。')
-        sticker_set = await context.client(GetStickerSetRequest(sticker_attrib.stickerset))
+        try:
+            sticker_set = await context.client(GetStickerSetRequest(sticker_attrib.stickerset))
+        except StickersetInvalidError:
+            await context.edit('回复的贴纸不存在于任何贴纸包中。')
+            return
         pack_file = os.path.join('data/sticker/', sticker_set.set.short_name, "pack.txt")
         if os.path.isfile(pack_file):
             os.remove(pack_file)
