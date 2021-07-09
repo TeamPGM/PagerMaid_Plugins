@@ -7,13 +7,18 @@ from pagermaid import bot, redis, redis_status
 from pagermaid.listener import listener
 from pagermaid.utils import obtain_message, alias_command
 
-
+try:
+    import aiohttp, aiofiles
+    pixiv_import = True
+except ImportError:
+    pixiv_import = False
 p_headers = {
     "Referer": 'https://www.pixiv.net',
     'User-Agent':
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 '
         'Safari/537.36',
 }
+p_original = ['i.pixiv.cat', 'i.pximg.net', 'pixiv.kadokawa.moe']
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("duckduckgo"),
@@ -71,7 +76,8 @@ async def weather(context):
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("pixiv"),
-          description="查询插画信息 （或者回复一条消息）。使用 set [num] 更改镜像源，序号 2 为官方源。",
+          description="查询插画信息 （或者回复一条消息）。使用 set [num] 更改镜像源，序号 2 为官方源， 3 为凯露自建源。异步下载需要依赖库 "
+                      "aiohttp[speedups] 、 aiofiles",
           parameters="[<图片链接>] <图片序号>")
 async def pixiv(context):
     await context.edit("获取中 . . .")
@@ -86,7 +92,7 @@ async def pixiv(context):
                 except ValueError:
                     await context.edit('镜像源序号错误。')
                     return
-                if 0 < num < 3:
+                if 0 < num < 4:
                     redis.set("pixiv_num", num)
                     await context.edit('镜像源已更改。')
                     return
@@ -112,19 +118,29 @@ async def pixiv(context):
         chat_response = await conversation.get_response()
         await bot.send_read_acknowledge(conversation.chat_id)
         pixiv_text = chat_response.text
-    if num == 2:
-        pixiv_text = pixiv_text.replace('i.pixiv.cat', 'i.pximg.net')
+    pixiv_text = pixiv_text.replace('i.pixiv.cat', p_original[num - 1])
     pixiv_list = pixiv_text.split('|||||')
     if len(pixiv_list) == 2:
         pixiv_albums = pixiv_list[1].split('|||')
         pixiv_album = []
-        await context.edit("下载图片中 . . .")
+        if pixiv_import:
+            await context.edit("调用异步下载图片中 . . .")
+        else:
+            await context.edit("下载图片中 . . .")
         if len(pixiv_albums) > 8:
             await context.edit('获取的图片数大于 8 ，将只发送前8张图片，下载图片中 . . .')
         for i in range(0, min(len(pixiv_albums), 8)):
-            r = get(pixiv_albums[i], headers=p_headers)
-            with open("pixiv." + str(i) + ".jpg", "wb") as code:
-                code.write(r.content)
+            if not pixiv_import:
+                r = get(pixiv_albums[i], headers=p_headers)
+                with open("pixiv." + str(i) + ".jpg", "wb") as code:
+                    code.write(r.content)
+            else:
+                async with aiohttp.ClientSession(headers=p_headers) as session:
+                    response = await session.get(pixiv_albums[i])
+                    content = await response.read()
+                    async with aiofiles.open("pixiv." + str(i) + ".jpg", mode='wb') as code:
+                        await code.write(content)
+                        await code.close()
             pixiv_album.extend(["pixiv." + str(i) + ".jpg"])
         await context.client.send_file(context.chat_id, pixiv_album,
                                        caption=pixiv_list[0])
