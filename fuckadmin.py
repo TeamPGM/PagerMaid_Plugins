@@ -42,12 +42,12 @@ def mention_user(user):
           description='列出群组中所有潜水超过 n 天的管理员。（n>=7）。',
           parameters="<day>")
 async def fuck_admin(context):
+    admins = 0
     if context.is_group:
         pass
     else:
         await context.edit('请在群组中运行。')
         return
-    await context.edit('遍历管理员中。')
     # 读取天数
     text = ''
     if len(context.parameter) == 1:
@@ -72,10 +72,15 @@ async def fuck_admin(context):
             msg += 1
             time = eval_time(context, message, day)
             if time:
+                admins += 1
                 text += f'{mention_user(x)} {time}\n'
             break
         if msg == 1:
             msg = 0
         else:
+            admins += 1
             text += f'{mention_user(x)} 从未发言\n'
-    await context.edit(text)
+    if admins > 0:
+        await context.edit(text)
+    else:
+        await context.edit('没有发现潜水超过 n 天的管理员呢，大家都很活跃！')
