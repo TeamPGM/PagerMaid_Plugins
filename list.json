@@ -572,10 +572,10 @@
         },
         {
             "name": "fuckadmin",
-            "version": "1.01",
+            "version": "1.1",
             "section": "daily",
             "maintainer": "xtaodada",
-            "size": "2.7 kb",
+            "size": "2.9 kb",
             "supported": true,
             "des-short": "列出群组中所有潜水超过 n 天的管理员。",
             "des": "列出群组中所有潜水超过 n 天的管理员。（n>=7）。命令：fuckadmin 。"

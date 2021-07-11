@@ -6,21 +6,21 @@ from telethon.tl.types import ChannelParticipantsAdmins
 def eval_time(context, msg, day):
     now = context.date
     old = msg.date
-    between = (now - old).seconds
-    require_sec = day * 86400
-    if between < require_sec:
+    sec = (now - old).seconds
+    days = (now - old).days
+    if days < day:
         return None
-    minute, sec = divmod(between, 60)
+    minute, sec = divmod(sec, 60)
     hour, minute = divmod(minute, 60)
-    day, hour = divmod(hour, 24)
-    month, day = divmod(day, 30)
+
+    month, days = divmod(days, 30)
     year, month = divmod(month, 12)
     if year > 0:
-        time = "%02d年%02d月%02d天%02d时%02d分%02d秒" % (year, month, day, hour, minute, sec)
+        time = "%02d年%02d月%02d天%02d时%02d分%02d秒" % (year, month, days, hour, minute, sec)
     elif month > 0:
-        time = "%02d月%02d天%02d时%02d分%02d秒" % (month, day, hour, minute, sec)
+        time = "%02d月%02d天%02d时%02d分%02d秒" % (month, days, hour, minute, sec)
     elif day > 0:
-        time = "%02d天%02d时%02d分%02d秒" % (day, hour, minute, sec)
+        time = "%02d天%02d时%02d分%02d秒" % (days, hour, minute, sec)
     elif hour > 0:
         time = "%02d时%02d分%02d秒" % (hour, minute, sec)
     elif minute > 0:
