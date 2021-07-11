@@ -569,6 +569,16 @@
             "supported": true,
             "des-short": "列出所有属于自己的公开群组/频道。",
             "des": "列出所有属于自己的公开群组/频道。命令：listusernames 。"
+        },
+        {
+            "name": "fuckadmin",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "2.7 kb",
+            "supported": true,
+            "des-short": "列出群组中所有潜水超过 n 天的管理员。",
+            "des": "列出群组中所有潜水超过 n 天的管理员。（n>=7）。命令：fuckadmin 。"
         }
     ]
 }
