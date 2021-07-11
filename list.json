@@ -332,13 +332,13 @@
         },
         {
             "name": "stickertopic",
-            "version": "1.11",
+            "version": "1.111",
             "section": "chat",
             "maintainer": "TNTcraftHIM",
             "size": "3.5 kb",
             "supported": true,
             "des-short": "贴纸转图片",
-            "des": "把别人发的贴纸转换成图片（只支持静态）。命令：pic。"
+            "des": "把别人发的贴纸转换成图片（只支持静态）。命令：stickertopic 。"
         },
         {
             "name": "vip",
@@ -549,6 +549,16 @@
             "supported": true,
             "des-short": "删除烦人的贴纸",
             "des": "删除最近 50 条消息中的 sticker 。"
+        },
+        {
+            "name": "pic2sticker",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "4.7 kb",
+            "supported": true,
+            "des-short": "图片转贴纸",
+            "des": "把别人发的图片转换成贴纸（只支持静态）。命令：pic2sticker 。"
         }
     ]
 }
