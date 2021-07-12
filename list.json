@@ -579,6 +579,16 @@
             "supported": true,
             "des-short": "列出群组中所有潜水超过 n 天的管理员。",
             "des": "列出群组中所有潜水超过 n 天的管理员。（n>=7）。命令：fuckadmin 。"
+        },
+        {
+            "name": "bin",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "paulkm",
+            "size": "1.8 kb",
+            "supported": true,
+            "des-short": "查询信用卡bin信息。",
+            "des": "使用binlist api查询，1分钟限额10次否则报错。使用方法：-bin xxx （xxx为信用卡卡号前4-8位，推荐6位）"
         }
     ]
 }
