@@ -589,6 +589,16 @@
             "supported": true,
             "des-short": "查询信用卡bin信息。",
             "des": "使用binlist api查询，1分钟限额10次否则报错。使用方法：-bin xxx （xxx为信用卡卡号前4-8位，推荐6位）"
+        },
+        {
+            "name": "fuckmember",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "3.0 kb",
+            "supported": true,
+            "des-short": "查找/清理群组中所有潜水超过一定天数的成员。",
+            "des": "查找/清理群组中所有潜水超过 n 天的成员。（n>=7）。命令：fuckmember 。"
         }
     ]
 }
