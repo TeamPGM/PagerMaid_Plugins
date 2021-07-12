@@ -2,6 +2,8 @@ from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors.rpcerrorlist import UserAdminInvalidError
+from telethon.errors.rpcerrorlist import FloodWaitError
+from time import sleep
 
 
 def eval_time(context, msg, day):
@@ -57,6 +59,14 @@ async def fuck_member(context):
                 if kick_mode:
                     try:
                         await context.client.kick_participant(context.chat_id, x)
+                    except FloodWaitError as e:
+                        # Wait flood secs
+                        await context.edit(f'触发 Flood ，暂停 {e.seconds + uniform(0.5, 1.0)} 秒。')
+                        try:
+                            sleep(e.seconds + uniform(0.5, 1.0))
+                        except Exception as e:
+                            print(f"Wait flood error: {e}")
+                            return
                     except UserAdminInvalidError:
                         await context.edit('无管理员权限，停止查询。')
                         return
@@ -67,6 +77,14 @@ async def fuck_member(context):
             if kick_mode:
                 try:
                     await context.client.kick_participant(context.chat_id, x)
+                except FloodWaitError as e:
+                    # Wait flood secs
+                    await context.edit(f'触发 Flood ，暂停 {e.seconds + uniform(0.5, 1.0)} 秒。')
+                    try:
+                        sleep(e.seconds + uniform(0.5, 1.0))
+                    except Exception as e:
+                        print(f"Wait flood error: {e}")
+                        return
                 except UserAdminInvalidError:
                     await context.edit('无管理员权限，停止查询。')
                     return
