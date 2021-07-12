@@ -1,6 +1,7 @@
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from telethon.tl.types import ChannelParticipantsAdmins
+from telethon.errors.rpcerrorlist import UserAdminInvalidError
 
 
 def eval_time(context, msg, day):
@@ -54,18 +55,26 @@ async def fuck_member(context):
             if time:
                 count += 1
                 if kick_mode:
-                    await context.client.kick_participant(context.chat_id, x)
+                    try:
+                        await context.client.kick_participant(context.chat_id, x)
+                    except UserAdminInvalidError:
+                        await context.edit('无管理员权限，停止查询。')
+                        return
         if msg == 1:
             msg = 0
         else:
             counts += 1
             if kick_mode:
-                await context.client.kick_participant(context.chat_id, x)
-        # 每二十人修改一次
-        if members == 20:
+                try:
+                    await context.client.kick_participant(context.chat_id, x)
+                except UserAdminInvalidError:
+                    await context.edit('无管理员权限，停止查询。')
+                    return
+                    # 每一百人修改一次
+        if members == 100:
             members_count += 1
             members = 0
-            await context.edit(text + f'\n已查找 {members_count * 20} 人。')
+            await context.edit(text + f'\n已查找 {members_count * 100} 人。')
     text = ''
     if count > 0:
         text += f'查找到了 {count} 个未发言超过 {day} 天的群成员。\n'
