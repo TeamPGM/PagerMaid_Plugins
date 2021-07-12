@@ -4,6 +4,7 @@ from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors.rpcerrorlist import UserAdminInvalidError
 from telethon.errors.rpcerrorlist import FloodWaitError
 from time import sleep
+from random import uniform
 
 
 def eval_time(context, msg, day):
