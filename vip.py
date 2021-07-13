@@ -1,5 +1,5 @@
 import io
-
+from redis.exceptions import ConnectionError
 from requests import get
 from os import remove
 from telethon.tl.types import MessageMediaPhoto
@@ -93,7 +93,11 @@ async def pixiv(context):
                     await context.edit('镜像源序号错误。')
                     return
                 if 0 < num < 4:
-                    redis.set("pixiv_num", num)
+                    try:
+                        redis.set("pixiv_num", num)
+                    except ConnectionError:
+                        await context.edit('redis 数据库离线 无法更改镜像源。')
+                        return
                     await context.edit('镜像源已更改。')
                     return
                 else:
@@ -102,12 +106,14 @@ async def pixiv(context):
         else:
             pass
     if not redis_status:
-        num = 1
+        num = 3
     else:
         try:
             num = int(redis.get("pixiv_num").decode())
         except AttributeError:
-            num = 1
+            num = 3
+        except ConnectionError:
+            num = 3
     try:
         message = await obtain_message(context)
     except ValueError:
