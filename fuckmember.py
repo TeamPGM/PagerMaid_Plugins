@@ -3,7 +3,7 @@ from pagermaid.utils import alias_command
 from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors.rpcerrorlist import UserAdminInvalidError
 from telethon.errors.rpcerrorlist import FloodWaitError
-from time import sleep
+from asyncio import sleep
 from random import uniform
 
 
@@ -64,7 +64,7 @@ async def fuck_member(context):
                         # Wait flood secs
                         await context.edit(f'触发 Flood ，暂停 {e.seconds + uniform(0.5, 1.0)} 秒。')
                         try:
-                            sleep(e.seconds + uniform(0.5, 1.0))
+                            await sleep(e.seconds + uniform(0.5, 1.0))
                         except Exception as e:
                             print(f"Wait flood error: {e}")
                             return
