@@ -162,9 +162,9 @@
         },
         {
             "name": "resou",
-            "version": "1.21",
+            "version": "1.22",
             "section": "daily",
-            "maintainer": "KorenKrita、xtaodada",
+            "maintainer": "KorenKrita、xtaodada、monsterxcn",
             "size": "6.1 kb",
             "supported": true,
             "des-short": "微博，知乎，抖音实时热搜，B站实时排行榜。",
