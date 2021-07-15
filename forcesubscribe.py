@@ -26,7 +26,11 @@ async def force_subscribe_join(event: ChatAction.Event):
     if redis.get(f"sub.chat_id.{event.chat_id}.{user.id}"):
         return
     try:
-        await bot(GetParticipantRequest(join_chat, user.id))
+        try:
+            await bot(GetParticipantRequest(join_chat, user.id))
+        except ValueError:
+            user_input = await event.get_input_user()
+            await bot(GetParticipantRequest(join_chat, user_input))
         redis.set(f'sub.chat_id.{event.chat_id}.{user.id}', 'true')
         redis.expire(f'sub.chat_id.{event.chat_id}.{user.id}', 3600)
     except UserNotParticipantError:
@@ -51,7 +55,11 @@ async def force_subscribe_msg(context: Message):
     if context.sender.bot:
         return
     try:
-        await bot(GetParticipantRequest(join_chat, context.sender_id))
+        try:
+            await bot(GetParticipantRequest(join_chat, context.sender_id))
+        except ValueError:
+            await bot.get_participants(context.chat)
+            await bot(GetParticipantRequest(join_chat, context.sender_id))
         redis.set(f'sub.chat_id.{context.chat_id}.{context.sender_id}', 'true')
         redis.expire(f'sub.chat_id.{context.chat_id}.{context.sender_id}', 3600)
     except UserNotParticipantError:
