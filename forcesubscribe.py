@@ -52,7 +52,10 @@ async def force_subscribe_msg(context: Message):
         return
     else:
         join_chat = join_chat.decode()
-    if context.sender.bot:
+    try:
+        if context.sender.bot:
+            return
+    except AttributeError:
         return
     try:
         try:
