@@ -5,6 +5,7 @@ from asyncio import sleep
 from telethon.events.chataction import ChatAction
 from telethon.tl.custom.message import Message
 from telethon.tl.functions.channels import GetParticipantRequest
+from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors.rpcerrorlist import UserNotParticipantError, ChatAdminRequiredError
 from telethon import events
 
@@ -108,5 +109,10 @@ async def force_sub(context):
             await context.edit(lang('ghost_e_mark'))
             return
         sub_channel = context.parameter[0].replace('@', '')
+        try:
+            await context.client.get_participants(sub_channel, filter=ChannelParticipantsAdmins)
+        except:
+            await context.edit(f'设置失败：不是频道 @{sub_channel} 的管理员。')
+            return
         redis.set(f"sub.chat_id.{context.chat_id}", sub_channel)
         await context.edit(f'已设置当前群组强制需要关注频道的频道为： @{sub_channel} 。')
