@@ -609,6 +609,16 @@
             "supported": true,
             "des-short": "查询/解除群组中被所回复用户所封禁的用户。",
             "des": "查询/解除群组中被所回复用户所封禁的用户。命令：unbanby 。"
+        },
+        {
+            "name": "forcesubscribe",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "4.2 kb",
+            "supported": true,
+            "des-short": "自动删除未关注指定公开频道的用户的发言。",
+            "des": "自动删除未关注指定公开频道的用户的发言。命令：forcesub 。"
         }
     ]
 }
