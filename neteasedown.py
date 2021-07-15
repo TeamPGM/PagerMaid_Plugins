@@ -236,7 +236,7 @@ async def ned(context):
         await context.edit("**使用方法:** `-ned` `<关键词/id>`")
         return
     else:
-        if not eyed3_imported and not cc_imported:
+        if not eyed3_imported or not cc_imported:
             try:
                 await context.edit("支持库 `eyed3` `PyCryptodome` 未安装...\n正在尝试自动安装...")
                 await execute(f'{executable} -m pip install eyed3')
@@ -254,6 +254,7 @@ async def ned(context):
                     return
             except:
                 return
+            return
         type = 'keyword'
         id = context.parameter[0]
         # 测试是否为 id

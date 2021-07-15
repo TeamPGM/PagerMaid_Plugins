@@ -1,6 +1,8 @@
 import json, requests
+from json.decoder import JSONDecodeError
 from pagermaid.listener import listener
 from pagermaid.utils import obtain_message, alias_command
+
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("bin"), 
           description="查询信用卡信息", 
@@ -23,8 +25,12 @@ async def card(context):
     if r.status_code == 429:
         await context.edit("出错了呜呜呜 ~ 每分钟限额超过，请等待一分钟再试")
         return
-    
-    bin_json = json.loads(r.content.decode("utf-8"))
+
+    try:
+        bin_json = json.loads(r.content.decode("utf-8"))
+    except JSONDecodeError:
+        await context.edit("出错了呜呜呜 ~ 无效的参数。")
+        return
 
     msg_out = []
     msg_out.extend(["BIN：" + card_bin])

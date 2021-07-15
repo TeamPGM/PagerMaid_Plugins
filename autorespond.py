@@ -41,6 +41,9 @@ async def private_autorespond(context):
 @listener(incoming=True)
 async def mention_autorespond(context):
     if persistent_vars['autorespond']['enabled']:
-        if context.message.mentioned and not (await context.get_sender()).bot:
-            persistent_vars['autorespond']['amount'] += 1
-            await context.reply(persistent_vars['autorespond']['message'])
+        try:
+            if context.message.mentioned and not (await context.get_sender()).bot:
+                persistent_vars['autorespond']['amount'] += 1
+                await context.reply(persistent_vars['autorespond']['message'])
+        except AttributeError:
+            return

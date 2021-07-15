@@ -2,7 +2,7 @@
     "list": [
         {
             "name": "autorespond",
-            "version": "0.21",
+            "version": "0.211",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "1.9 kb",
@@ -292,7 +292,7 @@
         },
         {
             "name": "neteasedown",
-            "version": "1.12",
+            "version": "1.121",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "15.6 kb",
@@ -492,7 +492,7 @@
         },
         {
             "name": "rape",
-            "version": "1.03",
+            "version": "1.031",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "4.0 kb",
@@ -582,7 +582,7 @@
         },
         {
             "name": "bin",
-            "version": "1.0",
+            "version": "1.01",
             "section": "daily",
             "maintainer": "paulkm",
             "size": "1.8 kb",
@@ -592,7 +592,7 @@
         },
         {
             "name": "fuckmember",
-            "version": "1.03",
+            "version": "1.031",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "3.0 kb",
@@ -602,7 +602,7 @@
         },
         {
             "name": "unbanby",
-            "version": "1.0",
+            "version": "1.01",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "2.8 kb",

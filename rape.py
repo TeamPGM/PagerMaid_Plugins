@@ -9,6 +9,7 @@
 
 from datetime import timedelta
 from telethon.tl.types import ChannelParticipantsAdmins
+from telethon.errors.rpcerrorlist import ChatAdminRequiredError
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 
@@ -29,7 +30,15 @@ async def rape(context):
                 context_last_name = context.sender.last_name
             admins = await context.client.get_participants(context.chat, filter=ChannelParticipantsAdmins)
             if context.sender in admins:
-                await context.client.kick_participant(context.chat_id, reply.sender.id)
+                user = admins[admins.index(context.sender)]
+                if not user.participant.admin_rights.ban_users:
+                    await context.edit('无封禁用户权限。')
+                    return
+                try:
+                    await context.client.kick_participant(context.chat_id, reply.sender.id)
+                except ChatAdminRequiredError:
+                    await context.edit('无管理员权限。')
+                    return
                 await context.client.send_message(
                     context.chat_id,
                     f'[{reply.sender.first_name} {reply_last_name}](tg://user?id={reply.sender.id}) 已被移出群聊',

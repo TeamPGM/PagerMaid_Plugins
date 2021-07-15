@@ -1,8 +1,7 @@
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from telethon.tl.types import ChannelParticipantsKicked, ChannelParticipantsAdmins
-from telethon.errors.rpcerrorlist import UserAdminInvalidError
-from telethon.errors.rpcerrorlist import FloodWaitError
+from telethon.errors.rpcerrorlist import UserAdminInvalidError, ChatAdminRequiredError, FloodWaitError
 from asyncio import sleep
 from random import uniform
 
@@ -51,6 +50,9 @@ async def unban_by_bot(context):
                         print(f"Wait flood error: {e}")
                         return
                 except UserAdminInvalidError:
+                    await context.edit('无管理员权限，停止查询。')
+                    return
+                except ChatAdminRequiredError:
                     await context.edit('无管理员权限，停止查询。')
                     return
         # 每一百人修改一次
