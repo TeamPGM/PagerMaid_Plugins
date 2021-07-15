@@ -619,6 +619,16 @@
             "supported": true,
             "des-short": "自动删除未关注指定公开频道的用户的发言。",
             "des": "自动删除未关注指定公开频道的用户的发言。命令：forcesub 。"
+        },
+        {
+            "name": "forcegroup",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "3.6 kb",
+            "supported": true,
+            "des-short": "强制加入频道讨论群。",
+            "des": "自动删除未加入频道讨论群用户的发言。命令：forcegroup 。"
         }
     ]
 }

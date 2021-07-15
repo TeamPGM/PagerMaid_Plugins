@@ -80,7 +80,7 @@ async def force_subscribe_msg(context: Message):
         redis.delete(f"sub.chat_id.{context.chat_id}")
 
 
-@listener(is_plugin=False, outgoing=True, command=alias_command('forcesub'),
+@listener(is_plugin=True, outgoing=True, command=alias_command('forcesub'),
           description='自动删除未关注指定公开频道的用户的发言。',
           parameters="<username|false|status>")
 async def force_sub(context):
