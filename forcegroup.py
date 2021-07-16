@@ -18,6 +18,11 @@ async def force_group_msg(context: Message):
     if redis.get(f"group.chat_id.{context.chat_id}.{context.sender_id}"):
         return
     try:
+        if context.sender.bot:
+            pass
+    except AttributeError:
+        return
+    try:
         try:
             await bot(GetParticipantRequest(context.chat, context.sender_id))
         except ValueError:
