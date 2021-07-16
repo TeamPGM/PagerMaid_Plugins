@@ -69,11 +69,14 @@ async def force_subscribe_msg(context: Message):
     except UserNotParticipantError:
         try:
             await context.delete()
-            msg = await bot.send_message(context.chat_id,
-                                         f'[{context.sender.first_name}](tg://user?id={context.sender_id}) '
-                                         f'您需要先加入频道 @{join_chat} 才能发言。')
-            await sleep(5)
-            await msg.delete()
+            try:
+                msg = await bot.send_message(context.chat_id,
+                                             f'[{context.sender.first_name}](tg://user?id={context.sender_id}) '
+                                             f'您需要先加入频道 @{join_chat} 才能发言。')
+                await sleep(5)
+                await msg.delete()
+            except ValueError:
+                pass
         except ChatAdminRequiredError:
             redis.delete(f"sub.chat_id.{context.chat_id}")
     except ChatAdminRequiredError:

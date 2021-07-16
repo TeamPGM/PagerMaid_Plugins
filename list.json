@@ -612,7 +612,7 @@
         },
         {
             "name": "forcesubscribe",
-            "version": "1.04",
+            "version": "1.05",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "4.2 kb",
@@ -629,16 +629,6 @@
             "supported": true,
             "des-short": "强制加入频道讨论群。",
             "des": "自动删除未加入频道讨论群用户的发言。命令：forcegroup 。"
-        },
-        {
-            "name": "sb",
-            "version": "1.0",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "4.6 kb",
-            "supported": true,
-            "des-short": "跨群踢人。",
-            "des": "在自己拥有管理员权限的共同群组中封禁一位用户。命令：sb 。"
         }
     ]
 }
