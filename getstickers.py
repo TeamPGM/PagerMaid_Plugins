@@ -3,6 +3,7 @@ from collections import defaultdict
 import os
 import zipfile
 from PIL import Image
+from telethon.tl.functions.messages import GetAllStickersRequest
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.errors import MessageNotModifiedError
 from telethon.errors.rpcerrorlist import StickersetInvalidError
@@ -28,15 +29,80 @@ except ImportError:
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("getstickers"),
-          description="获取整个贴纸包的贴纸，任意值开启 tgs 转 gif；转 gif 需要手动安装 pypi 依赖 lottie[gif] 。",
+          description="获取整个贴纸包的贴纸，false 关闭 tgs 转 gif；all开启下载所有贴纸包；转 gif 需要手动安装 pypi 依赖 lottie[gif] 。",
           parameters="<任意值>")
 async def getstickers(context):
     tgs_gif = True
-    if len(context.parameter) == 0:
-        tgs_gif = False
     if not os.path.isdir('data/sticker/'):
         os.makedirs('data/sticker/')
-    if context.reply_to_msg_id:
+    if len(context.parameter) == 1 or len(context.parameter) == 2:
+        if context.parameter[0] == "false" or context.parameter[1] == "false":
+            tgs_gif = False
+        if context.parameter[0] == "all" or context.paramete[1]== "all":
+            sticker_sets = await context.client(GetAllStickersRequest(0))
+            for stickerset in sticker_sets.sets:
+                file_ext_ns_ion = "webp"
+                wdnmd = InputStickerSetID(id=stickerset.id, access_hash=stickerset.access_hash)
+                sticker_set = await context.client(GetStickerSetRequest(wdnmd))
+                pack_file = os.path.join('data/sticker/', sticker_set.set.short_name, "pack.txt")
+                if os.path.isfile(pack_file):
+                    os.remove(pack_file)
+                # Sticker emojis
+                emojis = defaultdict(str)
+                for pack in sticker_set.packs:
+                    for document_id in pack.documents:
+                        emojis[document_id] += pack.emoticon
+                async def download(sticker, emojis, path, file):
+                    await context.client.download_media(sticker, file=os.path.join(path, file))
+                    with open(pack_file, "a") as f:
+                        f.write(f"{{'image_file': '{file}','emojis':{emojis[sticker.id]}}},")
+                    if file_ext_ns_ion == 'tgs' and lottie_import and tgs_gif:
+                        animated = import_tgs(os.path.join(path, file))
+                        export_gif(animated, os.path.join(path, file)[:-3] + 'gif')
+                    elif file_ext_ns_ion == 'webp':
+                        convert_png(os.path.join(path, file))
+
+                pending_tasks = [
+                    asyncio.ensure_future(
+                        download(document, emojis, 'data/sticker/' + sticker_set.set.short_name,
+                                 f"{i:03d}.{file_ext_ns_ion}")
+                    ) for i, document in enumerate(sticker_set.documents)
+                ]
+                xx = await context.client.send_message(context.chat_id, 
+                    f"正在下载 {sticker_set.set.short_name} 中的 {sticker_set.set.count} 张贴纸。。。")
+                num_tasks = len(pending_tasks)
+                while 1:
+                    done, pending_tasks = await asyncio.wait(pending_tasks, timeout=2.5,
+                                                             return_when=asyncio.FIRST_COMPLETED)
+                    if file_ext_ns_ion == 'tgs' and lottie_import and tgs_gif:
+                        try:
+                            await xx.edit(
+                                f"正在下载/转换中，进度： {num_tasks - len(pending_tasks)}/{sticker_set.set.count}")
+                        except MessageNotModifiedError:
+                            pass
+                    if not pending_tasks:
+                        break
+                await xx.edit("下载完毕，打包上传中。")
+                directory_name = sticker_set.set.short_name
+                os.chdir("data/sticker/")  # 修改当前工作目录
+                zipf = zipfile.ZipFile(directory_name + ".zip", "w", zipfile.ZIP_DEFLATED)
+                zipdir(directory_name, zipf)
+                zipf.close()
+                await context.client.send_file(
+                    context.chat_id,
+                    directory_name + ".zip",
+                    caption=sticker_set.set.short_name,
+                    force_document=True,
+                    allow_cache=False
+                )
+                try:
+                    os.remove(directory_name + ".zip")
+                    os.remove(directory_name)
+                except:
+                    pass
+                os.chdir(working_dir)
+                await xx.delete()
+    else:
         reply_message = await context.get_reply_message()
         if not reply_message.sticker:
             await context.edit("请回复一张贴纸。")
@@ -117,8 +183,6 @@ async def getstickers(context):
             pass
         os.chdir(working_dir)
         await context.delete()
-    else:
-        await context.edit("请回复一张贴纸。")
 
 
 def find_instance(items, class_or_tuple):
