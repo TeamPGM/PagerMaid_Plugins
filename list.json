@@ -639,6 +639,16 @@
             "supported": true,
             "des-short": "自动复读（无引用）一个人的消息。",
             "des": "自动复读（无引用）一个人的消息。命令：repeat 。"
+        },
+        {
+            "name": "kickanddm",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "lowking",
+            "size": "5.6 kb",
+            "supported": true,
+            "des-short": "删除某人的消息并踢出/禁言",
+            "des": "回复你要删除消息和踢的人或者要禁言的人\n指令：\n-kickanddm 直接删除消息并踢人\n-kickanddm 100 禁言100秒（tg不支持60秒以下的时间，少于60变成永久）并删除最近999条消息\n⚠️kickanddm 后面带时间的只是禁言，不带时间的直接踢。"
         }
     ]
 }
