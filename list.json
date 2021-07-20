@@ -629,6 +629,16 @@
             "supported": true,
             "des-short": "强制加入频道讨论群。",
             "des": "自动删除未加入频道讨论群用户的发言。命令：forcegroup 。"
+        },
+        {
+            "name": "repeat",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "1.8 kb",
+            "supported": true,
+            "des-short": "自动复读（无引用）一个人的消息。",
+            "des": "自动复读（无引用）一个人的消息。命令：repeat 。"
         }
     ]
 }
