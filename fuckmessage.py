@@ -19,9 +19,10 @@ async def fuck_message(context):
     async for message in context.client.iter_messages(context.chat_id):
         if count_buffer == 200:
             break
-        if context.arguments in message.text:
-            messages.append(message)
-            count += 1
+        if message.text:
+            if context.arguments in message.text:
+                messages.append(message)
+                count += 1
         if len(messages) > 50:
             try:
                 await context.client.delete_messages(input_chat, messages)
