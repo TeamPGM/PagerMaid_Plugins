@@ -659,6 +659,16 @@
             "supported": true,
             "des-short": "删除烦人的消息",
             "des": "删除最近 200 条消息中包含指定关键字的消息。"
+        },
+        {
+            "name": "yyr",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada、kld",
+            "size": "0.9 kb",
+            "supported": true,
+            "des-short": "抽象话转换",
+            "des": "把普通的话转换成抽象话"
         }
     ]
 }
