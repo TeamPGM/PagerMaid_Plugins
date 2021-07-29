@@ -669,6 +669,16 @@
             "supported": true,
             "des-short": "抽象话转换",
             "des": "把普通的话转换成抽象话"
+        },
+        {
+            "name": "chatbot",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "1.2 kb",
+            "supported": true,
+            "des-short": "智能聊天机器人。（支持回复）",
+            "des": "使用自然语言处理 (NLP) 来帮助用户通过文本进行交互。（支持回复）。\n指令：-chatbot"
         }
     ]
 }
