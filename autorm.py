@@ -71,6 +71,8 @@ async def remove_message(context):
             if text.startswith("-autorm"):
                 context.arguments = text.lstrip("-autorm").lstrip()
                 await autorm(context)
+            if text.startswith(f"-{alias_command('dme')}"):
+                return
             await asyncio.sleep(delta)
             await context.delete()
             return
@@ -79,6 +81,8 @@ async def remove_message(context):
             if text.startswith("-autorm"):
                 context.arguments = text.lstrip("-autorm").lstrip()
                 await autorm(context)
+            if text.startswith(f"-{alias_command('dme')}"):
+                return
             await asyncio.sleep(delta)
             await context.delete()
             return
