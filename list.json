@@ -679,6 +679,16 @@
             "supported": true,
             "des-short": "智能聊天机器人。（支持回复）",
             "des": "使用自然语言处理 (NLP) 来帮助用户通过文本进行交互。（支持回复）。\n指令：-chatbot"
+        },
+        {
+            "name": "square",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "Vesugierii",
+            "size": "1.2 kb",
+            "supported": true,
+            "des-short": "生成文本矩形",
+            "des": "指令：-square"
         }
     ]
 }
