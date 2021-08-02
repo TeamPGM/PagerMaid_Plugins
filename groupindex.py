@@ -32,6 +32,7 @@ async def group_index(context):
     join_count = 0
     leave_count = 0
     # 读取管理员操作日志
+    admin = True
     try:
         async for i in context.client.iter_admin_log(context.chat_id, join=True):
             utc_time = i.date.replace(tzinfo=utc_tz)
@@ -48,7 +49,7 @@ async def group_index(context):
                 break
             leave_count += 1
     except:
-        pass
+        admin = False
     await context.edit('正在分析群组数据中...(2/3)')
     async for i in context.client.iter_messages(context.chat_id, offset_date=search, reverse=True):
         uid = i.sender_id
@@ -68,9 +69,10 @@ async def group_index(context):
     msg_counts = end_id - start_id
     member_counts = len(all_members)
     text += f'活跃人数：{member_counts} 人\n' \
-            f'总消息数：{msg_counts}\n 条' \
-            f'加群 {join_count} 人，退群 {leave_count} 人\n' \
-            f'最活跃的小可爱们：\n'
+            f'总消息数：{msg_counts} 条\n'
+    if admin:
+        text += f'加群 {join_count} 人，退群 {leave_count} 人\n' \
+    text += f'最活跃的小可爱们：\n'
     # 字典倒序排序
     member_count = sorted(member_count.items(), key=lambda x: x[1], reverse=True)
     # 遍历列表
