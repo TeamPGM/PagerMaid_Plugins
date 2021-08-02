@@ -689,6 +689,16 @@
             "supported": true,
             "des-short": "生成文本矩形",
             "des": "指令：-square"
+        },
+        {
+            "name": "groupindex",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "3.1 kb",
+            "supported": true,
+            "des-short": "获取群组当日活跃数据",
+            "des": "获取群组当日活跃数据。\n指令：-groupindex"
         }
     ]
 }
