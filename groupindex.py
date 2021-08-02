@@ -71,14 +71,17 @@ async def group_index(context):
     text += f'活跃人数：{member_counts} 人\n' \
             f'总消息数：{msg_counts} 条\n'
     if admin:
-        text += f'加群 {join_count} 人，退群 {leave_count} 人\n' \
+        text += f'加群 {join_count} 人，退群 {leave_count} 人\n'
     text += f'最活跃的小可爱们：\n'
     # 字典倒序排序
     member_count = sorted(member_count.items(), key=lambda x: x[1], reverse=True)
     # 遍历列表
-    for i in range(min(len(member_count), 5)):
-        # 获取用户信息
-        target_user = await context.client(GetFullUserRequest(member_count[i][0]))
-        first_name = target_user.user.first_name.replace("\u2060", "")
-        text += f'{first_name} `{member_count[i][1]}`\n'
+    if len(member_count) == 0:
+        text += "没有发言用户呢 ~"
+    else:
+        for i in range(min(len(member_count), 5)):
+            # 获取用户信息
+            target_user = await context.client(GetFullUserRequest(member_count[i][0]))
+            first_name = target_user.user.first_name.replace("\u2060", "")
+            text += f'{first_name} `{member_count[i][1]}`\n'
     await context.edit(text)

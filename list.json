@@ -692,10 +692,10 @@
         },
         {
             "name": "groupindex",
-            "version": "1.1",
+            "version": "1.11",
             "section": "daily",
             "maintainer": "xtaodada",
-            "size": "3.1 kb",
+            "size": "3.2 kb",
             "supported": true,
             "des-short": "获取群组当日活跃数据",
             "des": "获取群组当日活跃数据。\n指令：-groupindex"
