@@ -25,7 +25,7 @@ def yv_lu_process_image(name, text, photo, path):
     text = cut(text, 17)
     # 用户不存在头像时
     if not photo:
-        photo = Image.open(f'{path}4.png')
+        photo = Image.open(f'{path}p4.png')
         # 对图片写字
         draw = ImageDraw.Draw(photo)
         # 计算使用该字体占据的空间
@@ -76,7 +76,7 @@ def yv_lu_process_image(name, text, photo, path):
 async def yv_lu_process_sticker(name, photo, sticker, path):
     # 用户不存在头像时
     if not photo:
-        photo = Image.open(f'{path}4.png')
+        photo = Image.open(f'{path}p4.png')
         # 对图片写字
         draw = ImageDraw.Draw(photo)
         # 计算使用该字体占据的空间
