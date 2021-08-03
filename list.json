@@ -699,6 +699,16 @@
             "supported": true,
             "des-short": "获取群组当日活跃数据",
             "des": "获取群组当日活跃数据。\n指令：-groupindex"
+        },
+        {
+            "name": "yvlu",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "4.8 kb",
+            "supported": true,
+            "des-short": "将回复的消息转换成语录图片",
+            "des": "将回复的消息转换成语录图片。\n指令：-yvlu"
         }
     ]
 }
