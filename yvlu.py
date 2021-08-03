@@ -73,7 +73,7 @@ def yv_lu_process_image(name, text, photo, path):
     result.save(f'{path}result.png')
 
 
-def yv_lu_process_sticker(name, photo, sticker, path):
+async def yv_lu_process_sticker(name, photo, sticker, path):
     # 用户不存在头像时
     if not photo:
         photo = Image.open(f'{path}4.png')
@@ -91,10 +91,9 @@ def yv_lu_process_sticker(name, photo, sticker, path):
     else:
         photo = Image.open(f'{path}{photo}')
     # 读取图像
-    sticker = Image.open(f'{sticker}')
-    sticker = sticker.resize((400, 400))
+    sticker = await resize_image(sticker, 400)
     # 创建空图片
-    result = Image.new('RGBA', (512, 512))
+    result = Image.new('RGBA', (512, 400))
     # 处理头像
     mask = Image.open(f'{path}mask1.png')
     photo_size = photo.size
@@ -104,8 +103,8 @@ def yv_lu_process_sticker(name, photo, sticker, path):
     mask1 = Image.new('RGBA', mask_size)
     mask1.paste(photo, mask=mask)
     # 粘贴图像
-    result.paste(mask1, (10, 350))
-    result.paste(sticker, (130, 50))
+    result.paste(mask1, (0, 300))
+    result.paste(sticker, (112, 400 - sticker.size[1]))
     # 保存图像
     result.save(f'{path}result.png')
 
@@ -168,19 +167,19 @@ async def yv_lu(context):
             return
     if exists("plugins/yvlu/" + str(target_user.user.id) + ".jpg"):
         if file_name:
-            yv_lu_process_sticker(name, f"{target_user.user.id}.jpg", file_name, 'plugins/yvlu/')
+            await yv_lu_process_sticker(name, f"{target_user.user.id}.jpg", file_name, 'plugins/yvlu/')
             remove(file_name)
         else:
             yv_lu_process_image(name, reply_message.message, f"{target_user.user.id}.jpg", 'plugins/yvlu/')
         remove("plugins/yvlu/" + str(target_user.user.id) + ".jpg")
     else:
         if file_name:
-            yv_lu_process_sticker(name, None, file_name, 'plugins/yvlu/')
+            await yv_lu_process_sticker(name, None, file_name, 'plugins/yvlu/')
             remove(file_name)
         else:
             yv_lu_process_image(name, reply_message.message, None, 'plugins/yvlu/')
     # 转换为贴纸
-    image = await resize_image('plugins/yvlu/result.png')
+    image = await resize_image('plugins/yvlu/result.png', 512)
     file = BytesIO()
     file.name = "sticker.webp"
     image.save(file, "WEBP")
@@ -194,20 +193,20 @@ async def yv_lu(context):
     await context.delete()
 
 
-async def resize_image(photo):
+async def resize_image(photo, num):
     image = Image.open(photo)
-    maxsize = (512, 512)
-    if (image.width and image.height) < 512:
+    maxsize = (num, num)
+    if (image.width and image.height) < num:
         size1 = image.width
         size2 = image.height
         if image.width > image.height:
-            scale = 512 / size1
-            size1new = 512
+            scale = num / size1
+            size1new = num
             size2new = size2 * scale
         else:
-            scale = 512 / size2
+            scale = num / size2
             size1new = size1 * scale
-            size2new = 512
+            size2new = num
         size1new = floor(size1new)
         size2new = floor(size2new)
         size_new = (size1new, size2new)
