@@ -42,7 +42,6 @@ async def guess(context):
           description="查询维基百科词条",
           parameters="<词组>")
 async def wiki(context):
-    lang = config['application_language'].replace('zh-cn', 'zh')
     await context.edit("获取中 . . .")
     try:
         message = await obtain_message(context)
@@ -61,18 +60,8 @@ async def wiki(context):
         wiki_content = wiki_json['query']['search'][0]['snippet'].replace('<span class=\"searchmatch\">', '**').replace(
             '</span>', '**')
         wiki_time = wiki_json['query']['search'][0]['timestamp'].replace('T', ' ').replace('Z', ' ')
-        try:
-            await context.edit("正在生成翻译中 . . .")
-            USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0"
-            headers = {"user-agent": USER_AGENT}
-            wiki_content = json.loads(requests.get("https://xtaolink.cn/git/m/t.php?lang=" + lang + '&text=' +
-                                                   clear_emojis(wiki_content), headers=headers)
-                                      .content.decode("utf-8"))['data']['target_text']
-            message = '词条： [' + wiki_title + '](https://zh.wikipedia.org/zh-cn/' + wiki_title + ')\n\n' + \
-                      wiki_content + '...\n\n此词条最后修订于 ' + wiki_time
-        except ValueError:
-            await context.edit("出错了呜呜呜 ~ 找不到目标语言，请更正配置文件中的错误。")
-            return
+        message = '词条： [' + wiki_title + '](https://zh.wikipedia.org/zh-cn/' + wiki_title + ')\n\n' + \
+                    wiki_content + '...\n\n此词条最后修订于 ' + wiki_time
         await context.edit(message)
     else:
         await context.edit("没有匹配到相关词条")
