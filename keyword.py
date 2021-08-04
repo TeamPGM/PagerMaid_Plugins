@@ -4,6 +4,7 @@ from os import path, remove, makedirs, chdir
 from shutil import copyfile, move, rmtree
 from uuid import uuid4
 from base64 import b64encode, b64decode
+from importlib import import_module
 from pagermaid import bot, redis, log, redis_status, working_dir
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
