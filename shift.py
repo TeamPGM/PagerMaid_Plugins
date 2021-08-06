@@ -32,6 +32,9 @@ async def shift_set(context):
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
+        if channel in [-1001441461877]:
+            await context.edit('出错了呜呜呜 ~ 此对话位于白名单中。')
+            return
         # 检查目标频道
         try:
             to = int(context.parameter[2])
@@ -41,6 +44,9 @@ async def shift_set(context):
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的目标对话。")
                 return
+        if to in [-1001441461877]:
+            await context.edit('出错了呜呜呜 ~ 此对话位于白名单中。')
+            return
         redis.set("shift." + str(channel), f"{to}")
         await context.edit(f"已成功配置将对话 {channel} 的新消息转发到 {to} 。")
         await log(f"已成功配置将对话 {channel} 的新消息转发到 {to} 。")
@@ -77,6 +83,9 @@ async def shift_set(context):
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
+        if channel in [-1001441461877]:
+            await context.edit('出错了呜呜呜 ~ 此对话位于白名单中。')
+            return
         # 检查目标频道
         try:
             to = int(context.parameter[2])
@@ -86,6 +95,9 @@ async def shift_set(context):
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的目标对话。")
                 return
+        if to in [-1001441461877]:
+            await context.edit('出错了呜呜呜 ~ 此对话位于白名单中。')
+            return
         # 开始遍历消息
         await context.edit(f'开始备份频道 {channel} 到 {to} 。')
         async for msg in context.client.iter_messages(int(channel), reverse=True):
@@ -106,6 +118,9 @@ async def shift_channel_message(context):
     if not redis_status():
         return
     if not redis.get("shift." + str(context.chat_id)):
+        return
+    if context.chat_id in [-1001441461877]:
+        await context.edit('出错了呜呜呜 ~ 此对话位于白名单中。')
         return
     cid = int(redis.get("shift." + str(context.chat_id)).decode())
     try:
