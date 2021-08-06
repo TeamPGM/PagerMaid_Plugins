@@ -25,10 +25,18 @@ async def shift_set(context):
             return
         # 检查来源频道
         try:
-            channel = int(context.parameter[1])
+            channel = await context.client.get_entity(int(context.parameter[1]))
+            if not channel.broadcast:
+                await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
+                return
+            channel = channel.id
         except Exception:
             try:
-                channel = (await context.client.get_entity(context.parameter[1])).id
+                channel = await context.client.get_entity(context.parameter[1])
+                if not channel.broadcast:
+                    await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
+                    return
+                channel = channel.id
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
@@ -76,10 +84,18 @@ async def shift_set(context):
             return
         # 检查来源频道
         try:
-            channel = int(context.parameter[1])
+            channel = await context.client.get_entity(int(context.parameter[1]))
+            if not channel.broadcast:
+                await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
+                return
+            channel = channel.id
         except Exception:
             try:
-                channel = (await context.client.get_entity(context.parameter[1])).id
+                channel = await context.client.get_entity(context.parameter[1])
+                if not channel.broadcast:
+                    await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
+                    return
+                channel = channel.id
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
@@ -120,7 +136,6 @@ async def shift_channel_message(context):
     if not redis.get("shift." + str(context.chat_id)):
         return
     if context.chat_id in [-1001441461877]:
-        await context.edit('出错了呜呜呜 ~ 此对话位于白名单中。')
         return
     cid = int(redis.get("shift." + str(context.chat_id)).decode())
     try:
