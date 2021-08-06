@@ -709,6 +709,26 @@
             "supported": true,
             "des-short": "将回复的消息转换成语录图片",
             "des": "将回复的消息转换成语录图片。\n指令：-yvlu"
+        },
+        {
+            "name": "antichannelpin",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "2.8 kb",
+            "supported": true,
+            "des-short": "自动取消关联频道消息置顶",
+            "des": "自动取消关联频道消息置顶。\n指令：-antichannelpin"
+        },
+        {
+            "name": "shift",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "5.3 kb",
+            "supported": true,
+            "des-short": "自动转发/备份频道消息",
+            "des": "自动转发频道新消息或者从零开始备份频道。\n指令：-shift\n查看帮助：-help shift"
         }
     ]
 }
