@@ -29,14 +29,14 @@ async def shift_set(context):
             if not channel.broadcast:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
-            channel = channel.id
+            channel = int(f'-100{channel.id}')
         except Exception:
             try:
                 channel = await context.client.get_entity(context.parameter[1])
                 if not channel.broadcast:
                     await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                     return
-                channel = channel.id
+                channel = int(f'-100{channel.id}')
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
@@ -48,7 +48,11 @@ async def shift_set(context):
             to = int(context.parameter[2])
         except Exception:
             try:
-                to = (await context.client.get_entity(context.parameter[2])).id
+                to = await context.client.get_entity(context.parameter[2])
+                if to.broadcast or to.gigagroup or to.megagroup:
+                    to = int(f'-100{to.id}')
+                else:
+                    to = to.id
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的目标对话。")
                 return
@@ -68,6 +72,8 @@ async def shift_set(context):
         except Exception:
             try:
                 channel = (await context.client.get_entity(context.parameter[1])).id
+                if channel.broadcast or channel.gigagroup or channel.megagroup:
+                    channel = int(f'-100{channel.id}')
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
@@ -88,14 +94,14 @@ async def shift_set(context):
             if not channel.broadcast:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
-            channel = channel.id
+            channel = int(f'-100{channel.id}')
         except Exception:
             try:
                 channel = await context.client.get_entity(context.parameter[1])
                 if not channel.broadcast:
                     await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                     return
-                channel = channel.id
+                channel = int(f'-100{channel.id}')
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的来源对话。")
                 return
@@ -107,7 +113,11 @@ async def shift_set(context):
             to = int(context.parameter[2])
         except Exception:
             try:
-                to = (await context.client.get_entity(context.parameter[2])).id
+                to = await context.client.get_entity(context.parameter[2])
+                if to.broadcast or to.gigagroup or to.megagroup:
+                    to = int(f'-100{to.id}')
+                else:
+                    to = to.id
             except Exception:
                 await context.edit("出错了呜呜呜 ~ 无法识别的目标对话。")
                 return
