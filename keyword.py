@@ -8,6 +8,9 @@ from importlib import import_module
 from pagermaid import bot, redis, log, redis_status, working_dir
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
+from telethon.errors.rpcerrorlist import StickersetInvalidError
+from telethon.tl.functions.messages import GetStickerSetRequest
+from telethon.tl.types import InputStickerSetID
 
 msg_freq = 1
 group_last_time = {}
@@ -193,6 +196,7 @@ async def del_msg(context, t_lim):
 
 async def send_reply(chat_id, trigger, mode, reply_msg, context):
     try:
+        # 拷贝一份数据
         real_chat_id = chat_id
         chat = context.chat
         sender = context.sender
@@ -217,6 +221,7 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                 if not last_name:
                     last_name = ""
                 replace_data["chat_name"] = f"{chat.first_name} {last_name}"
+        # 校验能否发送消息
         could_send_msg = valid_time(chat_id)
         if not could_send_msg:
             return
@@ -228,6 +233,7 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                 count = 0
                 bracket_str = random_str()
                 re_msg = re_msg.replace(r"\}", bracket_str)
+                # 函数功能相关
                 while re.search(catch_pattern, re_msg) and count < 20:
                     func_exec = re.search(catch_pattern, re_msg).group("str")
                     try:
@@ -258,13 +264,25 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                     elif len(s) >= 6 and "edit_" == s[0:5] and is_num(s[5:]):
                         edit_id = int(s[5:])
                         type_parse.remove(s)
-                if ("file" in type_parse or "photo" in type_parse) and len(re_msg.split()) >= 2:
+                # 处理file和photo
+                if ("file" in type_parse or "photo" in type_parse or "sticker" in type_parse) and len(re_msg.split()) >= 2:
                     update_last_time = True
                     re_data = re_msg.split(" ")
                     cache_exists, filename = has_cache(chat_id, mode, trigger, re_data[0])
                     is_opened = cache_opened(chat_id, mode, trigger)
-                    if is_opened:
-                        if not cache_exists:
+                    if "sticker" not in type_parse:
+                        if is_opened:
+                            # 开启缓存，处理缓存
+                            if not cache_exists:
+                                if re_data[1][0:7] == "file://":
+                                    re_data[1] = re_data[1][7:]
+                                    copyfile(" ".join(re_data[1:]), filename)
+                                else:
+                                    fileget = requests.get(" ".join(re_data[1:]))
+                                    with open(filename, "wb") as f:
+                                        f.write(fileget.content)
+                        else:
+                            # 未开启缓存
                             if re_data[1][0:7] == "file://":
                                 re_data[1] = re_data[1][7:]
                                 copyfile(" ".join(re_data[1:]), filename)
@@ -272,14 +290,6 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                                 fileget = requests.get(" ".join(re_data[1:]))
                                 with open(filename, "wb") as f:
                                     f.write(fileget.content)
-                    else:
-                        if re_data[1][0:7] == "file://":
-                            re_data[1] = re_data[1][7:]
-                            copyfile(" ".join(re_data[1:]), filename)
-                        else:
-                            fileget = requests.get(" ".join(re_data[1:]))
-                            with open(filename, "wb") as f:
-                                f.write(fileget.content)
                     reply_to = None
                     if "reply" in type_parse:
                         reply_to = context.id
@@ -287,21 +297,45 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                         reply = await context.get_reply_message()
                         if redir == "1" and reply:
                             reply_to = reply.id
-                    if edit_id == -1:
-                        message_list.append(await bot.send_file(
-                            chat_id,
-                            filename,
-                            reply_to=reply_to,
-                            force_document=("file" in type_parse)
-                        ))
+                    if "sticker" in type_parse:
+                        # 单独处理回复贴纸
+                        sticker_params = re_data[0].split(",")
+                        sticker_idx = re_data[1].split(",")
+                        try:
+                            stickers = await context.client(
+                                GetStickerSetRequest(
+                                    stickerset=InputStickerSetID(
+                                        id=int(sticker_params[0]), access_hash=int(sticker_params[1]))))
+                        except StickersetInvalidError:
+                            await log('贴纸配置错误。')
+                            return
+                        try:
+                            i = random.randint(0, len(sticker_idx) - 1)
+                            message_list.append(await bot.send_file(
+                                chat_id,
+                                stickers.documents[int(sticker_idx[i])],
+                                reply_to=reply_to
+                            ))
+                        except:
+                            pass
                     else:
-                        edit_file = await bot.upload_file(filename)
-                        message_list[edit_id] = await message_list[edit_id].edit(
-                            file=edit_file,
-                            force_document=("file" in type_parse)
-                        )
+                        if edit_id == -1:
+                            message_list.append(await bot.send_file(
+                                chat_id,
+                                filename,
+                                reply_to=reply_to,
+                                force_document=("file" in type_parse)
+                            ))
+                        else:
+                            edit_file = await bot.upload_file(filename)
+                            message_list[edit_id] = await message_list[edit_id].edit(
+                                file=edit_file,
+                                force_document=("file" in type_parse)
+                            )
+                    # 未开启缓存，删除文件
                     if not is_opened:
                         remove(filename)
+                # 处理tgfile和tgphoto
                 elif ("tgfile" in type_parse or "tgphoto" in type_parse) and len(re_msg.split()) >= 2:
                     update_last_time = True
                     re_data = re_msg.split(" ")
@@ -975,30 +1009,41 @@ async def setdata(context):
 async def auto_reply(context):
     global read_context
     await asyncio.sleep(random.randint(0, 100) / 1000)
+    # 解决重复回复，不稳定修复
     if (context.chat_id, context.id) in read_context:
         return
     read_context[(context.chat_id, context.id)] = True
+
+    # 判断redis状态
     if not redis_status():
         return
     try:
         chat_id = context.chat_id
         sender_id = context.sender_id
+        # 读取keyword当前会话的设置
         n_settings = get_redis(f"keyword.{chat_id}.settings")
         if n_settings.get("status", "1") == "0":
             return
+        # 获取本人id
         self_id = (await bot.get_me()).id
+        # 获取全局设置
         g_settings = get_redis("keyword.settings")
+        # 获取当前会话的2种回复配置
         plain_dict = get_redis(f"keyword.{chat_id}.plain")
         regex_dict = get_redis(f"keyword.{chat_id}.regex")
+        # 获取全局和当前会话设置的mode
         g_mode = g_settings.get("mode", None)
         n_mode = n_settings.get("mode", None)
         mode = "0"
+        # 获取全局和当前会话设置的list
         g_list = g_settings.get("list", None)
         n_list = n_settings.get("list", None)
         user_list = []
+        # 获取全局和当前会话设置的trig
         g_trig = g_settings.get("trig", None)
         n_trig = n_settings.get("trig", None)
         trig = "0"
+        # 初始化各种设置
         if g_mode and n_mode:
             mode = n_mode
         elif g_mode or n_mode:
@@ -1014,16 +1059,23 @@ async def auto_reply(context):
         send_text = context.text
         if not send_text:
             send_text = ""
+        # 是否自我触发
         self_sent = self_id == sender_id
+        # 处理文本配置
         for k, v in plain_dict.items():
+            # 接收到的文本符合配置
             if k in send_text:
+                # 获取要回复的内容配置
                 tmp = get_redis(f"keyword.{chat_id}.single.plain.{encode(k)}")
+                # 判断是否要回复
                 could_reply = validate(str(sender_id), int(mode), user_list)
                 if tmp:
                     could_reply = validate(str(sender_id), int(tmp.get("mode", "0")), tmp.get("list", []))
                 if could_reply and (not self_sent or validsent(int(trig), tmp)):
                     read_context[(chat_id, context.id)] = None
+                    # 发送回复
                     await send_reply(chat_id, k, "plain", parse_multi(v), context)
+        # 处理正则配置
         for k, v in regex_dict.items():
             pattern = re.compile(k)
             if pattern.search(send_text):
