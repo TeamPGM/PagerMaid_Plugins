@@ -32,7 +32,7 @@
         },
         {
             "name": "autorm",
-            "version": "1.03",
+            "version": "1.031",
             "section": "chat",
             "maintainer": "fruitymelon",
             "size": "6.7 kb",
@@ -62,7 +62,7 @@
         },
         {
             "name": "xtao-some",
-            "version": "1.21",
+            "version": "1.22",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "12.9 kb",
@@ -72,7 +72,7 @@
         },
         {
             "name": "yb-dl",
-            "version": "1.02",
+            "version": "1.03",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "18.8 kb",
@@ -82,7 +82,7 @@
         },
         {
             "name": "throwit",
-            "version": "1.612",
+            "version": "1.62",
             "section": "profile",
             "maintainer": "xtaodada",
             "size": "6.9 kb",
@@ -152,7 +152,7 @@
         },
         {
             "name": "portball",
-            "version": "1.44",
+            "version": "1.45",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "2.8 kb",
@@ -192,7 +192,7 @@
         },
         {
             "name": "whois",
-            "version": "1.131",
+            "version": "1.14",
             "section": "daily",
             "maintainer": "KorenKrita",
             "size": "1.1 kb",
@@ -242,7 +242,7 @@
         },
         {
             "name": "da",
-            "version": "1.01",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "yxkumad",
             "size": "1.6 kb",
@@ -502,7 +502,7 @@
         },
         {
             "name": "fuck",
-            "version": "1.02",
+            "version": "1.021",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "4.0 kb",
@@ -532,7 +532,7 @@
         },
         {
             "name": "getstickers",
-            "version": "1.1",
+            "version": "1.11",
             "section": "chat",
             "maintainer": "xtaodada,Vesugierii",
             "size": "5.4 kb",
@@ -592,7 +592,7 @@
         },
         {
             "name": "fuckmember",
-            "version": "1.031",
+            "version": "1.032",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "3.0 kb",
@@ -622,7 +622,7 @@
         },
         {
             "name": "forcegroup",
-            "version": "1.01",
+            "version": "1.02",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "3.6 kb",

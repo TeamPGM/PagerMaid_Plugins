@@ -34,7 +34,7 @@ async def fuck_member(context):
             if day < 7:
                 day = 7
                 text += '由于输入的数据过小，时间自动设置为 7 天。\n'
-        except KeyError:
+        except (KeyError or ValueError):
             day = 7
             text += '由于输入的数据错误，时间自动设置为 7 天。\n'
     else:

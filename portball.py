@@ -14,10 +14,14 @@ async def portball(context):
         reply = await context.get_reply_message()
         if reply:
             action = context.arguments.split()
-            if reply.sender.last_name is None:
-                last_name = ''
+            if reply.sender:
+                if reply.sender.last_name is None:
+                    last_name = ''
+                else:
+                    last_name = reply.sender.last_name
             else:
-                last_name = reply.sender.last_name
+                await context.edit('无法获取所回复的用户。')
+                return
 
             if len(action) < 2:
                 notification = await bot.send_message(context.chat_id, '格式是\n-portball 理由 秒数\n真蠢', reply_to=context.id)

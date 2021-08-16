@@ -33,11 +33,15 @@ async def force_group_msg(context: Message):
     except UserNotParticipantError:
         try:
             reply = await context.get_reply_message()
+            try:
+                reply = reply.id
+            except AttributeError:
+                reply = None
             await context.delete()
             msg = await bot.send_message(context.chat_id,
                                          f'[{context.sender.first_name}](tg://user?id={context.sender_id}) '
                                          f'您需要先加入频道讨论群才能发言。',
-                                         reply_to=reply.id)
+                                         reply_to=reply)
             await sleep(5)
             await msg.delete()
         except ChatAdminRequiredError:

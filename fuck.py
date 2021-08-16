@@ -24,10 +24,14 @@ async def fuck(context):
                 reply_last_name = ''
             else:
                 reply_last_name = reply.sender.last_name
-            if context.sender.last_name is None:
-                context_last_name = ''
+            if context.sender:
+                if context.sender.last_name is None:
+                    context_last_name = ''
+                else:
+                    context_last_name = context.sender.last_name
             else:
-                context_last_name = context.sender.last_name
+                await context.edit('无法获取所回复的用户。')
+                return
             admins = await context.client.get_participants(context.chat, filter=ChannelParticipantsAdmins)
             if context.sender in admins:
                 try:

@@ -55,16 +55,20 @@ async def wiki(context):
     except:
         await context.edit("出错了呜呜呜 ~ 无法访问到维基百科。")
         return
-    if not len(wiki_json['query']['search']) == 0:
-        wiki_title = wiki_json['query']['search'][0]['title']
-        wiki_content = wiki_json['query']['search'][0]['snippet'].replace('<span class=\"searchmatch\">', '**').replace(
-            '</span>', '**')
-        wiki_time = wiki_json['query']['search'][0]['timestamp'].replace('T', ' ').replace('Z', ' ')
-        message = '词条： [' + wiki_title + '](https://zh.wikipedia.org/zh-cn/' + wiki_title + ')\n\n' + \
-                    wiki_content + '...\n\n此词条最后修订于 ' + wiki_time
-        await context.edit(message)
-    else:
-        await context.edit("没有匹配到相关词条")
+    try:
+        if not len(wiki_json['query']['search']) == 0:
+            wiki_title = wiki_json['query']['search'][0]['title']
+            wiki_content = wiki_json['query']['search'][0]['snippet'].replace('<span class=\"searchmatch\">',
+                                                                              '**').replace(
+                '</span>', '**')
+            wiki_time = wiki_json['query']['search'][0]['timestamp'].replace('T', ' ').replace('Z', ' ')
+            message = '词条： [' + wiki_title + '](https://zh.wikipedia.org/zh-cn/' + wiki_title + ')\n\n' + \
+                      wiki_content + '...\n\n此词条最后修订于 ' + wiki_time
+        else:
+            message = "没有匹配到相关词条"
+    except KeyError:
+        message = wiki_json['error']['info']
+    await context.edit(message)
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("ip"),

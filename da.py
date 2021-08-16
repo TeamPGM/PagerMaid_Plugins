@@ -2,6 +2,7 @@ from asyncio import sleep
 from pagermaid import log
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
+from telethon.errors import PeerFloodError
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("da"),
@@ -29,7 +30,10 @@ async def da(context):
     if messages:
         await context.client.delete_messages(input_chat, messages)
     await log(f"批量删除了 {str(count)} 条消息。")
-    notification = await send_prune_notify(context, count)
+    try:
+        notification = await send_prune_notify(context, count)
+    except PeerFloodError:
+        pass
     await sleep(.5)
     await notification.delete()
 

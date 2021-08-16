@@ -87,7 +87,10 @@ async def remove_message(context):
             await context.delete()
             return
     except Exception as e:
-        await sendmsg(context, await context.get_chat(), str(e))
+        try:
+            await sendmsg(context, await context.get_chat(), str(e))
+        except ValueError:
+            pass
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("autorm"),

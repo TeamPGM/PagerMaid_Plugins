@@ -1,5 +1,5 @@
 import json
-
+from json import JSONDecodeError
 from requests import get
 from pagermaid.listener import listener
 from pagermaid.utils import obtain_message, alias_command
@@ -19,6 +19,9 @@ async def whois(context):
         try:
             data = json.loads(req.text)['data']
         except KeyError:
+            await context.edit("出错了呜呜呜 ~ 可能是域名不正确。")
+            return
+        except JSONDecodeError:
             await context.edit("出错了呜呜呜 ~ 可能是域名不正确。")
             return
         res = '域名： `' + data['url'] + '`\n注册商： `' + str(data['registrar']) + '`\n联系人： `' + str(

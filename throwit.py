@@ -48,10 +48,14 @@ async def throwit(context):
     await context.edit("正在生成 扔头像 图片中 . . .")
     if context.reply_to_msg_id:
         reply_message = await context.get_reply_message()
-        user_id = reply_message.from_id
-        target_user = await context.client(GetFullUserRequest(user_id))
-        if len(context.parameter) == 1:
-            diu_round = True
+        if reply_message:
+            user_id = reply_message.from_id
+            target_user = await context.client(GetFullUserRequest(user_id))
+            if len(context.parameter) == 1:
+                diu_round = True
+        else:
+            await context.edit('出错了呜呜呜 ~ 无法获取所回复的用户。')
+            return
     else:
         if len(context.parameter) == 1 or len(context.parameter) == 2:
             user = context.parameter[0]
