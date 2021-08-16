@@ -1,4 +1,4 @@
-from telethon.errors import StickersetInvalidError
+from telethon.errors import StickersetInvalidError, FileMigrateError
 from telethon.tl.custom.message import Message
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.functions.upload import GetFileRequest
@@ -65,12 +65,15 @@ async def get_sticker_set(context: Message):
     # 下载预览图
     file = None
     if thumb_version:
-        thumb = await bot(GetFileRequest(location=InputStickerSetThumb(
-            stickerset=InputStickerSetID(id=sid, access_hash=access_hash),
-            thumb_version=thumb_version), offset=-1, limit=1048576, precise=False, cdn_supported=True))
-        with open('data/sticker_thumb.jpg', 'wb') as f:
-            f.write(thumb.bytes)
-        file = 'data/sticker_thumb.jpg'
+        try:
+            thumb = await bot(GetFileRequest(location=InputStickerSetThumb(
+                stickerset=InputStickerSetID(id=sid, access_hash=access_hash),
+                thumb_version=thumb_version), offset=-1, limit=1048576, precise=False, cdn_supported=True))
+            with open('data/sticker_thumb.jpg', 'wb') as f:
+                f.write(thumb.bytes)
+            file = 'data/sticker_thumb.jpg'
+        except FileMigrateError:
+            pass
     else:
         if not stickers_set.animated:
             await bot.download_media(stickers.documents[0], file='data/sticker_thumb.webp')
