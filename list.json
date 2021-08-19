@@ -12,7 +12,7 @@
         },
         {
             "name": "dme",
-            "version": "1.12",
+            "version": "1.121",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.3 kb",
@@ -342,7 +342,7 @@
         },
         {
             "name": "vip",
-            "version": "0.6",
+            "version": "0.61",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "9.8 kb",
@@ -749,6 +749,16 @@
             "supported": true,
             "des-short": "在指定的时间后删除他人的消息。",
             "des": "在指定的时间后删除所回复用户发送的消息。\n指令：-autodel"
+        },
+        {
+            "name": "antisticker",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "0.7 kb",
+            "supported": true,
+            "des-short": "在贴纸被回复时自动删除贴纸防止被偷取",
+            "des": "在贴纸被回复时自动删除贴纸防止被偷取。\n网速争霸 不保证成功率"
         }
     ]
 }
