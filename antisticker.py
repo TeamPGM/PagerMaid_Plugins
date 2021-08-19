@@ -19,8 +19,9 @@ async def auto_remove_sticker(context):
             return
         if context.chat_id > 0:
             return
-        if context.sender.bot:
-            return
+        if context.sender:
+            if context.sender.bot:
+                return
     else:
         return
 
