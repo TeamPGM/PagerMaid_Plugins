@@ -739,6 +739,16 @@
             "supported": true,
             "des-short": "获取所回复贴纸的贴纸包信息",
             "des": "获取所回复贴纸的贴纸包信息。\n指令：-getstickerset"
+        },
+        {
+            "name": "autodel",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "5.7 kb",
+            "supported": true,
+            "des-short": "在指定的时间后删除他人的消息。",
+            "des": "在指定的时间后删除所回复用户发送的消息。\n指令：-autodel"
         }
     ]
 }

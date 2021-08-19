@@ -53,7 +53,7 @@ async def dme(context):
         return
     dme_msg = "别搁这防撤回了。。。"
     if len(context.parameter) == 1:
-        if not redis_status:
+        if not redis_status():
             pass
         else:
             try:

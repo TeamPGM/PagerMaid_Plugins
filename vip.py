@@ -105,7 +105,7 @@ async def pixiv(context):
     await context.edit("获取中 . . .")
     if len(context.parameter) == 2:
         if context.parameter[0] == 'set':
-            if not redis_status:
+            if not redis_status():
                 await context.edit('redis 数据库离线 无法更改镜像源。')
                 return
             else:
@@ -127,7 +127,7 @@ async def pixiv(context):
                     return
         else:
             pass
-    if not redis_status:
+    if not redis_status():
         num = 3
     else:
         try:
