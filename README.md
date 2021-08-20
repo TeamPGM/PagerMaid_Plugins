@@ -67,6 +67,7 @@
     - `paolu` : 一键跑路（删所有消息并禁言）。
     - `keyword` : 群组关键词自动回复插件。
     - `msgst` : 每天定时发送消息。
+    - `yinglish` : 能把中文翻译成淫语的翻译机.
 - profile （资料类）
     - `autochangename` : 自动更新 last_name 为时间等。
     - `throwit` : 生成一张 扔头像 图片。

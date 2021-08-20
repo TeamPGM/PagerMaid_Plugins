@@ -759,6 +759,16 @@
             "supported": true,
             "des-short": "在贴纸被回复时自动删除贴纸防止被偷取",
             "des": "在贴纸被回复时自动删除贴纸防止被偷取。\n网速争霸 不保证成功率"
+        },
+        {
+            "name": "yinglish",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "YU",
+            "size": "1.7 kb",
+            "supported": true,
+            "des-short": "能把中文翻译成淫语的翻译机",
+            "des": "能把中文自动翻译成淫语的翻译机\n 需要 pypi 前置 jieba \n 灵感来自于https://github.com/RimoChan/yinglish \n指令：-yinglish"
         }
     ]
 }
