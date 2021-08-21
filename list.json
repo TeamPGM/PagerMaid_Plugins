@@ -12,7 +12,7 @@
         },
         {
             "name": "dme",
-            "version": "1.121",
+            "version": "1.122",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.3 kb",
@@ -272,7 +272,7 @@
         },
         {
             "name": "neteaseshuffle",
-            "version": "1.11",
+            "version": "1.111",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
             "size": "3.0 kb",
@@ -332,7 +332,7 @@
         },
         {
             "name": "stickertopic",
-            "version": "1.111",
+            "version": "1.12",
             "section": "chat",
             "maintainer": "TNTcraftHIM",
             "size": "3.5 kb",
@@ -552,7 +552,7 @@
         },
         {
             "name": "pic2sticker",
-            "version": "1.0",
+            "version": "1.01",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.7 kb",
@@ -572,7 +572,7 @@
         },
         {
             "name": "fuckadmin",
-            "version": "1.1",
+            "version": "1.11",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "2.9 kb",

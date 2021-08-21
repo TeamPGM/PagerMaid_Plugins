@@ -22,8 +22,11 @@ async def ns(context):
             "http://api.uomg.com/api/rand.music?sort=%E7%83%AD%E6%AD%8C%E6%A6%9C&format=json")
         if req.status_code == 200:
             req = json.loads(req.content)
-            songid = req["data"]["url"][45:]
-            music = req['data']['url']
+            try:
+                songid = req["data"]["url"][45:]
+                music = req['data']['url']
+            except KeyError:
+                continue
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
                                      'like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,"

@@ -1,7 +1,7 @@
 from time import sleep
 from os import remove
 from io import BytesIO
-from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
+from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto, MessageMediaWebPage
 from PIL import Image
 from pagermaid import bot
 from pagermaid.listener import listener
@@ -38,6 +38,11 @@ async def stickertopic(context):
         if isinstance(message.media, MessageMediaPhoto):
             photo = BytesIO()
             photo = await bot.download_media(message.photo, photo)
+        elif isinstance(message.media, MessageMediaWebPage):
+            await context.edit("出错了呜呜呜 ~ 目标不是贴纸 。")
+            sleep(2)
+            await context.delete()
+            return
         elif "image" in message.media.document.mime_type.split('/'):
             photo = BytesIO()
             await context.edit("正在转换...\n████40%")

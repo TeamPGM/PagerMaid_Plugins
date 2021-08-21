@@ -1,7 +1,7 @@
 """ PagerMaid module to handle sticker collection. """
 
 from io import BytesIO
-from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
+from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto, MessageMediaWebPage
 from PIL import Image, ImageOps
 from math import floor
 from pagermaid import bot, redis, redis_status
@@ -27,6 +27,12 @@ async def pic2sticker(context):
         if isinstance(message.media, MessageMediaPhoto):
             photo = BytesIO()
             photo = await bot.download_media(message.photo, photo)
+        elif isinstance(message.media, MessageMediaWebPage):
+            try:
+                await context.edit(lang('sticker_type_not_support'))
+            except:
+                pass
+            return
         elif "image" in message.media.document.mime_type.split('/'):
             photo = BytesIO()
             try:

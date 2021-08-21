@@ -70,38 +70,48 @@ async def dme(context):
             except:
                 pass
     count_buffer = 0
-    async for message in context.client.iter_messages(context.chat_id, from_user="me"):
-        if count_buffer == count:
-            break
-        if message.forward or message.via_bot or message.sticker or message.contact or message.poll or message.game or message.geo:
-            pass
-        elif message.text or message.voice:
-            if not message.text == dme_msg:
-                try:
-                    await message.edit(dme_msg)
-                except:
-                    pass
-        elif message.document or message.photo or message.file or message.audio or message.video or message.gif:
-            if target_file:
-                if not message.text == dme_msg:
-                    try:
-                        await message.edit(dme_msg, file=target_file)
-                    except:
-                        pass
-            else:
+    try:
+        async for message in context.client.iter_messages(context.chat_id, from_user="me"):
+            if count_buffer == count:
+                break
+            if message.forward or message.via_bot or message.sticker or message.contact or message.poll or message.game or message.geo:
+                pass
+            elif message.text or message.voice:
                 if not message.text == dme_msg:
                     try:
                         await message.edit(dme_msg)
                     except:
                         pass
-        else:
+            elif message.document or message.photo or message.file or message.audio or message.video or message.gif:
+                if target_file:
+                    if not message.text == dme_msg:
+                        try:
+                            await message.edit(dme_msg, file=target_file)
+                        except:
+                            pass
+                else:
+                    if not message.text == dme_msg:
+                        try:
+                            await message.edit(dme_msg)
+                        except:
+                            pass
+            else:
+                pass
+            await message.delete()
+            count_buffer += 1
+    except ValueError:
+        try:
+            await context.edit('出错了呜呜呜 ~ 无法识别的对话')
+        except:
             pass
-        await message.delete()
-        count_buffer += 1
+        return
     count -= 1
     count_buffer -= 1
     await log(f"批量删除了自行发送的 {str(count_buffer)} / {str(count)} 条消息。")
-    notification = await send_prune_notify(context, count_buffer, count)
+    try:
+        notification = await send_prune_notify(context, count_buffer, count)
+    except:
+        return
     await sleep(.5)
     await notification.delete()
 
