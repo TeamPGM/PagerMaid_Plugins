@@ -5,7 +5,7 @@ from os import makedirs, remove
 from PIL import Image, ImageFont, ImageDraw
 from requests import get
 from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.types import MessageMediaPhoto
+from telethon.tl.types import MessageMediaPhoto, MessageMediaWebPage
 from pagermaid import bot
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
@@ -159,6 +159,9 @@ async def yv_lu(context):
         if isinstance(reply_message.media, MessageMediaPhoto):
             file_name = 'plugins/yvlu/sticker.jpg'
             await bot.download_media(reply_message.photo, file_name)
+        elif isinstance(reply_message.media, MessageMediaWebPage):
+            await context.edit('不支持的文件类型。')
+            return
         elif "image" in reply_message.media.document.mime_type.split('/'):
             file_name = 'plugins/yvlu/sticker.jpg'
             await bot.download_file(reply_message.media.document, file_name)
