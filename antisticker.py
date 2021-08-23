@@ -7,7 +7,10 @@ from pagermaid.listener import listener
 @listener(incoming=True, ignore_edited=True)
 async def auto_remove_sticker(context):
     """ Event handler to remove stickers. """
-    reply = await context.get_reply_message()
+    try:
+        reply = await context.get_reply_message()
+    except:
+        return
     if reply:
         if reply.sender:
             reply_user_id = reply.sender.id
