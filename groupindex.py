@@ -12,7 +12,11 @@ async def group_index(context):
         await context.edit('请在群组中运行。')
         return
     # 获取群组信息
-    title = context.chat.title
+    try:
+        title = context.chat.title
+    except AttributeError:
+        await context.edit('读取群组信息失败。')
+        return
     end_id = context.id
     text = f'以下是群组 {title} 今日的活跃数据：\n'
 

@@ -24,7 +24,11 @@ async def denyu(context):
         if not reply_to_msg:
             await context.edit("在某群中强制禁言某用户，需要删除他人消息权限，需要 redis。用法：回复某条消息，格式为 `-denyu <true|false|status>`")
             return
-        uid = reply_to_msg.sender.id
+        try:
+            uid = reply_to_msg.sender.id
+        except AttributeError:
+            await context.edit("出错了呜呜呜 ~ 无法读取用户 id")
+            return
         offset = 1
     else:
         uid = context.parameter[0]
