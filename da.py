@@ -32,8 +32,8 @@ async def da(context):
     await log(f"批量删除了 {str(count)} 条消息。")
     try:
         notification = await send_prune_notify(context, count)
-    except PeerFloodError:
-        pass
+    except:
+        return
     await sleep(.5)
     await notification.delete()
 

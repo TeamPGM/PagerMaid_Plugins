@@ -39,7 +39,11 @@ async def vdl(context):
                                'uninstall pytube3 -y` 进行卸载')
             return
         url = url.replace('www.youtube.com/watch?v=', 'youtu.be/')
-        if not await youtube_dl(url, context, reply_id):
+        try:
+            if not await youtube_dl(url, context, reply_id):
+                await context.edit("出错了呜呜呜 ~ 视频下载失败。")
+                sleep(3)
+        except:
             await context.edit("出错了呜呜呜 ~ 视频下载失败。")
             sleep(3)
         await log(f"已拉取 YouTube 视频，地址： {url}.")

@@ -185,7 +185,11 @@ async def yv_lu(context):
     image = await resize_image('plugins/yvlu/result.png', 512)
     file = BytesIO()
     file.name = "sticker.webp"
-    image.save(file, "WEBP")
+    try:
+        image.save(file, "WEBP")
+    except KeyError:
+        await context.delete()
+        return
     file.seek(0)
     await context.client.send_file(
         context.chat_id,

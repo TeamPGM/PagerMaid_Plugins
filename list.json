@@ -152,7 +152,7 @@
         },
         {
             "name": "portball",
-            "version": "1.45",
+            "version": "1.451",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "2.8 kb",
@@ -202,7 +202,7 @@
         },
         {
             "name": "eat",
-            "version": "1.03",
+            "version": "1.031",
             "section": "profile",
             "maintainer": "SF_PICK",
             "size": "6.4 kb",
@@ -242,7 +242,7 @@
         },
         {
             "name": "da",
-            "version": "1.02",
+            "version": "1.021",
             "section": "chat",
             "maintainer": "yxkumad",
             "size": "1.6 kb",
@@ -312,7 +312,7 @@
         },
         {
             "name": "videodl",
-            "version": "0.12",
+            "version": "0.121",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
             "size": "5.3 kb",
@@ -372,7 +372,7 @@
         },
         {
             "name": "autoreplysticker",
-            "version": "1.23",
+            "version": "1.231",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "12 kb",
@@ -702,7 +702,7 @@
         },
         {
             "name": "yvlu",
-            "version": "1.12",
+            "version": "1.121",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.8 kb",

@@ -32,6 +32,17 @@ async def portball(context):
                 except:
                     pass
                 return False
+            try:
+                int(action[1])
+            except ValueError:
+                notification = await bot.send_message(context.chat_id, '格式是\n-portball 理由 秒数\n真蠢', reply_to=context.id)
+                await sleep(10)
+                await notification.delete()
+                try:
+                    await context.delete()
+                except:
+                    pass
+                return False
             if int(action[1]) < 60:
                 notification = await bot.send_message(context.chat_id, '诶呀不要小于60秒啦', reply_to=context.id)
                 await sleep(10)

@@ -209,7 +209,10 @@ async def process_message(context):
     reply_user_id = 0
     link = process_link(context.chat_id, context.id)
     me = await context.client.get_me()
-    reply = await context.get_reply_message()
+    try:
+        reply = await context.get_reply_message()
+    except ValueError:
+        return
     try:
         reply_user_id = reply.sender.id
         if context.sticker:

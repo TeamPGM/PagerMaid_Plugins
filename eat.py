@@ -51,7 +51,11 @@ async def eat(context):
     await context.edit("正在生成 吃头像 图片中 . . .")
     if context.reply_to_msg_id:
         reply_message = await context.get_reply_message()
-        user_id = reply_message.sender_id
+        try:
+            user_id = reply_message.sender_id
+        except AttributeError:
+            await context.edit("出错了呜呜呜 ~ 无效的参数。")
+            return
         target_user = await context.client(GetFullUserRequest(user_id))
         if len(context.parameter) == 1:
             diu_round = True
