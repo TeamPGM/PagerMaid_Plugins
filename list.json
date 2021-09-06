@@ -372,7 +372,7 @@
         },
         {
             "name": "autoreplysticker",
-            "version": "1.231",
+            "version": "1.232",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "12 kb",
@@ -592,7 +592,7 @@
         },
         {
             "name": "fuckmember",
-            "version": "1.032",
+            "version": "1.033",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "3.0 kb",
