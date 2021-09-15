@@ -20,17 +20,27 @@ async def fuck(context):
     reply = await context.get_reply_message()
     if context.is_group:
         if reply:
-            if reply.sender.last_name is None:
-                reply_last_name = ''
+            if reply.sender:
+                if reply.sender.last_name is None:
+                    reply_last_name = ''
+                else:
+                    reply_last_name = reply.sender.last_name
             else:
-                reply_last_name = reply.sender.last_name
+                try:
+                    await context.edit('无法获取所回复的用户。')
+                except:
+                    pass
+                return
             if context.sender:
                 if context.sender.last_name is None:
                     context_last_name = ''
                 else:
                     context_last_name = context.sender.last_name
             else:
-                await context.edit('无法获取所回复的用户。')
+                try:
+                    await context.edit('无法获取所回复的用户。')
+                except:
+                    pass
                 return
             admins = await context.client.get_participants(context.chat, filter=ChannelParticipantsAdmins)
             if context.sender in admins:
