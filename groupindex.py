@@ -86,6 +86,8 @@ async def group_index(context):
         for i in range(min(len(member_count), 5)):
             # 获取用户信息
             target_user = await context.client(GetFullUserRequest(member_count[i][0]))
-            first_name = target_user.user.first_name.replace("\u2060", "")
+            first_name = target_user.user.first_name
+            if first_name:
+                first_name = first_name.replace("\u2060", "")
             text += f'{first_name} `{member_count[i][1]}`\n'
     await context.edit(text)

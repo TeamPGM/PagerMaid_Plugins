@@ -1,4 +1,4 @@
-from pagermaid import bot, log
+from pagermaid import bot, log, user_id
 from pagermaid.listener import listener
 from telethon.errors import rpcerrorlist
 from asyncio import sleep
@@ -19,6 +19,9 @@ async def portball(context):
                     last_name = ''
                 else:
                     last_name = reply.sender.last_name
+                if reply.sender.id == user_id:
+                    await context.edit('无法禁言自己。')
+                    return
             else:
                 await context.edit('无法获取所回复的用户。')
                 return

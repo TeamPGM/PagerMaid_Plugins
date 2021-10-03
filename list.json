@@ -152,7 +152,7 @@
         },
         {
             "name": "portball",
-            "version": "1.451",
+            "version": "1.452",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "2.8 kb",
@@ -692,7 +692,7 @@
         },
         {
             "name": "groupindex",
-            "version": "1.12",
+            "version": "1.121",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "3.2 kb",
