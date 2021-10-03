@@ -1,8 +1,7 @@
 """ Module to automate message deletion. """
-from asyncio import sleep
-import time
 import random
-from time import strftime
+from asyncio import sleep
+from datetime import datetime, timedelta, timezone
 from telethon.tl.functions.account import UpdateProfileRequest
 from emoji import emojize
 from pagermaid import bot, log
@@ -27,7 +26,8 @@ async def change_name_auto(context):
     await log("开始每 30 秒更新一次 last_name")
     while True:
         try:
-            time_cur = strftime("%H:%M:%S:%p:%a", time.localtime())
+            time_cur = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(timezone(
+                timedelta(hours=8))).strftime('%H:%M:%S:%p:%a')
             hour, minu, seco, p, abbwn = time_cur.split(':')
             if seco == '00' or seco == '30':
                 shift = 0
