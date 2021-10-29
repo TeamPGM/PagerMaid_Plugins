@@ -769,6 +769,16 @@
             "supported": true,
             "des-short": "能把中文翻译成淫语的翻译机",
             "des": "能把中文自动翻译成淫语的翻译机\n 需要 pypi 前置 jieba \n 灵感来自于https://github.com/RimoChan/yinglish \n指令：-yinglish"
+        },
+        {
+            "name": "findmessage",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "vesugier",
+            "size": "1.44 kb",
+            "supported": true,
+            "des-short": "搜索消息插件",
+            "des": "查找最近50条消息中包含指定关键字的消息，并推送相应链接人名及信息至Log频道。\n指令：-findmessage"
         }
     ]
 }
