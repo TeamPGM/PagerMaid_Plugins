@@ -36,29 +36,29 @@ async def card(context):
     msg_out.extend(["BIN：" + card_bin])
     try:
         msg_out.extend(["卡品牌：" + bin_json['scheme']])
-    except KeyError:
+    except (KeyError, TypeError):
         pass
     try:
         msg_out.extend(["卡类型：" + bin_json['type']])
-    except KeyError:
+    except (KeyError, TypeError):
         pass
     try:
         msg_out.extend(["卡种类：" + bin_json['brand']])
-    except KeyError:
+    except (KeyError, TypeError):
         pass
     try:
         msg_out.extend(["发卡行：" + bin_json['bank']["name"]])
-    except KeyError:
+    except (KeyError, TypeError):
         pass
     try:
         if bin_json['prepaid']:
             msg_out.extend(["是否预付：是"])
         else:
             msg_out.extend(["是否预付：否"])
-    except KeyError:
+    except (KeyError, TypeError):
         pass
     try:
         msg_out.extend(["发卡国家：" + bin_json['country']['name']])
-    except KeyError:
+    except (KeyError, TypeError):
         pass
     await context.edit("\n".join(msg_out))

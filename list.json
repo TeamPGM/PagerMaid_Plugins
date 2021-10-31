@@ -582,7 +582,7 @@
         },
         {
             "name": "bin",
-            "version": "1.01",
+            "version": "1.02",
             "section": "daily",
             "maintainer": "paulkm",
             "size": "1.8 kb",
