@@ -145,7 +145,8 @@ def mergeDict(d1, d2):
                       "可选：当第二个参数是数字时，读取预存的配置；\n\n"
                       "当第二个参数是.开头时，头像旋转180°，并且判断r后面是数字则读取对应的配置生成\n\n"
                       "当第二个参数是/开头时，在/后面加url则从url下载配置文件保存到本地，如果就一个/，则直接更新配置文件，删除则是/delete\n\n"
-                      "当第二个参数是-开头时，在d后面加上模版id，即可设置默认模版-eat直接使用该模版，删除默认模版是-eat -",
+                      "当第二个参数是-开头时，在d后面加上模版id，即可设置默认模版-eat直接使用该模版，删除默认模版是-eat -\n\n"
+                      "当第二个参数是!或者！开头时，列出当前可用模版",
           parameters="<username/uid> [随意内容]")
 async def eat(context):
     if len(context.parameter) > 2:
@@ -264,6 +265,20 @@ async def eat(context):
                             return
                         else:
                             await context.edit(f"从远程更新配置文件成功")
+                    return
+                elif p1[0] == "！" or p1[0] == "!":
+                    # 加载配置
+                    if exists(configFilePath):
+                        if await loadConfigFile(configFilePath, context) != 0:
+                            await context.edit(f"加载配置文件异常，请确认从远程下载的配置文件格式是否正确")
+                            return
+                    txt = ""
+                    if len(positions) > 0:
+                        for key in positions:
+                            txt = f"{txt}，{key}"
+                        if txt != "":
+                            txt = txt[1:]
+                    await context.edit(f"目前已有的模版列表如下：\n{txt}")
                     return
             defaultConfig = redis.get("eat.default-config")
             if isinstance(p2, str):
