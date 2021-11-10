@@ -174,7 +174,7 @@ async def eat(context):
             if isinstance(context.message.entities[0], MessageEntityMentionName):
                 target_user = await context.client(GetFullUserRequest(context.message.entities[0].user_id))
             elif isinstance(context.message.entities[0], MessageEntityPhone):
-                target_user = int(context.parameter[0])
+                target_user = await context.client(GetFullUserRequest(user))
             else:
                 return await context.edit("出错了呜呜呜 ~ 参数错误。")
         elif user_raw[:1] in [".", "/", "-", "!"]:
