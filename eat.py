@@ -274,8 +274,13 @@ async def eat(context):
                             return
                     txt = ""
                     if len(positions) > 0:
+                        noShowList = []
                         for key in positions:
                             txt = f"{txt}，{key}"
+                            if len(positions[key]) > 2:
+                                noShowList.append(positions[key][2])
+                        for key in noShowList:
+                            txt = txt.replace(f"，{key}", "")
                         if txt != "":
                             txt = txt[1:]
                     await context.edit(f"目前已有的模版列表如下：\n{txt}")
@@ -296,6 +301,11 @@ async def eat(context):
                     number = int(defaultConfig)
                 except:
                     number = str(defaultConfig)
+                    # 支持配置默认是倒立的头像
+                    if number.startswith("."):
+                        diu_round = True
+                        number = number[1:]
+
         except:
             number = randint(1, max_number)
 
