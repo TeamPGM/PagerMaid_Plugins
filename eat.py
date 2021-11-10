@@ -5,8 +5,11 @@ from os.path import exists
 from os import remove
 from requests import get
 from random import randint
+
+from telethon.events import NewMessage
 from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.types import MessageEntityMentionName, MessageEntityPhone
+from telethon.tl.patched import Message
+from telethon.tl.types import MessageEntityMentionName, MessageEntityPhone, MessageEntityBotCommand
 from telethon.errors.rpcerrorlist import ChatSendStickersForbiddenError
 from struct import error as StructError
 from pagermaid.listener import listener
@@ -147,7 +150,8 @@ def mergeDict(d1, d2):
                       "当第二个参数是-开头时，在d后面加上模版id，即可设置默认模版-eat直接使用该模版，删除默认模版是-eat -\n\n"
                       "当第二个参数是!或者！开头时，列出当前可用模版",
           parameters="<username/uid> [随意内容]")
-async def eat(context):
+async def eat(context: NewMessage.Event):
+    assert isinstance(context.message, Message)
     if len(context.parameter) > 2:
         await context.edit("出错了呜呜呜 ~ 无效的参数。")
         return
@@ -175,6 +179,8 @@ async def eat(context):
                 target_user = await context.client(GetFullUserRequest(context.message.entities[0].user_id))
             elif isinstance(context.message.entities[0], MessageEntityPhone):
                 target_user = await context.client(GetFullUserRequest(user))
+            elif isinstance(context.message.entities[0], MessageEntityBotCommand):
+                target_user = from_user
             else:
                 return await context.edit("出错了呜呜呜 ~ 参数错误。")
         elif user_raw[:1] in [".", "/", "-", "!"]:
