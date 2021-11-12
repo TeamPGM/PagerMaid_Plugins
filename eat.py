@@ -142,11 +142,46 @@ def mergeDict(d1, d2):
     return dict(dd)
 
 
+async def downloadFileByIds(ids, context):
+    idsStr = f',{",".join(ids)},'
+    try:
+        with open(configFilePath, 'r', encoding='utf8') as cf:
+            # 读取已下载的配置文件
+            remoteConfigJson = json.load(cf)
+            data = json.loads(json.dumps(remoteConfigJson["needDownloadFileList"]))
+            # 下载列表中的文件
+            sucSet = set()
+            failSet = set()
+            for fileurl in data:
+                try:
+                    fsplit = fileurl.split("/")
+                    fileFullName = fsplit[len(fsplit) - 1]
+                    fileName = fileFullName.split(".")[0].replace("eat", "").replace("mask", "")
+                    if f',{fileName},' in idsStr:
+                        filePath = f"plugins/eat/{fileFullName}"
+                        if downloadFileFromUrl(fileurl, filePath) == 0:
+                            sucSet.add(fileName)
+                        else:
+                            failSet.add(fileName)
+                except:
+                    failSet.add(fileName)
+                    await context.edit(f"下载文件异常，url：{fileurl}")
+            notifyStr = "更新模版完成"
+            if len(sucSet) > 0:
+                notifyStr = f'{notifyStr}\n成功模版如下：{"，".join(sucSet)}'
+            if len(failSet) > 0:
+                notifyStr = f'{notifyStr}\n失败模版如下：{"，".join(failSet)}'
+            await context.edit(notifyStr)
+    except:
+        await context.edit("更新下载模版图片失败，请确认配置文件是否正确")
+
+
+
 @listener(is_plugin=True, outgoing=True, command=alias_command("eat"),
           description="生成一张 吃头像 图片\n"
                       "可选：当第二个参数是数字时，读取预存的配置；\n\n"
                       "当第二个参数是.开头时，头像旋转180°，并且判断r后面是数字则读取对应的配置生成\n\n"
-                      "当第二个参数是/开头时，在/后面加url则从url下载配置文件保存到本地，如果就一个/，则直接更新配置文件，删除则是/delete\n\n"
+                      "当第二个参数是/开头时，在/后面加url则从url下载配置文件保存到本地，如果就一个/，则直接更新配置文件，删除则是/delete；或者/后面加模版id可以手动更新指定模版配置\n\n"
                       "当第二个参数是-开头时，在d后面加上模版id，即可设置默认模版-eat直接使用该模版，删除默认模版是-eat -\n\n"
                       "当第二个参数是!或者！开头时，列出当前可用模版",
           parameters="<username/uid> [随意内容]")
@@ -259,22 +294,47 @@ async def eat(context: NewMessage.Event):
                             redis.delete(configFileRemoteUrlKey)
                             await context.edit(f"已清空远程配置文件url")
                             return
-                        # 下载文件
-                        if downloadFileFromUrl(p2, configFilePath) != 0:
-                            await context.edit(f"下载配置文件异常，请确认url是否正确")
-                            return
-                        else:
-                            # 下载成功，加载配置文件
-                            redis.set(configFileRemoteUrlKey, p2)
-                            if await loadConfigFile(context, True) != 0:
-                                await context.edit(f"加载配置文件异常，请确认从远程下载的配置文件格式是否正确")
+                        if p2.startswith("http"):
+                            # 下载文件
+                            if downloadFileFromUrl(p2, configFilePath) != 0:
+                                await context.edit(f"下载配置文件异常，请确认url是否正确")
                                 return
                             else:
-                                await context.edit(f"下载并加载配置文件成功")
+                                # 下载成功，加载配置文件
+                                redis.set(configFileRemoteUrlKey, p2)
+                                if await loadConfigFile(context, True) != 0:
+                                    await context.edit(f"加载配置文件异常，请确认从远程下载的配置文件格式是否正确")
+                                    return
+                                else:
+                                    await context.edit(f"下载并加载配置文件成功")
+                        else:
+                            # 根据传入模版id更新模版配置，多个用"，"或者","隔开
+                            # 判断redis是否有保存配置url
+
+                            splitStr = "，"
+                            if "," in p2:
+                                splitStr = ","
+                            ids = p2.split(splitStr)
+                            if len(ids) > 0:
+                                # 下载文件
+                                configFileRemoteUrl = redis.get(configFileRemoteUrlKey)
+                                if configFileRemoteUrl:
+                                    if downloadFileFromUrl(configFileRemoteUrl, configFilePath) != 0:
+                                        await context.edit(f"下载配置文件异常，请确认url是否正确")
+                                        return
+                                    else:
+                                        # 下载成功，更新对应配置
+                                        if await loadConfigFile(context) != 0:
+                                            await context.edit(f"加载配置文件异常，请确认从远程下载的配置文件格式是否正确")
+                                            return
+                                        else:
+                                            await downloadFileByIds(ids, context)
+                                else:
+                                    await context.edit(f"你没有订阅远程配置文件，更新个🔨")
                     else:
                         # 没传url直接更新
                         if await updateConfig(context) != 0:
-                            await context.edit(f"更新配置文件异常，请确认从远程下载的配置文件格式是否正确")
+                            await context.edit(f"更新配置文件异常，请确认是否订阅远程配置文件，或从远程下载的配置文件格式是否正确")
                             return
                         else:
                             await context.edit(f"从远程更新配置文件成功")
