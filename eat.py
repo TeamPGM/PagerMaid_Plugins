@@ -33,6 +33,7 @@ positions = {
 notifyStrArr = {
     "6": "踢人",
 }
+extensionConfig = {}
 max_number = len(positions)
 configFilePath = 'plugins/eat/config.json'
 configFileRemoteUrlKey = "eat.configFileRemoteUrl"
@@ -48,7 +49,20 @@ async def eat_it(context, from_user, base, mask, photo, number, layer=0):
     mask1 = Image.new('RGBA', mask_size)
     mask1.paste(photo, mask=mask)
     numberPosition = positions[str(number)]
-    base.paste(mask1, (numberPosition[0], numberPosition[1]), mask1)
+    isSwap = False
+    # 处理头像，放到和背景同样大小画布的特定位置
+    try:
+        isSwap = extensionConfig[str(number)]["isSwap"]
+    except:
+        pass
+    if isSwap:
+        photoBg = Image.new('RGBA', base.size)
+        photoBg.paste(mask1, (numberPosition[0], numberPosition[1]), mask1)
+        photoBg.paste(base, (0, 0), base)
+        base = photoBg
+    else:
+        base.paste(mask1, (numberPosition[0], numberPosition[1]), mask1)
+
 
     # 增加判断是否有第二个头像孔
     isContinue = len(numberPosition) > 2 and layer == 0
@@ -96,7 +110,7 @@ def downloadFileFromUrl(url, filepath):
 
 
 async def loadConfigFile(context, forceDownload=False):
-    global positions, notifyStrArr
+    global positions, notifyStrArr, extensionConfig
     try:
         with open(configFilePath, 'r', encoding='utf8') as cf:
             # 读取已下载的配置文件
@@ -114,6 +128,15 @@ async def loadConfigFile(context, forceDownload=False):
             data = json.loads(json.dumps(remoteConfigJson["notifies"]))
             # 与预设positions合并
             notifyStrArr = mergeDict(notifyStrArr, data)
+
+            # 读取配置文件中的extensionConfig
+            try:
+                data = json.loads(json.dumps(remoteConfigJson["extensionConfig"]))
+                # 与预设extensionConfig合并
+                extensionConfig = mergeDict(extensionConfig, data)
+            except:
+                # 新增扩展配置，为了兼容旧的配置文件更新不出错，无视异常
+                pass
 
             # 读取配置文件中的needDownloadFileList
             data = json.loads(json.dumps(remoteConfigJson["needDownloadFileList"]))
@@ -182,7 +205,7 @@ async def downloadFileByIds(ids, context):
                       "可选：当第二个参数是数字时，读取预存的配置；\n\n"
                       "当第二个参数是.开头时，头像旋转180°，并且判断r后面是数字则读取对应的配置生成\n\n"
                       "当第二个参数是/开头时，在/后面加url则从url下载配置文件保存到本地，如果就一个/，则直接更新配置文件，删除则是/delete；或者/后面加模版id可以手动更新指定模版配置\n\n"
-                      "当第二个参数是-开头时，在d后面加上模版id，即可设置默认模版-eat直接使用该模版，删除默认模版是-eat -\n\n"
+                      "当第二个参数是-开头时，在-后面加上模版id，即可设置默认模版-eat直接使用该模版，删除默认模版是-eat -\n\n"
                       "当第二个参数是!或者！开头时，列出当前可用模版",
           parameters="<username/uid> [随意内容]")
 async def eat(context: NewMessage.Event):
