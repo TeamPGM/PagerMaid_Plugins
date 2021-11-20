@@ -779,6 +779,16 @@
             "supported": true,
             "des-short": "搜索消息插件",
             "des": "查找最近50条消息中包含指定关键字的消息，并推送相应链接人名及信息至Log频道。\n指令：-findmessage"
+        },
+        {
+            "name": "epic",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "5.80 kb",
+            "supported": true,
+            "des-short": "获取 Epic 喜加一信息",
+            "des": "获取 Epic 喜加一信息。\n指令：-epic"
         }
     ]
 }
