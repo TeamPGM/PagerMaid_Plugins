@@ -78,7 +78,7 @@ async def weather(context):
 @listener(is_plugin=True, outgoing=True, command=alias_command("weather_pic"),
           description="使用彩云天气 api 查询国内实时天气。",
           parameters="<位置>")
-async def weather(context):
+async def weather_pic(context):
     await context.edit("获取中 . . .")
     reply = await context.get_reply_message()
     try:
@@ -88,6 +88,28 @@ async def weather(context):
         return
     async with bot.conversation('PagerMaid_Modify_bot') as conversation:
         await conversation.send_message('/weather ' + message)
+        chat_response = await conversation.get_response()
+        await bot.send_read_acknowledge(conversation.chat_id)
+    if reply:
+        await context.respond(chat_response, reply_to=reply)
+    else:
+        await context.respond(chat_response)
+    await context.delete()
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("weather_he"),
+          description="使用和风天气 api 查询国内省市实时天气。",
+          parameters="<位置>")
+async def weather_he(context):
+    await context.edit("获取中 . . .")
+    reply = await context.get_reply_message()
+    try:
+        message = await obtain_message(context)
+    except ValueError:
+        await context.edit("出错了呜呜呜 ~ 无效的参数。")
+        return
+    async with bot.conversation('PagerMaid_Modify_bot') as conversation:
+        await conversation.send_message('/weather_he ' + message)
         chat_response = await conversation.get_response()
         await bot.send_read_acknowledge(conversation.chat_id)
     if reply:
