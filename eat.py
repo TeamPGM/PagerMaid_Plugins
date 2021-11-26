@@ -8,13 +8,14 @@ from random import randint
 
 from telethon.events import NewMessage
 from telethon.tl.functions.users import GetFullUserRequest
+from telethon.tl.functions.channels import GetFullChannelRequest
 from telethon.tl.patched import Message
-from telethon.tl.types import MessageEntityMentionName, MessageEntityPhone, MessageEntityBotCommand
+from telethon.tl.types import Channel, MessageEntityMentionName, MessageEntityPhone, MessageEntityBotCommand
 from telethon.errors.rpcerrorlist import ChatSendStickersForbiddenError
 from struct import error as StructError
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
-from pagermaid import redis, config
+from pagermaid import redis, config, bot
 from collections import defaultdict
 import json
 
@@ -39,7 +40,13 @@ configFilePath = 'plugins/eat/config.json'
 configFileRemoteUrlKey = "eat.configFileRemoteUrl"
 
 
-async def eat_it(context, from_user, base, mask, photo, number, layer=0):
+async def get_full_id(object_n):
+    if isinstance(object_n, Channel):
+        return (await bot(GetFullChannelRequest(object_n.id))).full_chat.id  # noqa
+    return (await bot(GetFullUserRequest(object_n.id))).user.id
+
+
+async def eat_it(context, uid, base, mask, photo, number, layer=0):
     mask_size = mask.size
     photo_size = photo.size
     if mask_size[0] < photo_size[0] and mask_size[1] < photo_size[1]:
@@ -63,22 +70,21 @@ async def eat_it(context, from_user, base, mask, photo, number, layer=0):
     else:
         base.paste(mask1, (numberPosition[0], numberPosition[1]), mask1)
 
-
     # 增加判断是否有第二个头像孔
     isContinue = len(numberPosition) > 2 and layer == 0
     if isContinue:
         await context.client.download_profile_photo(
-            from_user.user.id,
-            "plugins/eat/" + str(from_user.user.id) + ".jpg",
+            uid,
+            "plugins/eat/" + str(uid) + ".jpg",
             download_big=True
         )
         try:
-            markImg = Image.open("plugins/eat/" + str(from_user.user.id) + ".jpg")
+            markImg = Image.open("plugins/eat/" + str(uid) + ".jpg")
             maskImg = Image.open("plugins/eat/mask" + str(numberPosition[2]) + ".png")
         except:
             await context.edit(f"图片模版加载出错，请检查并更新配置：mask{str(numberPosition[2])}.png")
             return base
-        base = await eat_it(context, from_user, base, maskImg, markImg, numberPosition[2], layer + 1)
+        base = await eat_it(context, uid, base, maskImg, markImg, numberPosition[2], layer + 1)
 
     temp = base.size[0] if base.size[0] > base.size[1] else base.size[1]
     if temp != 512:
@@ -199,7 +205,6 @@ async def downloadFileByIds(ids, context):
         await context.edit("更新下载模版图片失败，请确认配置文件是否正确")
 
 
-
 @listener(is_plugin=True, outgoing=True, command=alias_command("eat"),
           description="生成一张 吃头像 图片\n"
                       "可选：当第二个参数是数字时，读取预存的配置；\n\n"
@@ -214,8 +219,8 @@ async def eat(context: NewMessage.Event):
         await context.edit("出错了呜呜呜 ~ 无效的参数。")
         return
     diu_round = False
-    user_object = await context.client.get_me()
-    from_user = await context.client(GetFullUserRequest(user_object.id))
+    from_user = user_object = context.sender
+    from_user_id = await get_full_id(from_user)
     if context.reply_to_msg_id:
         reply_message = await context.get_reply_message()
         try:
@@ -223,7 +228,12 @@ async def eat(context: NewMessage.Event):
         except AttributeError:
             await context.edit("出错了呜呜呜 ~ 无效的参数。")
             return
-        target_user = await context.client(GetFullUserRequest(user_id))
+        if user_id > 0:
+            target_user = await context.client(GetFullUserRequest(user_id))
+            target_user_id = target_user.user.id
+        else:
+            target_user = await context.client(GetFullChannelRequest(user_id))
+            target_user_id = target_user.full_chat.id
     else:
         user_raw = ""
         if len(context.parameter) == 1 or len(context.parameter) == 2:
@@ -235,18 +245,25 @@ async def eat(context: NewMessage.Event):
         if context.message.entities is not None:
             if isinstance(context.message.entities[0], MessageEntityMentionName):
                 target_user = await context.client(GetFullUserRequest(context.message.entities[0].user_id))
+                target_user_id = target_user.user.id
             elif isinstance(context.message.entities[0], MessageEntityPhone):
-                target_user = await context.client(GetFullUserRequest(user))
+                if user > 0:
+                    target_user = await context.client(GetFullUserRequest(user))
+                    target_user_id = target_user.user.id
+                else:
+                    target_user = await context.client(GetFullChannelRequest(user))
+                    target_user_id = target_user.full_chat.id
             elif isinstance(context.message.entities[0], MessageEntityBotCommand):
-                target_user = from_user
+                target_user = await context.client(GetFullUserRequest(user_object.id))
+                target_user_id = target_user.user.id
             else:
                 return await context.edit("出错了呜呜呜 ~ 参数错误。")
         elif user_raw[:1] in [".", "/", "-", "!"]:
-            target_user = from_user
+            target_user_id = await get_full_id(from_user)
         else:
             try:
                 user_object = await context.client.get_entity(user)
-                target_user = await context.client(GetFullUserRequest(user_object.id))
+                target_user_id = await get_full_id(user_object)
             except (TypeError, ValueError, OverflowError, StructError) as exception:
                 if str(exception).startswith("Cannot find any entity corresponding to"):
                     await context.edit("出错了呜呜呜 ~ 指定的用户不存在。")
@@ -263,13 +280,13 @@ async def eat(context: NewMessage.Event):
                     return
                 raise exception
     photo = await context.client.download_profile_photo(
-        target_user.user.id,
-        "plugins/eat/" + str(target_user.user.id) + ".jpg",
+        target_user_id,
+        "plugins/eat/" + str(target_user_id) + ".jpg",
         download_big=True
     )
 
     reply_to = context.message.reply_to_msg_id
-    if exists("plugins/eat/" + str(target_user.user.id) + ".jpg"):
+    if exists("plugins/eat/" + str(target_user_id) + ".jpg"):
         for num in range(1, max_number + 1):
             print(num)
             if not exists('plugins/eat/eat' + str(num) + '.png'):
@@ -416,7 +433,7 @@ async def eat(context: NewMessage.Event):
         except:
             notifyStr = "吃头像"
         await context.edit(f"正在生成 {notifyStr} 图片中 . . .")
-        markImg = Image.open("plugins/eat/" + str(target_user.user.id) + ".jpg")
+        markImg = Image.open("plugins/eat/" + str(target_user_id) + ".jpg")
         try:
             eatImg = Image.open("plugins/eat/eat" + str(number) + ".png")
             maskImg = Image.open("plugins/eat/mask" + str(number) + ".png")
@@ -430,14 +447,14 @@ async def eat(context: NewMessage.Event):
             number = str(number)
         except:
             pass
-        result = await eat_it(context, from_user, eatImg, maskImg, markImg, number)
+        result = await eat_it(context, from_user_id, eatImg, maskImg, markImg, number)
         result.save('plugins/eat/eat.webp')
         target_file = await context.client.upload_file("plugins/eat/eat.webp")
         try:
-            remove("plugins/eat/" + str(target_user.user.id) + ".jpg")
-            remove("plugins/eat/" + str(target_user.user.id) + ".png")
-            remove("plugins/eat/" + str(from_user.user.id) + ".jpg")
-            remove("plugins/eat/" + str(from_user.user.id) + ".png")
+            remove("plugins/eat/" + str(target_user_id) + ".jpg")
+            remove("plugins/eat/" + str(target_user_id) + ".png")
+            remove("plugins/eat/" + str(from_user_id) + ".jpg")
+            remove("plugins/eat/" + str(from_user_id) + ".png")
             remove("plugins/eat/eat.webp")
             remove(photo)
         except:

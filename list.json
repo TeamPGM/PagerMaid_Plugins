@@ -202,10 +202,10 @@
         },
         {
             "name": "eat",
-            "version": "1.040",
+            "version": "1.041",
             "section": "profile",
             "maintainer": "SF_PICK",
-            "size": "6.4 kb",
+            "size": "22.3 kb",
             "supported": false,
             "des-short": "生成一张 吃头像 图片。",
             "des": "这个人很懒，什么都没有留下。"
