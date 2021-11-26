@@ -64,6 +64,8 @@ async def epic(context):
                 upcoming_promotions = game["promotions"]["upcomingPromotionalOffers"]
                 if not game_promotions and upcoming_promotions:
                     continue  # 促销即将上线，跳过
+                elif game["price"]["totalPrice"]["discountPrice"] != 0:
+                    continue  # 非免费游戏，跳过
                 else:
                     game_thumbnail, game_dev, game_pub = None, None, None
                     for image in game["keyImages"]:
