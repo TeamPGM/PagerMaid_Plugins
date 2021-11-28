@@ -15,7 +15,7 @@ from telethon.errors.rpcerrorlist import ChatSendStickersForbiddenError
 from struct import error as StructError
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
-from pagermaid import redis, config, bot
+from pagermaid import redis, config, bot, user_id
 from collections import defaultdict
 import json
 
@@ -43,6 +43,8 @@ configFileRemoteUrlKey = "eat.configFileRemoteUrl"
 async def get_full_id(object_n):
     if isinstance(object_n, Channel):
         return (await bot(GetFullChannelRequest(object_n.id))).full_chat.id  # noqa
+    elif not object_n:
+        return user_id
     return (await bot(GetFullUserRequest(object_n.id))).user.id
 
 
