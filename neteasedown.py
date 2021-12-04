@@ -12,7 +12,7 @@ try:
 
     cc_imported = True
 except ImportError:
-    print(f'[!] Please install {executable} -m pip install mutagen git+https://github.com/Xtao-Labs/pyncm.git')
+    print(f'[!] Please install {executable} -m pip install requests mutagen pycryptodome tqdm git+https://github.com/Xtao-Labs/pyncm.git')
     cc_imported = False
 
 
@@ -78,7 +78,7 @@ async def netease_down(track_info: dict, song_info: dict) -> str:
           parameters="{关键词/id}/{login <账号> <密码>}/{clear}")
 async def ned(context):
     if not cc_imported:
-        await context.edit(f"[!] Please run `-sh {executable} -m pip install "
+        await context.edit(f"[!] Please run `-sh {executable} -m pip install requests pycryptodome tqdm "
                            f"mutagen git+https://github.com/Xtao-Labs/pyncm.git` and then restart pagermaid.")
         return
     if len(context.parameter) < 1:
