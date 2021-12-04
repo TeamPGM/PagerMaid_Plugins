@@ -85,6 +85,10 @@ async def ned(context):
         # 使用方法
         await context.edit(f"**使用方法:** `-{alias_command('ned')}" + " {关键词/id}/{login <账号> <密码>}`")
         return
+    # 加载登录信息
+    if isfile(f"data{sep}session.ncm"):
+        with open(f"data{sep}session.ncm") as f:
+            SetCurrentSession(LoadSessionFromString(f.read()))
     # 处理账号登录
     if context.parameter[0] == "login":
         # 显示登录信息
@@ -121,10 +125,6 @@ async def ned(context):
                 remove(f"data{sep}{i}")
         await context.edit("**已清除缓存**")
         return
-    # 加载登录信息
-    if isfile(f"data{sep}session.ncm"):
-        with open(f"data{sep}session.ncm") as f:
-            SetCurrentSession(LoadSessionFromString(f.read()))
     # 搜索歌曲
     song_id = context.arguments
     # id
