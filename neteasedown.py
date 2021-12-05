@@ -231,19 +231,25 @@ async def ned(context):
     if track_info["data"][0]["code"] == 404:
         await context.edit(f"**没有找到歌曲**，请检查歌曲id是否正确。")
         return
-    await context.edit(f"正在下载歌曲：**{song_info['songs'][0]['name']} - {gen_author(song_info)}**")
+    await context.edit(f"正在下载歌曲：**{song_info['songs'][0]['name']} - {gen_author(song_info)}** "
+                       f"{round(track_info['data'][0]['size'] / 1000 / 1000, 2)} MB")
     # 下载歌曲并且设置歌曲标签
     song = TrackHelper(song_info['songs'][0])
+    # 转义
+    for char in song_info["songs"][0]["name"]:
+        if char in ['/', '\\', ':', '*', '?', '"', '<', '>', '|']:
+            song_info["songs"][0]["name"] = song_info["songs"][0]["name"].replace(char, '')
     path = await netease_down(track_info, song_info, song)
     await context.edit("正在上传歌曲。。。")
     # 上传歌曲
     cap_ = ""
     # 提醒登录VIP账号
     if track_info["data"][0]["freeTrialInfo"]:
-        cap_ = f"**非VIP，正在试听 {track_info['data'][0]['freeTrialInfo']['start']}s ~ " \
+        cap_ = f"**非VIP，正在试听 {track_info['data'][0]['freeTrialInfo']['start']}s ~ \n" \
                f"{track_info['data'][0]['freeTrialInfo']['end']}s**\n"
     cap = f"「**{song_info['songs'][0]['name']}**」\n" \
           f"{gen_author(song_info)}\n" \
+          f"文件大小：{round(track_info['data'][0]['size'] / 1000 / 1000, 2)} MB\n" \
           f"\n{cap_}" \
           f"#netease #{int(track_info['data'][0]['br'] / 1000)}kbps #{track_info['data'][0]['type']}"
     await context.client.send_file(

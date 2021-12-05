@@ -292,10 +292,10 @@
         },
         {
             "name": "neteasedown",
-            "version": "1.22",
+            "version": "1.221",
             "section": "daily",
             "maintainer": "xtaodada",
-            "size": "11.1 kb",
+            "size": "11.4 kb",
             "supported": true,
             "des-short": "网易云搜歌/点歌",
             "des": "可以在线搜索并且快速点歌，支持解锁VIP歌曲。命令：ned。"
