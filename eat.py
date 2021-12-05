@@ -243,7 +243,7 @@ async def eat(context: NewMessage.Event):
             if user.isnumeric():
                 user = int(user)
         else:
-            user = user_object.id
+            user = from_user_id
         if context.message.entities is not None:
             if isinstance(context.message.entities[0], MessageEntityMentionName):
                 target_user = await context.client(GetFullUserRequest(context.message.entities[0].user_id))

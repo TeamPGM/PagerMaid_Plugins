@@ -21,10 +21,17 @@ async def fuck(context):
     if context.is_group:
         if reply:
             if reply.sender:
-                if reply.sender.last_name is None:
-                    reply_last_name = ''
-                else:
-                    reply_last_name = reply.sender.last_name
+                try:
+                    if reply.sender.last_name is None:
+                        reply_last_name = ''
+                    else:
+                        reply_last_name = reply.sender.last_name
+                except AttributeError:
+                    try:
+                        await context.edit('无法获取所回复的用户。')
+                    except:
+                        pass
+                    return
             else:
                 try:
                     await context.edit('无法获取所回复的用户。')
@@ -32,10 +39,17 @@ async def fuck(context):
                     pass
                 return
             if context.sender:
-                if context.sender.last_name is None:
-                    context_last_name = ''
-                else:
-                    context_last_name = context.sender.last_name
+                try:
+                    if context.sender.last_name is None:
+                        context_last_name = ''
+                    else:
+                        context_last_name = context.sender.last_name
+                except AttributeError:
+                    try:
+                        await context.edit('无法获取所回复的用户。')
+                    except:
+                        pass
+                    return
             else:
                 try:
                     await context.edit('无法获取所回复的用户。')
@@ -76,6 +90,8 @@ async def fuck(context):
             else:
                 try:
                     userid = int(context.arguments)
+                    if userid < 0:
+                        return await context.edit('输入值错误。')
                 except ValueError:
                     await context.edit('输入值错误。')
                     return

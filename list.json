@@ -202,7 +202,7 @@
         },
         {
             "name": "eat",
-            "version": "1.042",
+            "version": "1.043",
             "section": "profile",
             "maintainer": "SF_PICK",
             "size": "22.3 kb",
@@ -502,7 +502,7 @@
         },
         {
             "name": "fuck",
-            "version": "1.022",
+            "version": "1.023",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "4.0 kb",
