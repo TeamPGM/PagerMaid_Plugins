@@ -10,11 +10,11 @@ try:
     from pyncm import GetCurrentSession, apis, DumpSessionAsString, SetCurrentSession, LoadSessionFromString
     from pyncm.apis import LoginFailedException
     from pyncm.apis.cloudsearch import CloudSearchType
+    from pyncm.apis.login import LoginLogout
 
     cc_imported = True
 except ImportError:
-    print(f'[!] Please run {executable} -m pip install requests pycryptodome tqdm mutagen and '
-          f'{executable} -m pip installgit+https://github.com/Xtao-Labs/pyncm.git')
+    print(f'[!] Please run {executable} -m pip install pyncm')
     cc_imported = False
 
 
@@ -99,8 +99,7 @@ i.e.
           parameters="{关键词/id}/{login <账号> <密码>}/{clear}")
 async def ned(context):
     if not cc_imported:
-        await context.edit(f"[!] Please run `-sh {executable} -m pip install requests pycryptodome tqdm mutagen` "
-                           f"and run `-sh {executable} -m pip install git+https://github.com/Xtao-Labs/pyncm.git` "
+        await context.edit(f"[!] Please run `-sh {executable} -m pip install pyncm` "
                            f"and then restart pagermaid.")
         return
     if len(context.parameter) < 1:
@@ -111,6 +110,8 @@ async def ned(context):
     if isfile(f"data{sep}session.ncm"):
         with open(f"data{sep}session.ncm") as f:
             SetCurrentSession(LoadSessionFromString(f.read()))
+    # 海外用户
+    GetCurrentSession().headers['X-Real-IP'] = '118.88.88.88'
     # 处理账号登录
     if context.parameter[0] == "login":
         # 显示登录信息
@@ -161,12 +162,18 @@ async def ned(context):
         with open(f"data{sep}session.ncm", 'w+') as f:
             f.write(DumpSessionAsString(GetCurrentSession()))
         return
-    if context.parameter[0] == "clear":
+    elif context.parameter[0] == "logout":
+        # 登出
+        LoginLogout()
+        if isfile(f"data{sep}session.ncm"):
+            remove(f"data{sep}session.ncm")
+        return await context.edit("[ned] 账号登出成功。")
+    elif context.parameter[0] == "clear":
         # 清除歌曲缓存
         for i in listdir("data"):
             if i.find(".mp3") != -1 or i.find(".jpg") != -1:
                 remove(f"data{sep}{i}")
-        await context.edit("**已清除缓存**")
+        await context.edit("[ned] **已清除缓存**")
         return
     # 搜索歌曲
     song_id = context.arguments
@@ -217,6 +224,6 @@ async def ned(context):
         for i in listdir("data"):
             if i.find(".mp3") != -1 or i.find(".jpg") != -1:
                 remove(f"data{sep}{i}")
-        msg = await context.respond("**已清除缓存**")
+        msg = await context.respond("[ned] **已自动清除缓存**")
         await sleep(3)
         await msg.delete()
