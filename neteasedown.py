@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
+
+import base64
 from asyncio import sleep
 from os import sep, remove, listdir
-from os.path import isfile
+from os.path import isfile, exists
 from sys import executable
 from time import strftime, localtime
 
 try:
-    from mutagen.id3 import ID3, APIC, TIT2, TPE1
+    from mutagen.mp3 import EasyMP3
+    from mutagen.id3 import ID3, APIC
+    from mutagen.flac import FLAC, Picture
+    from mutagen.oggvorbis import OggVorbis
     from pyncm import GetCurrentSession, apis, DumpSessionAsString, SetCurrentSession, LoadSessionFromString
+    from pyncm.utils.helper import TrackHelper
     from pyncm.apis import LoginFailedException
     from pyncm.apis.cloudsearch import CloudSearchType
     from pyncm.apis.login import LoginLogout
@@ -16,7 +22,6 @@ try:
 except ImportError:
     print(f'[!] Please run {executable} -m pip install pyncm')
     cc_imported = False
-
 
 from telethon.tl.types import DocumentAttributeAudio
 
@@ -47,37 +52,65 @@ def get_duration(song_info: dict, track_info: dict) -> int:
         return int(song_info["songs"][0]["dt"] / 1000)
 
 
-async def netease_down(track_info: dict, song_info: dict) -> str:
+def tag_audio(track: TrackHelper, file: str, cover_img: str = ''):
+    def write_keys(song):
+        # Write trackdatas
+        song['title'] = track.TrackName
+        song['artist'] = track.Artists
+        song['album'] = track.AlbumName
+        song['tracknumber'] = str(track.TrackNumber)
+        song['date'] = str(track.TrackPublishTime)
+        song.save()
+
+    def mp3():
+        song = EasyMP3(file)
+        write_keys(song)
+        if exists(cover_img):
+            song = ID3(file)
+            song.update_to_v23()  # better compatibility over v2.4
+            song.add(APIC(encoding=3, mime='image/jpeg', type=3, desc='',
+                          data=open(cover_img, 'rb').read()))
+            song.save(v2_version=3)
+
+    def flac():
+        song = FLAC(file)
+        write_keys(song)
+        if exists(cover_img):
+            pic = Picture()
+            pic.data = open(cover_img, 'rb').read()
+            pic.mime = 'image/jpeg'
+            song.add_picture(pic)
+            song.save()
+
+    def ogg():
+        song = OggVorbis(file)
+        write_keys(song)
+        if exists(cover_img):
+            pic = Picture()
+            pic.data = open(cover_img, 'rb').read()
+            pic.mime = 'image/jpeg'
+            song["metadata_block_picture"] = [base64.b64encode(pic.write()).decode('ascii')]
+            song.save()
+
+    format_ = file.split('.')[-1].upper()
+    for ext, method in [({'MP3'}, mp3), ({'FLAC'}, flac), ({'OGG', 'OGV'}, ogg)]:
+        if format_ in ext:
+            return method() or True
+    return False
+
+
+async def netease_down(track_info: dict, song_info: dict, song: TrackHelper) -> str:
     if not isfile(f'data{sep}{song_info["songs"][0]["name"]}.{track_info["data"][0]["type"]}'):
         # Downloding source audio
         download_by_url(track_info["data"][0]["url"],
                         f'data{sep}{song_info["songs"][0]["name"]}.{track_info["data"][0]["type"]}')
         # Downloading cover
-        download_by_url(song_info["songs"][0]["al"]["picUrl"],
-                        f'data{sep}{song_info["songs"][0]["name"]}.jpg')
-        with open(f'data{sep}{song_info["songs"][0]["name"]}.jpg', 'rb') as f:
-            picData = f.read()
+        if not isfile(f'data{sep}{song_info["songs"][0]["name"]}.jpg'):
+            download_by_url(song.AlbumCover,
+                            f'data{sep}{song_info["songs"][0]["name"]}.jpg')
         # 设置标签
-        info = {'picData': picData,
-                'title': song_info["songs"][0]["name"],
-                'artist': gen_author(song_info)}
-        songFile = ID3(f'data{sep}{song_info["songs"][0]["name"]}.{track_info["data"][0]["type"]}')
-        songFile['APIC'] = APIC(  # 插入封面
-            encoding=3,
-            mime='image/jpeg',
-            type=3,
-            desc=u'Cover',
-            data=info['picData']
-        )
-        songFile['TIT2'] = TIT2(  # 插入歌名
-            encoding=3,
-            text=info['title']
-        )
-        songFile['TPE1'] = TPE1(  # 插入第一演奏家、歌手、等
-            encoding=3,
-            text=info['artist']
-        )
-        songFile.save()
+        tag_audio(song, f'data{sep}{song_info["songs"][0]["name"]}.{track_info["data"][0]["type"]}',
+                  f'data{sep}{song_info["songs"][0]["name"]}.jpg')
     # 返回
     return f'data{sep}{song_info["songs"][0]["name"]}.{track_info["data"][0]["type"]}'
 
@@ -87,9 +120,11 @@ ned_help_msg = f"""
 
 i.e.
 `-{alias_command('ned')} 失眠飞行 兔籽鲸 / 雨客Yoker`  # 通过歌曲名称+歌手（可选）点歌
+`-{alias_command('ned')} see you again -f`  # 通过 -f 参数点播 flac 最高音质
 `-{alias_command('ned')} 1430702717`  # 通过歌曲 ID 点歌
 `-{alias_command('ned')} login`  # 显示登录信息
 `-{alias_command('ned')} login 手机号码 密码`  # 登录账号
+`-{alias_command('ned')} logout`  # 登出
 `-{alias_command('ned')} clear`  # 手动清除缓存
 """
 
@@ -152,7 +187,7 @@ async def ned(context):
         else:
             vip_type = "**普通**"
         # 获取账号创建时间
-        time = strftime("%Y-%m-%d %H:%M:%S", localtime(login_info['content']['account']['createTime']/1000))
+        time = strftime("%Y-%m-%d %H:%M:%S", localtime(login_info['content']['account']['createTime'] / 1000))
         if context.is_group:
             await context.edit(f"[ned] **登录成功**，已登录{vip_type}账号，账号创建时间：`{time}`")
         else:
@@ -171,12 +206,14 @@ async def ned(context):
     elif context.parameter[0] == "clear":
         # 清除歌曲缓存
         for i in listdir("data"):
-            if i.find(".mp3") != -1 or i.find(".jpg") != -1:
+            if i.find(".mp3") != -1 or i.find(".jpg") != -1 or i.find(".flac") != -1 or i.find(".ogg") != -1:
                 remove(f"data{sep}{i}")
         await context.edit("[ned] **已清除缓存**")
         return
     # 搜索歌曲
-    song_id = context.arguments
+    # 判断是否使用最高比特率解析
+    flac_mode = True if context.arguments.find("-f") != -1 else False
+    song_id = context.arguments.replace("-f", "").strip()
     # id
     if song_id.isdigit():
         song_id = int(song_id)
@@ -188,7 +225,7 @@ async def ned(context):
             await context.edit(f"**没有找到歌曲**，请检查歌曲名称是否正确。")
             return
     # 获取歌曲信息小于等于 320k HQ
-    track_info = apis.track.GetTrackAudio([song_id])
+    track_info = apis.track.GetTrackAudio([song_id], bitrate=3200 * 1000 if flac_mode else 320000)
     # 获取歌曲详情
     song_info = apis.track.GetTrackDetail([song_id])
     if track_info["data"][0]["code"] == 404:
@@ -196,7 +233,8 @@ async def ned(context):
         return
     await context.edit(f"正在下载歌曲：**{song_info['songs'][0]['name']} - {gen_author(song_info)}**")
     # 下载歌曲并且设置歌曲标签
-    path = await netease_down(track_info, song_info)
+    song = TrackHelper(song_info['songs'][0])
+    path = await netease_down(track_info, song_info, song)
     await context.edit("正在上传歌曲。。。")
     # 上传歌曲
     cap_ = ""
@@ -211,10 +249,11 @@ async def ned(context):
     await context.client.send_file(
         context.chat_id,
         path,
+        reply_to=context.message.reply_to_msg_id,
         caption=cap,
         link_preview=False,
         force_document=False,
-        thumb=path[:-3] + 'jpg',
+        thumb=f'data{sep}{song_info["songs"][0]["name"]}.jpg',
         attributes=(DocumentAttributeAudio(
             get_duration(song_info, track_info), False, song_info['songs'][0]['name'], gen_author(song_info)),)
     )
@@ -222,7 +261,7 @@ async def ned(context):
     # 过多文件自动清理
     if len(listdir("data")) > 100:
         for i in listdir("data"):
-            if i.find(".mp3") != -1 or i.find(".jpg") != -1:
+            if i.find(".mp3") != -1 or i.find(".jpg") != -1 or i.find(".flac") != -1 or i.find(".ogg") != -1:
                 remove(f"data{sep}{i}")
         msg = await context.respond("[ned] **已自动清除缓存**")
         await sleep(3)
