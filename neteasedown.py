@@ -52,7 +52,7 @@ def get_duration(song_info: dict, track_info: dict) -> int:
         return int(song_info["songs"][0]["dt"] / 1000)
 
 
-def tag_audio(track: TrackHelper, file: str, cover_img: str = ''):
+def tag_audio(track, file: str, cover_img: str = ''):
     def write_keys(song):
         # Write trackdatas
         song['title'] = track.TrackName
@@ -99,7 +99,7 @@ def tag_audio(track: TrackHelper, file: str, cover_img: str = ''):
     return False
 
 
-async def netease_down(track_info: dict, song_info: dict, song: TrackHelper) -> str:
+async def netease_down(track_info: dict, song_info: dict, song) -> str:
     if not isfile(f'data{sep}{song_info["songs"][0]["name"]}.{track_info["data"][0]["type"]}'):
         # Downloding source audio
         download_by_url(track_info["data"][0]["url"],
