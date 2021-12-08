@@ -711,6 +711,16 @@
             "des": "将回复的消息转换成语录图片。\n指令：-yvlu"
         },
         {
+            "name": "antichannelmsg",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "4.8 kb",
+            "supported": true,
+            "des-short": "自动删除频道消息并且封禁频道",
+            "des": "自动删除频道消息并且封禁频道。\n指令：-antichannelmsg"
+        },
+        {
             "name": "antichannelpin",
             "version": "1.0",
             "section": "chat",
