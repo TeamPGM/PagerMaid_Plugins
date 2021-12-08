@@ -61,7 +61,7 @@ async def anti_channel_msg(context):
         await context.edit(f"{lang('error_prefix')}{lang('arg_error')}")
 
 
-@listener(is_plugin=False, incoming=True, outgoing=True, ignore_edited=True)
+@listener(is_plugin=False, incoming=True, outgoing=False, ignore_edited=True)
 async def auto_process_channel_msg(context):
     """ Event handler to delete channel messages and ban channel. """
     if not redis_status():
