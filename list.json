@@ -11,16 +11,6 @@
             "des": "此插件用于需要自动回复的场景。"
         },
         {
-            "name": "dme",
-            "version": "1.122",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "4.3 kb",
-            "supported": true,
-            "des-short": "反 TG desktop 防撤回插件。",
-            "des": "编辑并删除当前对话您发送的特定数量的消息。支持 Redis 记录上一次指定的文本，方便快速撤回消息。 最近更新：防止编辑消息报错。"
-        },
-        {
             "name": "autochangename",
             "version": "1.11",
             "section": "profile",
@@ -279,16 +269,6 @@
             "supported": false,
             "des-short": "随机网抑热歌",
             "des": "从热歌榜随机获取一首歌，可以多进程同开，且附带歌曲信息。命令：ns。"
-        },
-        {
-            "name": "neteasemusic",
-            "version": "4.31",
-            "section": "daily",
-            "maintainer": "TNTcraftHIM",
-            "size": "28.8 kb",
-            "supported": false,
-            "des-short": "网易云搜歌/随机热歌/点歌",
-            "des": "可以在线搜索并且快速点歌（可回复信息点歌），也支持随机热歌功能，支持解锁VIP/灰色歌曲。命令：nem。"
         },
         {
             "name": "neteasedown",
