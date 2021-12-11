@@ -682,13 +682,13 @@
         },
         {
             "name": "yvlu",
-            "version": "1.121",
+            "version": "1.2",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "4.8 kb",
+            "size": "10.3 kb",
             "supported": true,
             "des-short": "将回复的消息转换成语录图片",
-            "des": "将回复的消息转换成语录图片。\n指令：-yvlu"
+            "des": "将回复的消息转换成语录图片。\n指令：-yvlu -yvlu_"
         },
         {
             "name": "antichannelmsg",

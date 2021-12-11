@@ -4,6 +4,8 @@ from os.path import exists
 from os import makedirs, remove
 from PIL import Image, ImageFont, ImageDraw
 from requests import get
+from telethon.errors import YouBlockedUserError, ForbiddenError, FloodWaitError, AuthKeyError
+from telethon.tl.functions.contacts import UnblockRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageMediaPhoto, MessageMediaWebPage
 from pagermaid import bot
@@ -112,6 +114,34 @@ async def yv_lu_process_sticker(name, photo, sticker, path):
 @listener(is_plugin=True, outgoing=True, command=alias_command("yvlu"),
           description="将回复的消息转换成语录")
 async def yv_lu(context):
+    reply = await context.get_reply_message()
+    if not reply:
+        return await context.edit('你需要回复一条消息。')
+    async with bot.conversation('QuotLyBot') as conversation:
+        try:
+            send_for = await reply.forward_to(conversation.chat_id)
+        except YouBlockedUserError:
+            if await context.client(UnblockRequest(id=conversation.chat_id)):
+                send_for = await reply.forward_to(conversation.chat_id)
+            else:
+                return await context.edit("请先解封 @QuotLyBot ")
+        except ForbiddenError:
+            return await context.edit("无权限转发消息。")
+        except FloodWaitError:
+            return await context.edit("触发转发 limit 限制")
+        except AuthKeyError:
+            return await context.edit("无权限转发消息。")
+        except:
+            return await context.edit("未知错误。")
+        chat_response = await conversation.get_response(message=send_for.id)
+        await bot.send_read_acknowledge(conversation.chat_id)
+    await bot.send_message(context.chat_id, chat_response, reply_to=context.message.reply_to_msg_id)
+    await context.delete()
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("yvlu_"),
+          description="将回复的消息转换成语录")
+async def yv_lu_(context):
     if not context.reply_to_msg_id:
         await context.edit('你需要回复一条消息。')
         return
