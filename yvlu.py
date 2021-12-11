@@ -112,11 +112,16 @@ async def yv_lu_process_sticker(name, photo, sticker, path):
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("yvlu"),
-          description="将回复的消息转换成语录")
+          description="将回复的消息或者输入的字符串转换成语录")
 async def yv_lu(context):
     reply = await context.get_reply_message()
     if not reply:
-        return await context.edit('你需要回复一条消息。')
+        message = context.arguments
+        if message:
+            await context.edit(message)
+            reply = context
+        else:
+            return await context.edit('你需要回复一条消息或者输入一串字符。')
     async with bot.conversation('QuotLyBot') as conversation:
         try:
             send_for = await reply.forward_to(conversation.chat_id)
