@@ -213,13 +213,13 @@ async def ned(context):
     # 搜索歌曲
     # 判断是否使用最高比特率解析
     flac_mode = True if context.arguments.find("-f") != -1 else False
-    song_id = context.arguments.replace("-f", "").strip()
+    song_id = context.arguments.replace("-f", "").replace("\u200b", "").strip()
     # id
     if song_id.isdigit():
         song_id = int(song_id)
     else:
         search_data = apis.cloudsearch.GetSearchResult(song_id, CloudSearchType(1), 1)
-        if len(search_data["result"]["songs"]) == 1:
+        if search_data["result"]["songCount"] >= 1:
             song_id = search_data["result"]["songs"][0]["id"]
         else:
             await context.edit(f"**没有找到歌曲**，请检查歌曲名称是否正确。")

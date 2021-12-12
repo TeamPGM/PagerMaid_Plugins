@@ -39,6 +39,9 @@ async def rape(context):
                 except ChatAdminRequiredError:
                     await context.edit('无管理员权限。')
                     return
+                except:
+                    await context.edit('无法踢出。')
+                    return
                 await context.client.send_message(
                     context.chat_id,
                     f'[{reply.sender.first_name} {reply_last_name}](tg://user?id={reply.sender.id}) 已被移出群聊',
