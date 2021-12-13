@@ -267,3 +267,27 @@ async def whatanime(context):
                                        caption=text,
                                        reply_to=msg.id)
     await context.delete()
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("tts_"),
+          description="通过 Azure 文本到语音 基于字符串生成语音消息。\n\n"
+                      "字符串末尾为 en 时，使用英文发音\n字符串末尾为 tw 时，使用台湾发音\n"
+                      "字符串末尾为 ne 时，使用中文新闻发音\n字符串末尾为 nv 时，使用中文女音",
+          parameters="<字符串>")
+async def az_tts(context):
+    await context.edit("获取中 . . .")
+    reply = await context.get_reply_message()
+    try:
+        message = await obtain_message(context)
+    except ValueError:
+        await context.edit("出错了呜呜呜 ~ 无效的参数。")
+        return
+    async with bot.conversation('PagerMaid_Modify_bot') as conversation:
+        await conversation.send_message('/tts ' + message)
+        chat_response = await conversation.get_response()
+        await bot.send_read_acknowledge(conversation.chat_id)
+    if reply:
+        await context.respond(chat_response, reply_to=reply)
+    else:
+        await context.respond(chat_response)
+    await context.delete()
