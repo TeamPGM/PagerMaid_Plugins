@@ -269,12 +269,42 @@ async def whatanime(context):
     await context.delete()
 
 
-@listener(is_plugin=True, outgoing=True, command=alias_command("tts_"),
-          description="通过 Azure 文本到语音 基于字符串生成语音消息。\n\n"
-                      "字符串末尾为 en 时，使用英文发音\n字符串末尾为 tw 时，使用台湾发音\n"
-                      "字符串末尾为 ne 时，使用中文新闻发音\n字符串末尾为 nv 时，使用中文女音",
+@listener(is_plugin=True, outgoing=True, command=alias_command("tts_nan"),
+          description="通过 Azure 文本到语音 基于字符串生成 简体男声 语音消息。",
           parameters="<字符串>")
-async def az_tts(context):
+async def az_tts_nan(context):
+    await az_tts(context, "")
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("tts_nv"),
+          description="通过 Azure 文本到语音 基于字符串生成 简体女声 语音消息。",
+          parameters="<字符串>")
+async def az_tts_nv(context):
+    await az_tts(context, "nv")
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("tts_tw"),
+          description="通过 Azure 文本到语音 基于字符串生成 繁体男声 语音消息。",
+          parameters="<字符串>")
+async def az_tts_tw(context):
+    await az_tts(context, "tw")
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("tts_ne"),
+          description="通过 Azure 文本到语音 基于字符串生成 简体新闻男声 语音消息。",
+          parameters="<字符串>")
+async def az_tts_ne(context):
+    await az_tts(context, "ne")
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("tts_en"),
+          description="通过 Azure 文本到语音 基于字符串生成 英文男声 语音消息。",
+          parameters="<字符串>")
+async def az_tts_en(context):
+    await az_tts(context, "en")
+
+
+async def az_tts(context, mode):
     await context.edit("获取中 . . .")
     reply = await context.get_reply_message()
     try:
@@ -283,7 +313,7 @@ async def az_tts(context):
         await context.edit("出错了呜呜呜 ~ 无效的参数。")
         return
     async with bot.conversation('PagerMaid_Modify_bot') as conversation:
-        await conversation.send_message('/tts ' + message)
+        await conversation.send_message('/tts ' + message + mode)
         chat_response = await conversation.get_response()
         await bot.send_read_acknowledge(conversation.chat_id)
     if reply:
