@@ -3,6 +3,7 @@ from redis.exceptions import ConnectionError
 from requests import get
 from os import remove
 from telethon.tl.types import MessageMediaPhoto
+from asyncio.exceptions import TimeoutError
 from pagermaid import bot, redis, redis_status
 from pagermaid.listener import listener
 from pagermaid.utils import obtain_message, alias_command
@@ -314,7 +315,10 @@ async def az_tts(context, mode):
         return
     async with bot.conversation('PagerMaid_Modify_bot') as conversation:
         await conversation.send_message('/tts ' + message + mode)
-        chat_response = await conversation.get_response()
+        try:
+            chat_response = await conversation.get_response()
+        except TimeoutError:
+            return await context.edit("未收到服务器回应。")
         await bot.send_read_acknowledge(conversation.chat_id)
     if reply:
         await context.respond(chat_response, reply_to=reply)

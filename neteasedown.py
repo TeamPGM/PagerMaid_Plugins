@@ -219,12 +219,12 @@ async def ned(context):
         song_id = int(song_id)
     else:
         search_data = apis.cloudsearch.GetSearchResult(song_id, CloudSearchType(1), 1)
-        if search_data["result"]["songCount"] >= 1:
+        if search_data.get("result", {}).get("songCount", 0) >= 1:
             song_id = search_data["result"]["songs"][0]["id"]
         else:
             await context.edit(f"**没有找到歌曲**，请检查歌曲名称是否正确。")
             return
-    # 获取歌曲信息小于等于 320k HQ
+    # 获取歌曲质量是否大于 320k HQ
     track_info = apis.track.GetTrackAudio([song_id], bitrate=3200 * 1000 if flac_mode else 320000)
     # 获取歌曲详情
     song_info = apis.track.GetTrackDetail([song_id])

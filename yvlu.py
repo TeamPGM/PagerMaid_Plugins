@@ -8,6 +8,7 @@ from telethon.errors import YouBlockedUserError, ForbiddenError, FloodWaitError,
 from telethon.tl.functions.contacts import UnblockRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageMediaPhoto, MessageMediaWebPage
+from asyncio.exceptions import TimeoutError
 from pagermaid import bot
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
@@ -138,7 +139,10 @@ async def yv_lu(context):
             return await context.edit("无权限转发消息。")
         except:
             return await context.edit("未知错误。")
-        chat_response = await conversation.get_response(message=send_for.id)
+        try:
+            chat_response = await conversation.get_response(message=send_for.id)
+        except TimeoutError:
+            return await context.edit("未收到服务器回应。")
         await bot.send_read_acknowledge(conversation.chat_id)
     await bot.send_message(context.chat_id, chat_response, reply_to=context.message.reply_to_msg_id)
     await context.delete()
