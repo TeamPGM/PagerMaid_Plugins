@@ -3,10 +3,7 @@ from redis.exceptions import ConnectionError
 from requests import get
 from os import remove
 from telethon.tl.types import MessageMediaPhoto
-try:
-    from asyncio.exceptions import TimeoutError
-except ImportError:
-    from asyncio.TimeoutError
+from asyncio import TimeoutError
 from pagermaid import bot, redis, redis_status
 from pagermaid.listener import listener
 from pagermaid.utils import obtain_message, alias_command
