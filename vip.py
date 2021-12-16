@@ -19,7 +19,7 @@ p_headers = {
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 '
         'Safari/537.36',
 }
-p_original = ['i.pixiv.cat', 'i.pximg.net', 'pixiv.kadokawa.moe']
+p_original = ['i.pixiv.cat', 'i.pximg.net']
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("duckduckgo"),
