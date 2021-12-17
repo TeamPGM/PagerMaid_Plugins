@@ -8,7 +8,7 @@ from telethon.errors import YouBlockedUserError, ForbiddenError, FloodWaitError,
 from telethon.tl.functions.contacts import UnblockRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageMediaPhoto, MessageMediaWebPage
-from asyncio.exceptions import TimeoutError
+from asyncio import TimeoutError
 from pagermaid import bot
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
