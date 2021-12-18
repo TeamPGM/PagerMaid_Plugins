@@ -773,12 +773,22 @@
         {
             "name": "epic",
             "version": "1.01",
-            "section": "chat",
+            "section": "daily",
             "maintainer": "xtaodada",
             "size": "5.80 kb",
             "supported": true,
             "des-short": "获取 Epic 喜加一信息",
             "des": "获取 Epic 喜加一信息。\n指令：-epic"
+        },
+        {
+            "name": "covid-en",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "1.70 kb",
+            "supported": true,
+            "des-short": "获取新冠疫情信息。（国家版）",
+            "des": "获取新冠疫情信息。（国家版）。\n指令：-covid-en"
         }
     ]
 }
