@@ -512,7 +512,7 @@
         },
         {
             "name": "getstickers",
-            "version": "1.11",
+            "version": "1.111",
             "section": "chat",
             "maintainer": "xtaodada,Vesugierii",
             "size": "5.4 kb",
