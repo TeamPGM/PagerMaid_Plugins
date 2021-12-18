@@ -4,19 +4,16 @@
 import time
 import traceback
 
-from sys import executable
 from asyncio import sleep
 from telethon.tl.types import PeerUser
 from telethon.tl.custom import Message
 from pagermaid import redis, redis_status
 from pagermaid.listener import listener
-from pagermaid.utils import alias_command
+from pagermaid.utils import alias_command, pip_install
 
-try:
-    import dateparser
-    imported = True
-except ImportError:
-    imported = False
+pip_install("dateparser")
+
+import dateparser
 
 
 # https://stackoverflow.com/questions/1111056/get-time-zone-information-of-the-system-in-python
@@ -84,9 +81,6 @@ async def auto_del(context: Message):
         args = args.strip()
         reply = await context.get_reply_message()
 
-        if not imported:
-            await edit(context, f"请先安装 `dateparser` 依赖: `{executable} -m pip install dateparser`")
-            return
         if not redis_status():
             await edit(context, f"出错了呜呜呜 ~ 数据库离线。")
             return

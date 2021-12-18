@@ -2,19 +2,15 @@
 
 # By tg @lowking0415
 # extra requirements: bs4
-
-imported = True
-
-try:
-    from bs4 import BeautifulSoup
-except ImportError:
-    imported = False
-
 from asyncio import sleep
 from requests import get
 from sys import executable
 from pagermaid.listener import listener
-from pagermaid.utils import alias_command
+from pagermaid.utils import alias_command, pip_install
+
+pip_install("bs4")
+
+from bs4 import BeautifulSoup
 from urllib import parse
 
 
@@ -22,9 +18,6 @@ from urllib import parse
           description="输入【-pl 食物名】查询食物嘌呤含量",
           parameters="<食物名>")
 async def pl(context):
-    if not imported:
-        await context.edit(f"请先安装依赖：\n`{executable} -m pip install bs4`\n随后，请重启 pagermaid。")
-        return
     action = context.arguments.split()
     status = False
     if len(action) == 1:

@@ -3,19 +3,17 @@ import requests
 from time import sleep
 from pagermaid.listener import listener
 from os import remove, path
-from pagermaid.utils import alias_command
+from pagermaid.utils import alias_command, pip_install
+
+pip_install("eyed3")
+
+import eyed3
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("ns"),
           description="随机网抑云热歌。")
 async def ns(context):
     await context.edit("获取中 . . .")
-    try:
-        import eyed3
-        imported = True
-    except ImportError:
-        imported = False
-        await context.edit("获取中 . . .\n(eyeD3支持库未安装，歌曲文件信息将无法导入\n请使用-sh pip3 install eyed3安装，或自行ssh安装)")
     status = False
     for _ in range(20):  # 最多尝试20次
         req = requests.get(
@@ -49,14 +47,13 @@ async def ns(context):
                     cap = artist + " - " + title
                 else:
                     continue
-                if imported is True:
-                    tag = eyed3.load(name).tag
-                    tag.encoding = '\x01'
-                    tag.artist = artist
-                    tag.title = title
-                    tag.album = album
-                    tag.images.set(3, albumpic.content, "image/jpeg", u'')
-                    tag.save()
+                tag = eyed3.load(name).tag
+                tag.encoding = '\x01'
+                tag.artist = artist
+                tag.title = title
+                tag.album = album
+                tag.images.set(3, albumpic.content, "image/jpeg", u'')
+                tag.save()
                 await context.client.send_file(
                     context.chat_id,
                     name,

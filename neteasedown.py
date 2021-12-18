@@ -4,29 +4,24 @@ import base64
 from asyncio import sleep
 from os import sep, remove, listdir
 from os.path import isfile, exists
-from sys import executable
 from time import strftime, localtime
 
-try:
-    from mutagen.mp3 import EasyMP3
-    from mutagen.id3 import ID3, APIC
-    from mutagen.flac import FLAC, Picture
-    from mutagen.oggvorbis import OggVorbis
-    from pyncm import GetCurrentSession, apis, DumpSessionAsString, SetCurrentSession, LoadSessionFromString
-    from pyncm.utils.helper import TrackHelper
-    from pyncm.apis import LoginFailedException
-    from pyncm.apis.cloudsearch import CloudSearchType
-    from pyncm.apis.login import LoginLogout
+from pagermaid.listener import listener
+from pagermaid.utils import alias_command, execute, pip_install
 
-    cc_imported = True
-except ImportError:
-    print(f'[!] Please run {executable} -m pip install pyncm')
-    cc_imported = False
+pip_install("pyncm")
+
+from mutagen.mp3 import EasyMP3
+from mutagen.id3 import ID3, APIC
+from mutagen.flac import FLAC, Picture
+from mutagen.oggvorbis import OggVorbis
+from pyncm import GetCurrentSession, apis, DumpSessionAsString, SetCurrentSession, LoadSessionFromString
+from pyncm.utils.helper import TrackHelper
+from pyncm.apis import LoginFailedException
+from pyncm.apis.cloudsearch import CloudSearchType
+from pyncm.apis.login import LoginLogout
 
 from telethon.tl.types import DocumentAttributeAudio
-
-from pagermaid.listener import listener
-from pagermaid.utils import alias_command, execute
 
 
 def download_by_url(url, dest):
@@ -133,10 +128,6 @@ i.e.
           description=ned_help_msg,
           parameters="{关键词/id}/{login <账号> <密码>}/{clear}")
 async def ned(context):
-    if not cc_imported:
-        await context.edit(f"[!] Please run `-sh {executable} -m pip install pyncm` "
-                           f"and then restart pagermaid.")
-        return
     if len(context.parameter) < 1:
         # 使用方法
         await context.edit(ned_help_msg)

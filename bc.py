@@ -12,14 +12,14 @@ from sys import executable
 import urllib.request
 from telethon.tl.custom.message import Message
 from pagermaid.listener import listener
-from pagermaid.utils import execute, alias_command
+from pagermaid.utils import execute, alias_command, pip_install
 
-imported = True
-try:
-    from binance.client import Client
-    import xmltodict
-except ImportError:
-    imported = False
+pip_install("python-binance", alias="binance")
+pip_install("xmltodict")
+
+from binance.client import Client
+import xmltodict
+
 
 API = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
 CURRENCIES = []
@@ -49,20 +49,6 @@ def init() -> None:
           parameters="<num> <coin1> <coin2>")
 async def coin(context: Message) -> None:
     """ coin change """
-    if not imported:
-        await context.edit("支持库 `python-binance` `xmltodict` 未安装...\n正在尝试自动安装...")
-        await execute(f'{executable} -m pip install python-binance')
-        await execute(f'{executable} -m pip install xmltodict')
-        await sleep(10)
-        result = await execute(f'{executable} -m pip show python-binance')
-        result1 = await execute(f'{executable} -m pip show xmltodict')
-        if len(result) > 0 and len(result1) > 0:
-            await context.edit('支持库 `python-binance` `xmltodict` 安装成功...\n正在尝试自动重启...')
-            await context.client.disconnect()
-        else:
-            await context.edit(f"自动安装失败..请尝试手动安装 `{executable} -m pip install python-binance`\n\n`"
-                               f"{executable} -m pip install xmltodict`\n随后，请重启 PagerMaid")
-        return
     init()
     action = context.arguments.split()
     binanceclient = Client(BINANCE_API_KEY, BINANCE_API_SECRET)

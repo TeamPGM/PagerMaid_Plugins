@@ -2,20 +2,16 @@
 
 # By tg @fruitymelon
 # extra requirements: dateparser
-
-imported = True
-
 import sys, time, traceback
-
-try:
-    import dateparser
-except ImportError:
-    imported = False
-
 import asyncio
 from pagermaid import log
 from pagermaid.listener import listener
-from pagermaid.utils import alias_command
+from pagermaid.utils import alias_command, pip_install
+
+pip_install("dateparser")
+
+import dateparser
+
 
 DAY_SECS = 24 * 60 * 60
 
@@ -86,9 +82,6 @@ async def sendat(context):
     mem.append("[NULL]")
     chat = await context.get_chat()
     args = " ".join(context.parameter).split("|")
-    if not imported:
-        await context.edit(f"请先安装依赖：`{sys.executable} -m pip install dateparser`\n随后，请重启 pagermaid。")
-        return
     await context.edit(f"debug: tz data: {time.timezone} {time.tzname} {sign}{offset}")
     if len(args) != 2:
         if args[0].find("rm ") == 0:

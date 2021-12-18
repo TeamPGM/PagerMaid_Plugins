@@ -22,7 +22,7 @@
         },
         {
             "name": "autorm",
-            "version": "1.031",
+            "version": "1.032",
             "section": "chat",
             "maintainer": "fruitymelon",
             "size": "6.7 kb",
@@ -32,7 +32,7 @@
         },
         {
             "name": "sendat",
-            "version": "1.32",
+            "version": "1.321",
             "section": "chat",
             "maintainer": "fruitymelon",
             "size": "15.0 kb",
@@ -262,7 +262,7 @@
         },
         {
             "name": "neteaseshuffle",
-            "version": "1.111",
+            "version": "1.112",
             "section": "daily",
             "maintainer": "TNTcraftHIM",
             "size": "3.0 kb",
@@ -272,7 +272,7 @@
         },
         {
             "name": "neteasedown",
-            "version": "1.224",
+            "version": "1.225",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "11.4 kb",
@@ -432,7 +432,7 @@
         },
         {
             "name": "bc",
-            "version": "1.23",
+            "version": "1.231",
             "section": "chat",
             "maintainer": "Pentacene",
             "size": "8.0 kb",
@@ -462,7 +462,7 @@
         },
         {
             "name": "pl",
-            "version": "1.03",
+            "version": "1.031",
             "section": "chat",
             "maintainer": "lowking",
             "size": "4.0 kb",
@@ -732,7 +732,7 @@
         },
         {
             "name": "autodel",
-            "version": "1.0",
+            "version": "1.001",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "5.7 kb",

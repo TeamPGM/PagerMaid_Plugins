@@ -2,17 +2,14 @@
 
 # By tg @fruitymelon
 # extra requirements: dateparser
-
-try:
-    import dateparser
-
-    imported = True
-except ImportError:
-    imported = False
-
 import asyncio, time, traceback, sys
 from pagermaid.listener import listener
-from pagermaid.utils import alias_command
+from pagermaid.utils import alias_command, pip_install
+
+
+pip_install("dateparser")
+
+import dateparser
 
 
 # https://stackoverflow.com/questions/1111056/get-time-zone-information-of-the-system-in-python
@@ -110,9 +107,6 @@ async def autorm(context):
         args = context.arguments if context.arguments is not None else ""
         args = args.strip()
 
-        if not imported:
-            await edit(context, f"Please install dateparser first: {sys.executable} -m pip install dateparser")
-            return
         if len(args) == 0:
             await edit(context, "参数不能为空。使用 -help autorm 以查看帮助。")
             return
