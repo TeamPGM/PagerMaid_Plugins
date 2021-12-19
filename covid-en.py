@@ -16,7 +16,10 @@ async def covid_en(context):
     except ValueError:
         country = "World"
     covid_ = Covid(source="worldometers")
-    country_data = covid_.get_status_by_country_name(country)
+    try:
+        country_data = covid_.get_status_by_country_name(country)
+    except ValueError:
+        return await context.edit("[covid-en] 国家名称不正确 **[Worldometer]**(https://www.worldometers.info/coronavirus)")
     if country_data:
         if country == "World":
             country_data['total_tests'] = "未知"
