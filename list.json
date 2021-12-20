@@ -789,6 +789,16 @@
             "supported": true,
             "des-short": "获取新冠疫情信息。（国家版）",
             "des": "获取新冠疫情信息。（国家版）。\n指令：-covid-en"
+        },
+        {
+            "name": "moyu",
+            "version": "1.0.0",
+            "section": "daily",
+            "maintainer": "sam01101",
+            "size": "3.00 kb",
+            "supported": true,
+            "des-short": "获取假期剩余时间信息。",
+            "des": "获取假期剩余时间信息。\n指令：-moyu"
         }
     ]
 }
