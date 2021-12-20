@@ -10,9 +10,15 @@ from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 
 thumbnails = (
-    "https://s2.loli.net/2021/12/18/hVwzfAuNJYTUqep.png",
+    "https://s2.loli.net/2021/12/20/8yJiTKYwdt6ro7z.png",
     "https://s2.loli.net/2021/12/20/FJO2SxrNEAyDsVp.png",
-    "https://s2.loli.net/2021/12/20/Jc1lG2aNgkrTy3x.png"
+    "https://s2.loli.net/2021/12/20/Jc1lG2aNgkrTy3x.png",
+    "https://s2.loli.net/2021/12/20/Hq97ZtnCb4UFWv1.png",
+    "https://s2.loli.net/2021/12/20/viP8rwypmBUqHTc.png",
+    "https://s2.loli.net/2021/12/20/dEVPwhD4Y2HrCWi.png",
+    "https://s2.loli.net/2021/12/20/WJHz16wRTEaO7f4.png",
+    "https://s2.loli.net/2021/12/20/ubAgsc4kNPnriCa.png"
+    
 )
 
 festivals = (  # Festivals name | month | day
