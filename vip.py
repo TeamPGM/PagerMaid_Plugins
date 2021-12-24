@@ -137,7 +137,7 @@ async def pixiv(context):
                 except ValueError:
                     await context.edit('镜像源序号错误。')
                     return
-                if 0 < num < 4:
+                if 0 < num < 3:
                     try:
                         redis.set("pixiv_num", num)
                     except ConnectionError:
@@ -151,14 +151,14 @@ async def pixiv(context):
         else:
             pass
     if not redis_status():
-        num = 3
+        num = 2
     else:
         try:
             num = int(redis.get("pixiv_num").decode())
         except AttributeError:
-            num = 3
+            num = 2
         except ConnectionError:
-            num = 3
+            num = 2
     try:
         message = await obtain_message(context)
     except ValueError:
