@@ -372,10 +372,10 @@
         },
         {
             "name": "keyword",
-            "version": "2.7",
+            "version": "2.701",
             "section": "chat",
             "maintainer": "c3b2a,xtaodada",
-            "size": "44.1 kb",
+            "size": "47.6 kb",
             "supported": true,
             "des-short": "关键词自动回复插件。",
             "des": "命令: keyword, keydata, replyset, funcset。"

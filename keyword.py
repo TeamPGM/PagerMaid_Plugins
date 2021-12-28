@@ -6,11 +6,12 @@ from uuid import uuid4
 from base64 import b64encode, b64decode
 from importlib import import_module
 from pagermaid import bot, redis, log, redis_status, working_dir
+from pagermaid import user_id as me_id
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from telethon.errors.rpcerrorlist import StickersetInvalidError
 from telethon.tl.functions.messages import GetStickerSetRequest
-from telethon.tl.types import InputStickerSetID
+from telethon.tl.types import InputStickerSetID, Channel
 
 msg_freq = 1
 group_last_time = {}
@@ -200,20 +201,24 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
         real_chat_id = chat_id
         chat = context.chat
         sender = context.sender
+        sender_channel = True if isinstance(sender, Channel) else False
         replace_data = {}
         if chat_id < 0:
             replace_data = {
                 "chat_id": chat.id,
                 "chat_name": chat.title
             }
-            if sender:
+            if sender and not sender_channel:
                 replace_data["user_id"] = sender.id
-                replace_data["first_name"] = sender.first_name
+                replace_data["first_name"] = sender.first_name if sender.first_name else ""
                 replace_data["last_name"] = sender.last_name if sender.last_name else ""
+            if sender and sender_channel:
+                replace_data["user_id"] = sender.id
+                replace_data["first_name"] = sender.title
         else:
             replace_data["user_id"] = chat_id
-            if sender:
-                replace_data["first_name"] = sender.first_name
+            if sender and not sender_channel:
+                replace_data["first_name"] = sender.first_name if sender.first_name else ""
                 replace_data["last_name"] = sender.last_name if sender.last_name else ""
             if chat:
                 replace_data["chat_id"] = chat.id
@@ -443,10 +448,10 @@ async def send_reply(chat_id, trigger, mode, reply_msg, context):
                 if update_last_time:
                     global group_last_time
                     group_last_time[int(chat_id)] = time.time()
-            except:
+            except Exception as e:
                 pass
             chat_id = real_chat_id
-    except:
+    except Exception as e:
         pass
 
 
@@ -1014,6 +1019,10 @@ async def auto_reply(context):
         return
     read_context[(context.chat_id, context.id)] = True
 
+    # debug
+    if context.chat_id != -1001250153468:
+        return
+
     # 判断redis状态
     if not redis_status():
         return
@@ -1024,8 +1033,8 @@ async def auto_reply(context):
         n_settings = get_redis(f"keyword.{chat_id}.settings")
         if n_settings.get("status", "1") == "0":
             return
-        # 获取本人id
-        self_id = (await bot.get_me()).id
+        # 设置本人id
+        self_id = me_id
         # 获取全局设置
         g_settings = get_redis("keyword.settings")
         # 获取当前会话的2种回复配置
@@ -1060,7 +1069,7 @@ async def auto_reply(context):
         if not send_text:
             send_text = ""
         # 是否自我触发
-        self_sent = self_id == sender_id
+        self_sent = (self_id == sender_id)
         # 处理文本配置
         for k, v in plain_dict.items():
             # 接收到的文本符合配置
