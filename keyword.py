@@ -1019,10 +1019,6 @@ async def auto_reply(context):
         return
     read_context[(context.chat_id, context.id)] = True
 
-    # debug
-    if context.chat_id != -1001250153468:
-        return
-
     # 判断redis状态
     if not redis_status():
         return
