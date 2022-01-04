@@ -799,6 +799,16 @@
             "supported": true,
             "des-short": "获取假期剩余时间信息。",
             "des": "获取假期剩余时间信息。\n指令：-moyu"
+        },
+        {
+            "name": "jd_cmd",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "1.00 kb",
+            "supported": true,
+            "des-short": "解析 JD 口令。",
+            "des": "解析 JD 口令。\n指令：-jd_cmd"
         }
     ]
 }
