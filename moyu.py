@@ -2,7 +2,6 @@
 
 import datetime
 from random import choice
-from typing import Optional
 
 import pytz
 from pagermaid import bot
@@ -68,6 +67,7 @@ def gen_text():
             result.append(f"\n**今天就是{fest_name}节，好好享受！**\n")
         else:
             fest_day_start_year = now.year + (1 if now_month > fest_month else 0)
+            fest_day_start_year = fest_day_start_year + (1 if (now_month == fest_month and now_day > fest_day) else 0)
             fest_day_start = datetime.datetime(fest_day_start_year, fest_month, fest_day).replace(
                 tzinfo=pytz.timezone("Asia/Shanghai"))
             time_left = abs((fest_day_start - now if fest_month == fest_day == 1 else now - fest_day_start).days)
