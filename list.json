@@ -242,10 +242,10 @@
         },
         {
             "name": "diss",
-            "version": "1.11",
+            "version": "1.111",
             "section": "chat",
             "maintainer": "TNTcraftHIM",
-            "size": "1.5 kb",
+            "size": "1.4 kb",
             "supported": true,
             "des-short": "祖安对线语录",
             "des": "让你在祖安大舞台能够时而儒雅，时而火力全开的对线。命令：diss，biss。"
