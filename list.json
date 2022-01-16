@@ -829,6 +829,16 @@
             "supported": true,
             "des-short": "天天疯狂！",
             "des": "随机输出KFC疯狂星期四文案。\n指令：-crazy4"
+        },
+        {
+            "name": "dme",
+            "version": "1.2",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "4.3 kb",
+            "supported": true,
+            "des-short": "删除当前对话您发送的特定数量的消息。",
+            "des": "删除当前对话您发送的特定数量的消息。"
         }
     ]
 }
