@@ -819,6 +819,16 @@
             "supported": true,
             "des-short": "解析 JD 口令。",
             "des": "解析 JD 口令。\n指令：-jd_cmd"
+        },
+        {
+            "name": "crazy4",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "17.10 kb",
+            "supported": true,
+            "des-short": "天天疯狂！",
+            "des": "随机输出KFC疯狂星期四文案。\n指令：-crazy4"
         }
     ]
 }
