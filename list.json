@@ -792,10 +792,10 @@
         },
         {
             "name": "covid",
-            "version": "1.001",
+            "version": "1.01",
             "section": "daily",
             "maintainer": "xtaodada",
-            "size": "3.50 kb",
+            "size": "3.90 kb",
             "supported": true,
             "des-short": "获取新冠疫情信息。（国内版）",
             "des": "获取新冠疫情信息。（国内版）。\n指令：-covid"

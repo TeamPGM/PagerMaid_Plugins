@@ -126,9 +126,15 @@ async def covid_info(context):
         city = await obtain_message(context)
     except ValueError:
         return await context.edit("[covid] 无法获取城市名！")
+    zc = False
+    if city.find("政策") != -1:
+        zc = True
+        city = city.replace("政策", "")
     city = NewsBot.data.get(city)
     if city:
-        policy = await city.policy
+        policy = "Tips: 查询出行政策可加上 `政策`"
+        if zc:
+            policy = await city.policy
         await context.edit(f"{city.main_info}\n\n{policy}")
     else:
         await context.edit("[covid] 只限查询国内城市或你地理没学好。")
