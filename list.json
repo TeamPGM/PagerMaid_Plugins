@@ -832,10 +832,10 @@
         },
         {
             "name": "dme",
-            "version": "1.2",
+            "version": "1.201",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "4.3 kb",
+            "size": "0.4 kb",
             "supported": true,
             "des-short": "删除当前对话您发送的特定数量的消息。",
             "des": "删除当前对话您发送的特定数量的消息。"
