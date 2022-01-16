@@ -1,4 +1,4 @@
-# https://github.com/Zeta-qixi/nonebot-plugin-covid19-news
+""" https://github.com/Zeta-qixi/nonebot-plugin-covid19-news """
 
 import json
 from typing import Dict
@@ -128,6 +128,7 @@ async def covid_info(context):
         return await context.edit("[covid] 无法获取城市名！")
     city = NewsBot.data.get(city)
     if city:
-        await context.edit(f"{city.main_info}\n\n{await city.policy}")
+        policy = await city.policy
+        await context.edit(f"{city.main_info}\n\n{policy}")
     else:
         await context.edit("[covid] 只限查询国内城市或你地理没学好。")

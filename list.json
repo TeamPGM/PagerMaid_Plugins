@@ -792,7 +792,7 @@
         },
         {
             "name": "covid",
-            "version": "1.0",
+            "version": "1.001",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "3.50 kb",
