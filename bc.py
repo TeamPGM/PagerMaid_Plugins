@@ -11,6 +11,7 @@ from asyncio import sleep
 from sys import executable
 import urllib.request
 from telethon.tl.custom.message import Message
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import execute, alias_command, pip_install
 

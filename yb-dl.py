@@ -5,7 +5,7 @@ from os.path import exists
 from youtube_dl import YoutubeDL
 from youtube_dl.utils import DownloadError
 from re import compile as regex_compile
-from pagermaid import bot, log
+from pagermaid import bot, log, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

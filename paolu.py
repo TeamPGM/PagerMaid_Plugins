@@ -9,6 +9,7 @@
 
 from asyncio import sleep
 from telethon.errors.common import MultiError
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

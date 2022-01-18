@@ -2,7 +2,7 @@
 from asyncio import sleep
 from random import uniform
 from telethon.errors.rpcerrorlist import FloodWaitError
-from pagermaid import redis, log, redis_status
+from pagermaid import redis, log, redis_status, version
 from pagermaid.utils import lang, alias_command
 from pagermaid.listener import listener
 

@@ -1,4 +1,5 @@
 from pagermaid.listener import listener
+from pagermaid import version
 
 jieba_imported = True
 

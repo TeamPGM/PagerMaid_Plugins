@@ -3,7 +3,7 @@ from os import remove
 from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto, MessageMediaWebPage
 from PIL import Image
-from pagermaid import bot
+from pagermaid import bot, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from random import random

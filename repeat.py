@@ -1,4 +1,4 @@
-from pagermaid import redis, redis_status, log
+from pagermaid import redis, redis_status, log, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

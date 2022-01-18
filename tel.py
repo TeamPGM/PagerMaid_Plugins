@@ -3,6 +3,7 @@ import sys, codecs
 
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 from requests import get
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import obtain_message, alias_command
 

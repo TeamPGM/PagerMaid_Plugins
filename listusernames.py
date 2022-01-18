@@ -1,4 +1,4 @@
-from pagermaid import bot
+from pagermaid import bot, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from telethon.tl.functions.channels import GetAdminedPublicChannelsRequest

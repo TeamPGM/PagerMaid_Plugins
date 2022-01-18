@@ -2,7 +2,7 @@
 from telethon.errors import ChatAdminRequiredError
 from telethon.tl.types import Channel
 from asyncio import sleep
-from pagermaid import redis, log, redis_status
+from pagermaid import redis, log, redis_status, version
 from pagermaid.utils import lang, alias_command
 from pagermaid.listener import listener
 

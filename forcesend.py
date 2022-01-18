@@ -2,6 +2,7 @@
 
 # By tg @fruitymelon
 
+from pagermaid import version
 from pagermaid.utils import alias_command
 from pagermaid.listener import listener
 

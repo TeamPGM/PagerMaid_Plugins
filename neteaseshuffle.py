@@ -1,6 +1,7 @@
 import json
 import requests
 from time import sleep
+from pagermaid import version
 from pagermaid.listener import listener
 from os import remove, path
 from pagermaid.utils import alias_command, pip_install

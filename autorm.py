@@ -3,6 +3,7 @@
 # By tg @fruitymelon
 # extra requirements: dateparser
 import asyncio, time, traceback, sys
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, pip_install
 

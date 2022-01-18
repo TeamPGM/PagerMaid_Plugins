@@ -2,7 +2,7 @@
 
 import json
 from typing import Dict
-
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, obtain_message, get
 

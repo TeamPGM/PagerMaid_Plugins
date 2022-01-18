@@ -1,5 +1,6 @@
 """ PagerMaid module to handle jd command. """
 
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import lang, alias_command, obtain_message, post
 

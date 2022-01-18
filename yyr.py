@@ -1,4 +1,5 @@
 import json, requests
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

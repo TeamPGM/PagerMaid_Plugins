@@ -1,7 +1,7 @@
 import asyncio, zipfile, os
 from io import BytesIO
 from os.path import exists, isfile
-from pagermaid import bot
+from pagermaid import bot, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

@@ -2,6 +2,7 @@ import json
 from random import randint, choice
 from time import sleep
 from requests import get
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

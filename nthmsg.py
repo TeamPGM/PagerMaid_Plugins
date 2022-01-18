@@ -1,6 +1,7 @@
 from pagermaid.listener import listener
 from telethon import functions, types
 from pagermaid.utils import alias_command
+from pagermaid import version
 
 
 @listener(outgoing=True, command=alias_command("nthmsg"),

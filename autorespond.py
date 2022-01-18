@@ -1,7 +1,7 @@
 """ Pagermaid autorespond plugin. """
 
 from telethon.events import StopPropagation
-from pagermaid import persistent_vars, log
+from pagermaid import persistent_vars, log, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

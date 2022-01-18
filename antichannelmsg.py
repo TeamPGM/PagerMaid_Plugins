@@ -2,7 +2,7 @@
 from telethon.errors import ChatAdminRequiredError
 from telethon.tl.types import Channel, ChatBannedRights
 from telethon.tl.functions.channels import GetFullChannelRequest, EditBannedRequest
-from pagermaid import redis, log, redis_status, bot, user_id
+from pagermaid import redis, log, redis_status, bot, user_id, version
 from pagermaid.utils import lang, alias_command
 from pagermaid.listener import listener
 

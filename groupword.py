@@ -6,6 +6,7 @@ from os import makedirs
 from sys import executable
 from collections import defaultdict
 from requests import get
+from pagermaid import version
 from pagermaid.utils import execute, alias_command
 from pagermaid.listener import listener
 

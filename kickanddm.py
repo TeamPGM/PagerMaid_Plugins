@@ -1,4 +1,4 @@
-from pagermaid import bot, log
+from pagermaid import bot, log, version
 from pagermaid.listener import listener
 from asyncio import sleep
 from datetime import timedelta

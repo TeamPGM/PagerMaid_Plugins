@@ -5,6 +5,7 @@
 from asyncio import sleep
 from requests import get
 from sys import executable
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, pip_install
 

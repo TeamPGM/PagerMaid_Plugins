@@ -1,7 +1,7 @@
 """ Pagermaid plugin base. """
 import json, requests, re
 from urllib.parse import urlparse
-from pagermaid import bot, log
+from pagermaid import bot, log, version
 from pagermaid.listener import listener, config
 from pagermaid.utils import clear_emojis, obtain_message, attach_log, alias_command
 from telethon.errors import ChatAdminRequiredError

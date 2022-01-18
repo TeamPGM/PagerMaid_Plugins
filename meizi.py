@@ -1,5 +1,6 @@
 import random
 from requests import get
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from os import remove

@@ -1,5 +1,7 @@
-import json, requests
+import json
+import requests
 from urllib.parse import quote
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, obtain_message, lang, clear_emojis
 

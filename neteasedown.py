@@ -6,6 +6,7 @@ from os import sep, remove, listdir
 from os.path import isfile, exists
 from time import strftime, localtime
 
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, execute, pip_install
 

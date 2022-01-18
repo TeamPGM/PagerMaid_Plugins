@@ -2,6 +2,7 @@
 from asyncio import sleep
 from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors.rpcerrorlist import FloodWaitError
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

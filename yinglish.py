@@ -1,7 +1,7 @@
 import random
 from asyncio import sleep
 from sys import executable
-from pagermaid import log
+from pagermaid import log, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, execute
 

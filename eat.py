@@ -15,7 +15,7 @@ from telethon.errors.rpcerrorlist import ChatSendStickersForbiddenError
 from struct import error as StructError
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
-from pagermaid import redis, config, bot, user_id
+from pagermaid import redis, config, bot, user_id, version
 from collections import defaultdict
 import json
 

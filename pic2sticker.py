@@ -4,7 +4,7 @@ from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto, MessageMediaWebPage
 from PIL import Image, ImageOps
 from math import floor
-from pagermaid import bot, redis, redis_status
+from pagermaid import bot, redis, redis_status, version
 from pagermaid.listener import listener
 from pagermaid.utils import lang, alias_command
 

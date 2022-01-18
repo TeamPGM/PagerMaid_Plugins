@@ -6,7 +6,7 @@ from telethon.tl.types import DocumentAttributeFilename, InputStickerSetEmpty, I
     InputStickerSetThumb, MessageMediaPhoto
 from PIL import Image
 from pytz import timezone
-from pagermaid import bot
+from pagermaid import bot, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

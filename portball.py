@@ -1,4 +1,4 @@
-from pagermaid import bot, log, user_id
+from pagermaid import bot, log, user_id, version
 from pagermaid.listener import listener
 from telethon.errors import rpcerrorlist
 from asyncio import sleep

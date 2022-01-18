@@ -1,4 +1,4 @@
-from pagermaid import bot, redis, redis_status
+from pagermaid import bot, redis, redis_status, version
 from pagermaid.utils import lang, alias_command
 from pagermaid.listener import listener
 from asyncio import sleep

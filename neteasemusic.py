@@ -8,7 +8,7 @@ import random
 import math
 from time import sleep
 from pagermaid.listener import listener
-from pagermaid import bot
+from pagermaid import bot, version
 from pagermaid.utils import alias_command
 from os import remove, path, mkdir, getcwd
 from os.path import exists

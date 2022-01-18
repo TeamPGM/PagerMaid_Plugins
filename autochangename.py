@@ -4,7 +4,7 @@ from asyncio import sleep
 from datetime import datetime, timedelta, timezone
 from telethon.tl.functions.account import UpdateProfileRequest
 from emoji import emojize
-from pagermaid import bot, log
+from pagermaid import bot, log, version
 from pagermaid.listener import listener
 
 auto_change_name_init = False

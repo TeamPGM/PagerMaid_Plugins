@@ -4,7 +4,7 @@ import datetime
 from random import choice
 
 import pytz
-from pagermaid import bot
+from pagermaid import bot, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

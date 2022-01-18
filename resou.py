@@ -1,6 +1,7 @@
 import json
 from requests import get
 from json.decoder import JSONDecodeError
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

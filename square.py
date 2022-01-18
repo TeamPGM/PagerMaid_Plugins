@@ -1,5 +1,7 @@
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
+from pagermaid import version
+
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("square"),
           description="生成文本矩形",

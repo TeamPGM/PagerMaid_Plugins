@@ -7,7 +7,7 @@ from telethon.tl.functions.messages import GetAllStickersRequest
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.errors import MessageNotModifiedError
 from telethon.errors.rpcerrorlist import StickersetInvalidError
-from pagermaid import working_dir
+from pagermaid import working_dir, version
 from telethon.tl.types import (
     DocumentAttributeSticker,
     InputStickerSetID,

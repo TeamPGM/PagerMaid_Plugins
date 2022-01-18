@@ -9,6 +9,7 @@
 
 from asyncio import sleep
 from telethon.tl.custom.message import Message
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

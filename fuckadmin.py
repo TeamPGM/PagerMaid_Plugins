@@ -1,5 +1,6 @@
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
+from pagermaid import version
 from telethon.tl.types import ChannelParticipantsAdmins
 
 

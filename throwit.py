@@ -9,6 +9,7 @@ from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
 from telethon.errors.rpcerrorlist import ChatSendStickersForbiddenError
 from struct import error as StructError
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

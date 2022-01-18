@@ -4,7 +4,7 @@ import json, time
 from json.decoder import JSONDecodeError
 import urllib.request
 from pagermaid.listener import listener, config
-from pagermaid import log
+from pagermaid import log, version
 from pagermaid.utils import alias_command
 
 # i18n

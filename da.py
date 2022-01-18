@@ -1,5 +1,5 @@
 from asyncio import sleep
-from pagermaid import log
+from pagermaid import log, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from telethon.errors import PeerFloodError

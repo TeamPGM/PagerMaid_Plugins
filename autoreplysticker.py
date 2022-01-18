@@ -17,7 +17,7 @@ from telethon.tl.custom.message import Message
 from telethon.tl.functions.messages import GetAllStickersRequest
 from telethon.tl.functions.messages import GetStickerSetRequest
 from telethon.tl.types import InputStickerSetID
-from pagermaid import log
+from pagermaid import log, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

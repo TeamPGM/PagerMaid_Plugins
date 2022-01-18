@@ -4,7 +4,7 @@
 # extra requirements: dateparser
 import sys, time, traceback
 import asyncio
-from pagermaid import log
+from pagermaid import log, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, pip_install
 

@@ -3,6 +3,7 @@ import sys
 from requests import post, get
 from pytz import timezone
 from datetime import datetime
+from pagermaid import version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

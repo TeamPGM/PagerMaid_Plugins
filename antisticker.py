@@ -1,6 +1,6 @@
 """ Auto-delete sticker when someone reply """
 
-from pagermaid import user_id
+from pagermaid import user_id, version
 from pagermaid.listener import listener
 
 

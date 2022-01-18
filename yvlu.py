@@ -9,7 +9,7 @@ from telethon.tl.functions.contacts import UnblockRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageMediaPhoto, MessageMediaWebPage, MessageMediaUnsupported
 from asyncio import TimeoutError
-from pagermaid import bot
+from pagermaid import bot, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

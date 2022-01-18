@@ -7,7 +7,7 @@ import traceback
 from asyncio import sleep
 from telethon.tl.types import PeerUser
 from telethon.tl.custom import Message
-from pagermaid import redis, redis_status
+from pagermaid import redis, redis_status, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, pip_install
 

@@ -4,7 +4,7 @@ import json
 from os import remove, mkdir
 from os.path import exists
 from re import compile as regex_compile
-from pagermaid import bot, log
+from pagermaid import bot, log, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 from telethon.tl.types import DocumentAttributeVideo

@@ -2,7 +2,7 @@
 
 # Plugin by fruitymelon
 
-from pagermaid import redis, log, redis_status
+from pagermaid import redis, log, redis_status, version
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command
 

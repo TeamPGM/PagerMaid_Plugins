@@ -1,5 +1,6 @@
 from pagermaid.listener import listener
 from pagermaid.utils import alias_command, obtain_message, pip_install
+from pagermaid import version
 
 pip_install("covid")
 

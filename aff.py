@@ -1,6 +1,7 @@
 from time import sleep
 from os.path import exists
 from os import mkdir, remove
+from pagermaid import version
 from pagermaid.utils import alias_command
 from pagermaid.listener import listener
 

@@ -1,6 +1,7 @@
 import datetime
 from pytz import timezone
 from telethon.tl.functions.users import GetFullUserRequest
+from pagermaid import version
 from pagermaid.utils import alias_command
 from pagermaid.listener import listener
 
