@@ -2,7 +2,7 @@
 
 from pagermaid import version
 from pagermaid.listener import listener
-from pagermaid.utils import lang, alias_command, obtain_message, post
+from pagermaid.utils import lang, alias_command, obtain_message, client
 
 
 @listener(is_plugin=False, outgoing=True, command=alias_command("jd_cmd"),
@@ -14,7 +14,7 @@ async def jd_cmd(context):
     except ValueError:
         return await context.edit("[jd_cmd] " + lang("msg_ValueError"))
     try:
-        data = (await post("https://api.jds.codes/jCommand", data={"code": text}, json_body=True)).json()
+        data = (await client.post("https://api.jds.codes/jCommand", json={"code": text})).json()
     except:
         return await context.edit("[jd_cmd] 网络错误！")
     if data["code"] != 200:
