@@ -1,10 +1,9 @@
 import json
 from random import randint, choice
 from time import sleep
-from requests import get
 from pagermaid import version
 from pagermaid.listener import listener
-from pagermaid.utils import alias_command
+from pagermaid.utils import alias_command, client
 
 
 def get_api(num):
@@ -69,7 +68,7 @@ async def diy(context):
     await context.edit(text)
     status = False
     for _ in range(20):  # 最多尝试20次
-        req = get(api_url)
+        req = await client.get(api_url)
         if req.status_code == 200:
             try:
                 await context.edit(process_web_data(num, req), parse_mode='html', link_preview=False)

@@ -242,7 +242,7 @@
         },
         {
             "name": "diss",
-            "version": "1.112",
+            "version": "1.113",
             "section": "chat",
             "maintainer": "TNTcraftHIM",
             "size": "1.4 kb",
@@ -442,7 +442,7 @@
         },
         {
             "name": "diy",
-            "version": "1.011",
+            "version": "1.012",
             "section": "chat",
             "maintainer": "ahhhiiii,xtaodada",
             "size": "2.9 kb",
@@ -642,7 +642,7 @@
         },
         {
             "name": "yyr",
-            "version": "1.01",
+            "version": "1.011",
             "section": "chat",
             "maintainer": "xtaodada、kld",
             "size": "0.9 kb",
@@ -792,7 +792,7 @@
         },
         {
             "name": "covid",
-            "version": "1.011",
+            "version": "1.012",
             "section": "daily",
             "maintainer": "xtaodada",
             "size": "3.90 kb",

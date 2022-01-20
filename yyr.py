@@ -1,7 +1,7 @@
-import json, requests
+import json
 from pagermaid import version
 from pagermaid.listener import listener
-from pagermaid.utils import alias_command
+from pagermaid.utils import alias_command, client
 
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("yyr"),
@@ -14,7 +14,7 @@ async def yyr(context):
         return
 
     try:
-        req_data = requests.get("https://github.com/gaowanliang/NMSL/raw/master/src/data/emoji.json").text
+        req_data = await client.get("https://github.com/gaowanliang/NMSL/raw/master/src/data/emoji.json").text
     except Exception as e:
         await context.edit("出错了呜呜呜 ~ 无法获取词库。")
         return

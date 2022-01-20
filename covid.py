@@ -4,7 +4,7 @@ import json
 from typing import Dict
 from pagermaid import version
 from pagermaid.listener import listener
-from pagermaid.utils import alias_command, obtain_message, get
+from pagermaid.utils import alias_command, obtain_message, client
 
 POLICY_ID = {}
 
@@ -41,7 +41,7 @@ class NewsData:
 
     async def update_data(self):
         url = "https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5"
-        res = (await get(url)).json()
+        res = (await client.get(url)).json()
 
         if res['ret'] != 0:
             return
@@ -71,7 +71,7 @@ class NewsData:
 
 async def set_pid():
     url_city_list = 'https://r.inews.qq.com/api/trackmap/citylist?'
-    resp = await get(url_city_list)
+    resp = await client.get(url_city_list)
     res = resp.json()
 
     for province in res['result']:
@@ -85,7 +85,7 @@ async def set_pid():
 
 async def get_policy(uid):
     url_get_policy = f"https://r.inews.qq.com/api/trackmap/citypolicy?&city_id={uid}"
-    resp = await get(url_get_policy)
+    resp = await client.get(url_get_policy)
     res_ = resp.json()
     if res_['message'] != 'success':
         return "数据获取失败！"
