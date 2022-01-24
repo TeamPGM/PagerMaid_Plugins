@@ -852,10 +852,10 @@
         },
         {
             "name": "autocaption",
-            "version": "1.0",
+            "version": "1.001",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "1.47 kb",
+            "size": "2.2 kb",
             "supported": true,
             "des-short": "自动获取所发送文件的信息。",
             "des": "自动获取所发送文件的信息。"

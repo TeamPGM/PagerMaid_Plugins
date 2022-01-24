@@ -1,7 +1,8 @@
 from pagermaid import version
 from pagermaid.listener import listener
 from telethon.tl.custom.message import Message
-from telethon.tl.types import MessageMediaDocument, DocumentAttributeFilename, DocumentAttributeImageSize
+from telethon.tl.types import MessageMediaDocument, DocumentAttributeFilename, DocumentAttributeImageSize, \
+    DocumentAttributeAudio
 
 
 def unit_convert(byte):
@@ -17,6 +18,15 @@ def unit_convert(byte):
         byte /= power
         zero += 1
     return f"{round(byte, 2)} {units[zero]}"
+
+
+def duration_convert(duration: int):
+    """ Converts duration into readable formats. """
+    minutes = duration // 60
+    seconds = duration % 60
+    hours = minutes // 60
+    minutes %= 60
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 
 @listener(is_plugin=True, outgoing=True, incoming=False, ignore_edited=True)
@@ -36,6 +46,16 @@ async def auto_caption_file(context: Message):
         # 图片尺寸
         if isinstance(i, DocumentAttributeImageSize):
             text += f"`图片尺寸：{i.w}x{i.h}`\n"
+        # 音乐时长、歌手、歌曲名
+        if isinstance(i, DocumentAttributeAudio):
+            if i.title:
+                text += f"`歌曲名：{i.title}`\n"
+            if i.performer:
+                text += f"`歌手：{i.performer}`\n"
+            if not i.voice:
+                text += f"`音乐时长：{duration_convert(i.duration)}`\n"
+            else:
+                text += f"`语音时长：{duration_convert(i.duration)}`\n"
     # 文件类型
     text += f"`文件类型：{context.media.document.mime_type}`\n"
     # 文件大小
