@@ -2,7 +2,7 @@ from pagermaid import version
 from pagermaid.listener import listener
 from telethon.tl.custom.message import Message
 from telethon.tl.types import MessageMediaDocument, DocumentAttributeFilename, DocumentAttributeImageSize, \
-    DocumentAttributeAudio
+    DocumentAttributeAudio, DocumentAttributeSticker, DocumentAttributeVideo, DocumentAttributeAnimated
 
 
 def unit_convert(byte):
@@ -56,6 +56,19 @@ async def auto_caption_file(context: Message):
                 text += f"`音乐时长：{duration_convert(i.duration)}`\n"
             else:
                 text += f"`语音时长：{duration_convert(i.duration)}`\n"
+        # 视频时长、尺寸
+        if isinstance(i, DocumentAttributeVideo):
+            text += f"`视频尺寸：{i.w}x{i.h}`\n"
+            text += f"`视频时长：{duration_convert(i.duration)}`\n"
+            text += f"`应用内播放：{'是' if i.supports_streaming else '否'}`\n"
+            # 过滤○视频
+            if i.round_message:
+                return
+        # 过滤 sticker
+        if isinstance(i, DocumentAttributeSticker):
+            return
+        if isinstance(i, DocumentAttributeAnimated):
+            return
     # 文件类型
     text += f"`文件类型：{context.media.document.mime_type}`\n"
     # 文件大小
