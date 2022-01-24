@@ -692,7 +692,7 @@
         },
         {
             "name": "antichannelmsg",
-            "version": "1.01",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "4.8 kb",

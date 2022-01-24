@@ -9,7 +9,7 @@ from pagermaid.listener import listener
 
 @listener(is_plugin=False, outgoing=True, command=alias_command('antichannelmsg'),
           description='开启对话的自动删除频道消息并且封禁频道功能，需要 Redis',
-          parameters="<true|false|add <cid>|status>")
+          parameters="<true|false|add <cid>|filter <participants_count>|status>")
 async def anti_channel_msg(context):
     if not redis_status():
         await context.edit(f"{lang('error_prefix')}{lang('redis_dis')}")
@@ -52,6 +52,14 @@ async def anti_channel_msg(context):
         data.append(str(channel_data.full_chat.id))
         redis.set("antichannelmsg." + str(context.chat_id), " ".join(data))
         await context.edit("添加频道到白名单成功。")
+    elif context.parameter[0] == "filter":
+        try:
+            filter_int = int(context.parameter[1])
+        except (IndexError, ValueError):
+            return await context.edit("输入错误。")
+        redis.set("antichannelmsg.filter:" + str(context.chat_id), str(filter_int))
+        await context.edit(f"添加过滤成功，即群组 {str(context.chat_id)} 需要大于"
+                           f" {str(filter_int)} 订阅人数的频道才能发言，否则会遭到删除并封禁。")
     elif context.parameter[0] == "status":
         if redis.get("antichannelmsg." + str(context.chat_id)):
             await context.edit('当前对话存在于自动删除频道消息并且封禁频道功能列表中。')
@@ -74,6 +82,28 @@ async def auto_process_channel_msg(context):
     data = redis.get("antichannelmsg." + str(context.chat_id))
     if not data:
         return
+    filter_data = redis.get("antichannelmsg.filter:" + str(context.chat_id))
+    if filter_data is not None:
+        participants_count = redis.get("antichannelmsg.participants_count:" + str(context.chat_id))
+        if participants_count is None:
+            expire = 300
+            try:
+                channel_data = await bot(GetFullChannelRequest(int(context.sender.id)))
+                participants_count = channel_data.full_chat.participants_count
+                expire = 3600
+            except:  # noqa
+                participants_count = 0
+            redis.set("antichannelmsg.participants_count:" + str(context.chat_id),
+                      participants_count, ex=expire)
+        else:
+            try:
+                participants_count = int(participants_count)
+            except ValueError:
+                participants_count = 0
+        try:
+            filter_int = int(filter_data)
+        except ValueError:
+            filter_int = -1
     try:
         if not isinstance(context.sender, Channel):
             return
@@ -81,6 +111,10 @@ async def auto_process_channel_msg(context):
         # 白名单
         if str(context.sender.id) in data:
             return
+        # 频道订阅人数检测
+        if filter_data is not None and (filter_int != -1 and participants_count >= filter_int):
+            return
+
         # 删除消息,封禁频道
         try:
             await context.delete()
