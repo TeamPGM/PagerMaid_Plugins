@@ -11,6 +11,7 @@ from pagermaid.listener import listener
 from pagermaid.utils import alias_command, execute, pip_install
 
 pip_install("pyncm")
+pip_install("mutagen")
 
 from mutagen.mp3 import EasyMP3
 from mutagen.id3 import ID3, APIC
@@ -19,7 +20,6 @@ from mutagen.oggvorbis import OggVorbis
 from pyncm import GetCurrentSession, apis, DumpSessionAsString, SetCurrentSession, LoadSessionFromString
 from pyncm.utils.helper import TrackHelper
 from pyncm.apis import LoginFailedException
-from pyncm.apis.cloudsearch import CloudSearchType
 from pyncm.apis.login import LoginLogout
 
 from telethon.tl.types import DocumentAttributeAudio
@@ -210,7 +210,7 @@ async def ned(context):
     if song_id.isdigit():
         song_id = int(song_id)
     else:
-        search_data = apis.cloudsearch.GetSearchResult(song_id, CloudSearchType(1), 1)
+        search_data = apis.cloudsearch.GetSearchResult(song_id, 1, 1)
         if search_data.get("result", {}).get("songCount", 0) >= 1:
             song_id = search_data["result"]["songs"][0]["id"]
         else:
