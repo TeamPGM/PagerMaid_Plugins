@@ -849,6 +849,16 @@
             "supported": true,
             "des-short": "查询特定用户的 DC。",
             "des": "查询特定用户的 DC。\n指令：-dc"
+        },
+        {
+            "name": "autocaption",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "1.47 kb",
+            "supported": true,
+            "des-short": "自动获取所发送文件的信息。",
+            "des": "自动获取所发送文件的信息。"
         }
     ]
 }
