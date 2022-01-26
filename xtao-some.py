@@ -3,7 +3,7 @@ import json, requests, re
 from urllib.parse import urlparse
 from pagermaid import bot, log, version
 from pagermaid.listener import listener, config
-from pagermaid.utils import clear_emojis, obtain_message, attach_log, alias_command
+from pagermaid.utils import clear_emojis, obtain_message, attach_log, alias_command, client
 from telethon.errors import ChatAdminRequiredError
 from telethon.errors.rpcerrorlist import FloodWaitError, UserAdminInvalidError
 from telethon.tl.types import ChannelParticipantsAdmins, ChannelParticipantsBots, ChannelParticipantAdmin
@@ -14,12 +14,12 @@ from telethon.tl.types import ChannelParticipantsAdmins, ChannelParticipantsBots
 async def guess(context):
     reply = await context.get_reply_message()
     await context.edit("获取中 . . .")
-    if not reply:
-        context.edit("宁需要回复一句话")
-        return True
-    text = {'text': str(reply.message.replace("/guess ", "").replace(" ", ""))}
-    guess_json = json.loads(
-        requests.post("https://lab.magiconch.com/api/nbnhhsh/guess", data=text, verify=False).content.decode("utf-8"))
+    try:
+        text = await obtain_message(context)
+    except:
+        return await context.edit("请先输入一个缩写。")
+    text = {'text': text}
+    guess_json = (await client.post("https://lab.magiconch.com/api/nbnhhsh/guess", json=text)).json()
     guess_res = []
     if not len(guess_json) == 0:
         for num in range(0, len(guess_json)):
