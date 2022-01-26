@@ -859,6 +859,16 @@
             "supported": true,
             "des-short": "自动获取所发送文件的信息。",
             "des": "自动获取所发送文件的信息。"
+        },
+        {
+            "name": "silly_girl",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "cdle",
+            "size": "3 kb",
+            "supported": true,
+            "des-short": "傻妞机器人对接。",
+            "des": "把自己变成行走的傻妞。"
         }
     ]
 }
