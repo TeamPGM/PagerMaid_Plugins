@@ -1,82 +1,139 @@
-import json
-
-from pagermaid import bot, version, persistent_vars
 from pagermaid.listener import listener
-from pagermaid.utils import alias_command
-from pagermaid.utils import client
+from pagermaid import persistent_vars, bot
+from pagermaid.utils import client, alias_command
+import os
+import sys
+import json
 
 """
 Pagermaid sillyGirl plugin.
-
 Silly Gril Repo: https://github.com/cdle/sillyGirl
 """
+
+persistent_vars.update(
+    {'sillyGirl':
+        {
+            'times': 0,
+            'started': False,
+            'self_user_id': 0,
+            'secret': '',
+            'url': '',
+            'init': False,
+            'whiltelist': '',
+        }
+     }
+)
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("sillyGirl"), ignore_edited=True, parameters="<message>")
+async def sillyGirl(context):
+    fd = os.open("sillyGirl.egg", os.O_RDWR | os.O_CREAT)
+    await context.edit("正在连接到傻妞服务器...")
+    persistent_vars["sillyGirl"]['context'] = context
+    persistent_vars["sillyGirl"]['init'] = False
+    if context.arguments:
+        text = context.arguments
+        try:
+            os.write(fd, bytes(text, 'utf-8'))
+        except Exception as e:
+            print(e)
+    else:
+        try:
+            text = str(os.read(fd, 1200), encoding="utf-8")
+        except Exception as e:
+            print(e)
+    if '@' in text:
+        s1 = text.split("//", 1)
+        s2 = s1[1].split("@", 1)
+        persistent_vars["sillyGirl"]['secret'] = s2[0]
+        text = s1[0]+"//"+s2[1]
+    os.close(fd)
+    persistent_vars["sillyGirl"]['url'] = text
+    myself = await context.client.get_me()
+    persistent_vars["sillyGirl"]['self_user_id'] = myself.id
+    if persistent_vars["sillyGirl"]['started'] == False:
+        persistent_vars["sillyGirl"]['started'] = True
+        while(True):
+            await poll([])
+
+
+@listener(is_plugin=True, outgoing=True, incoming=True)
+async def xxx(context):
+    if persistent_vars["sillyGirl"]['started'] == False:
+        return
+    reply_to = 0
+    reply_to = context.id
+    reply = await context.get_reply_message()
+    reply_to_sender_id = 0
+    if context.sender_id == persistent_vars["sillyGirl"]['self_user_id'] or str(context.sender_id) in persistent_vars["sillyGirl"]['whiltelist'] or str(context.chat_id) in persistent_vars["sillyGirl"]['whiltelist']:
+        if reply:
+            reply_to = reply.id
+            reply_to_sender_id = reply.sender_id
+        elif persistent_vars["sillyGirl"]['self_user_id'] == context.sender_id or context.is_private:
+            reply_to = 0
+        await poll(
+            [{
+                'id': context.id,
+                'chat_id': context.chat_id,
+                'text': context.text,
+                'sender_id': context.sender_id,
+                'reply_to': reply_to,
+                'reply_to_sender_id': reply_to_sender_id,
+                'bot_id': persistent_vars["sillyGirl"]['self_user_id'],
+                'is_group': context.is_private == False,
+            }])
 
 
 async def poll(data):
     try:
-        req_data = await client.post(f"http://127.0.0.1:8080/pgm", json=data)
-    except Exception:  # noqa
-        print('出错了呜呜呜 ~ 无法访问 API ')
+        init = ""
+        if persistent_vars["sillyGirl"]['init'] == False:
+            init = "?init=true"
+        req_data = await client.post(persistent_vars["sillyGirl"]['url']+"/pgm"+init, json=data)
+    except Exception as e:
+        await persistent_vars["sillyGirl"]['context'].edit('出错了呜呜呜 ~ 无法访问 傻妞 ')
+        await asyncio.sleep(1)
         return
-
-    if not req_data or req_data.status_code != 200:
-        print('出错了呜呜呜 ~ 无法访问 API ')
+    if not req_data.status_code == 200:
+        await persistent_vars["sillyGirl"]['context'].edit('出错了呜呜呜 ~ 无法访问 傻妞 ')
+        await asyncio.sleep(1)
         return
-
     try:
-        for reply in json.loads(req_data.text):
+        replies = json.loads(req_data.text)
+        results = []
+        for reply in replies:
+            if reply["whiltelist"] != "":
+                persistent_vars["sillyGirl"]['whiltelist'] = reply["whiltelist"]
+                await persistent_vars["sillyGirl"]['context'].edit("获取白名单中...")
+                continue
+            if reply["delete"]:
+                await bot.delete_messages(reply["chat_id"], [reply["id"]])
+                continue
             text = reply["text"]
             images = reply["images"]
             chat_id = reply["chat_id"]
             reply_to = reply["reply_to"]
-
+            context = False
             if images and len(images) != 0:
-                await bot.send_file(
+                context = await bot.send_file(
                     chat_id,
                     images[0],
                     caption=text,
                     reply_to=reply_to,
                 )
             elif text != '':
-                await bot.send_message(chat_id, text, reply_to=reply_to)
-
-    except Exception:  # noqa
-        print("出错了呜呜呜 ~ 解析JSON时发生了错误。")
-
-
-@listener(is_plugin=True, outgoing=True, command=alias_command("sillyGirl"), diagnostics=True, ignore_edited=True)
-async def silly_girl_wrap(context):
-    if not persistent_vars["sillyGirl"]['started']:
-        myself = await context.client.get_me()
-        persistent_vars["sillyGirl"]['self_user_id'] = myself.id
-        persistent_vars["sillyGirl"]['started'] = True
-        await context.edit("已对接傻妞。")
-        while True:
-            await poll({})
-    else:
-        await context.delete()
-
-
-@listener(is_plugin=True, outgoing=True, incoming=True)
-async def private_respond(context):
-    reply_to = context.id
-    reply_to_sender_id = 0
-    reply = await context.get_reply_message()
-
-    if reply:
-        reply_to = reply.id
-        reply_to_sender_id = reply.sender_id
-    elif persistent_vars["sillyGirl"]['self_user_id'] == context.sender_id or context.is_private:
-        reply_to = 0
-
-    await poll({
-        'id': context.id,
-        'chat_id': context.chat_id,
-        'text': context.text,
-        'sender_id': context.sender_id,
-        'reply_to': reply_to,
-        'reply_to_sender_id': reply_to_sender_id,
-    })
-
-
-persistent_vars.update({'sillyGirl': {'times': 0, 'started': False, 'self_user_id': 0}})
+                context = await bot.send_message(chat_id, text, reply_to=reply_to)
+            if context:
+                results.append({
+                    'id': context.id,
+                    'uuid': reply["uuid"],
+                })
+        if len(results):
+            await poll(results)
+        if persistent_vars["sillyGirl"]['init'] == False:
+            persistent_vars["sillyGirl"]['init'] = True
+            await persistent_vars["sillyGirl"]['context'].edit("傻妞连接成功，愉快玩耍吧。")
+    except Exception as e:
+        await persistent_vars["sillyGirl"]['context'].edit('出错了呜呜呜 ~ 无法访问 傻妞 ')
+        await asyncio.sleep(1)
+        return
