@@ -134,6 +134,9 @@ async def poll(data):
             persistent_vars["sillyGirl"]['init'] = True
             await persistent_vars["sillyGirl"]['context'].edit("傻妞连接成功，愉快玩耍吧。")
     except Exception as e:
-        await persistent_vars["sillyGirl"]['context'].edit('出错了呜呜呜 ~ 无法访问 傻妞 ')
+        try:
+            await persistent_vars["sillyGirl"]['context'].edit('出错了呜呜呜 ~ 无法访问 傻妞 ')
+        except:
+            return
         await asyncio.sleep(1)
         return
