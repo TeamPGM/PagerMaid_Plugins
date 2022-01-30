@@ -869,6 +869,16 @@
             "supported": true,
             "des-short": "傻妞机器人对接。",
             "des": "把自己变成行走的傻妞。"
+        },
+        {
+            "name": "autobackup",
+            "version": "1.00",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "1.4 kb",
+            "supported": true,
+            "des-short": "凌晨自动备份。",
+            "des": "凌晨自动备份数据文件。"
         }
     ]
 }
