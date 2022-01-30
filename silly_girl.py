@@ -1,5 +1,3 @@
-import asyncio
-
 from pagermaid.listener import listener
 from pagermaid import persistent_vars, bot
 from pagermaid.utils import client, alias_command
@@ -24,7 +22,6 @@ persistent_vars.update(
         }
      }
 )
-
 
 @listener(is_plugin=True, outgoing=True, command=alias_command("sillyGirl"), ignore_edited=True, parameters="<message>")
 async def sillyGirl(context):
@@ -92,24 +89,30 @@ async def poll(data):
             init = "?init=true"
         req_data = await client.post(persistent_vars["sillyGirl"]['url']+"/pgm"+init, json=data)
     except Exception as e:
-        await persistent_vars["sillyGirl"]['context'].edit('出错了呜呜呜 ~ 无法访问 傻妞 ')
-        await asyncio.sleep(1)
         return
     if not req_data.status_code == 200:
-        await persistent_vars["sillyGirl"]['context'].edit('出错了呜呜呜 ~ 无法访问 傻妞 ')
-        await asyncio.sleep(1)
         return
     try:
         replies = json.loads(req_data.text)
         results = []
+        print(replies)
         for reply in replies:
             if reply["whiltelist"] != "":
                 persistent_vars["sillyGirl"]['whiltelist'] = reply["whiltelist"]
                 await persistent_vars["sillyGirl"]['context'].edit("获取白名单中...")
                 continue
             if reply["delete"]:
+                await bot.edit_message(reply["chat_id"], reply["id"], "打错字了，呱呱～")
                 await bot.delete_messages(reply["chat_id"], [reply["id"]])
                 continue
+            if reply["id"] != 0:
+                try:
+                    await bot.edit_message(reply["chat_id"], reply["id"], reply["text"])
+                    continue
+                except Exception as e:
+                    print(e)
+                    continue
+                
             text = reply["text"]
             images = reply["images"]
             chat_id = reply["chat_id"]
@@ -134,10 +137,6 @@ async def poll(data):
         if persistent_vars["sillyGirl"]['init'] == False:
             persistent_vars["sillyGirl"]['init'] = True
             await persistent_vars["sillyGirl"]['context'].edit("傻妞连接成功，愉快玩耍吧。")
+            await persistent_vars["sillyGirl"]['context'].delete()
     except Exception as e:
-        try:
-            await persistent_vars["sillyGirl"]['context'].edit('出错了呜呜呜 ~ 无法访问 傻妞 ')
-        except:
-            return
-        await asyncio.sleep(1)
         return
