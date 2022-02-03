@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import base64
+from re import findall
 from asyncio import sleep
 from os import sep, remove, listdir
-from os.path import isfile, exists
+from os.path import isfile, exists, getsize
 from time import strftime, localtime
 
 from pagermaid import version
@@ -46,6 +47,28 @@ def get_duration(song_info: dict, track_info: dict) -> int:
         return track_info["data"][0]["freeTrialInfo"]["end"] - track_info["data"][0]["freeTrialInfo"]["start"]
     else:
         return int(song_info["songs"][0]["dt"] / 1000)
+
+
+def get_file_size(path: str) -> float:
+    return round(getsize(path) / float(1024 * 1024), 2)
+
+
+def if_outgoing() -> bool:
+    if exists(f"data{sep}ned.out"):
+        return True
+    else:
+        return False
+
+
+def get_music_id(url: str) -> int:
+    if ("music.163.com" in url) and ("playlist" not in url):
+        data = findall(r'\?id=([0-9]*)', url)
+        if len(data) >= 1:
+            return int(data[0])
+        else:
+            return 0
+    else:
+        return 0
 
 
 def tag_audio(track, file: str, cover_img: str = ''):
@@ -118,6 +141,7 @@ i.e.
 `-{alias_command('ned')} 失眠飞行 兔籽鲸 / 雨客Yoker`  # 通过歌曲名称+歌手（可选）点歌
 `-{alias_command('ned')} see you again -f`  # 通过 -f 参数点播 flac 最高音质
 `-{alias_command('ned')} 1430702717`  # 通过歌曲 ID 点歌
+`-{alias_command('ned')} outgoing`  # 开/关自动识别发送的音乐链接
 `-{alias_command('ned')} login`  # 显示登录信息
 `-{alias_command('ned')} login 手机号码 密码`  # 登录账号
 `-{alias_command('ned')} logout`  # 登出
@@ -202,6 +226,15 @@ async def ned(context):
                 remove(f"data{sep}{i}")
         await context.edit("[ned] **已清除缓存**")
         return
+    elif context.parameter[0] == "outgoing":
+        # 开关自动识别音乐链接
+        if if_outgoing():
+            remove(f"data{sep}ned.out")
+            return await context.edit("[ned] 已关闭自动识别音乐链接")
+        else:
+            with open(f"data{sep}ned.out", 'w') as f:
+                f.write('1')
+            return await context.edit("[ned] 已开启自动识别音乐链接")
     # 搜索歌曲
     # 判断是否使用最高比特率解析
     flac_mode = True if context.arguments.find("-f") != -1 else False
@@ -216,12 +249,35 @@ async def ned(context):
         else:
             await context.edit(f"**没有找到歌曲**，请检查歌曲名称是否正确。")
             return
+    await start_download(context, song_id, flac_mode)
+
+
+@listener(outgoing=True, ignore_edited=True)
+async def auto_process_ned(context):
+    if not if_outgoing():
+        return
+    # 仅限群组和私聊
+    if not (context.is_group or context.is_private):
+        return
+    if not context.text:
+        return
+    data = get_music_id(context.text)
+    if not data:
+        return
+    reply = await context.reply("[ned]")
+    await start_download(reply, data, True, True, context)
+
+
+async def start_download(context, song_id: int, flac_mode, outgoing=False, reply=None):
     # 获取歌曲质量是否大于 320k HQ
     track_info = apis.track.GetTrackAudio([song_id], bitrate=3200 * 1000 if flac_mode else 320000)
     # 获取歌曲详情
     song_info = apis.track.GetTrackDetail([song_id])
     if track_info["data"][0]["code"] == 404:
-        await context.edit(f"**没有找到歌曲**，请检查歌曲id是否正确。")
+        msg = await context.edit(f"**没有找到歌曲**，请检查歌曲id是否正确。")
+        if outgoing:
+            await sleep(5)
+            await msg.delete()
         return
     await context.edit(f"正在下载歌曲：**{song_info['songs'][0]['name']} - {gen_author(song_info)}** "
                        f"{round(track_info['data'][0]['size'] / 1000 / 1000, 2)} MB")
@@ -241,13 +297,13 @@ async def ned(context):
                f"{track_info['data'][0]['freeTrialInfo']['end']}s**\n"
     cap = f"「**{song_info['songs'][0]['name']}**」\n" \
           f"{gen_author(song_info)}\n" \
-          f"文件大小：{round(track_info['data'][0]['size'] / 1000 / 1000, 2)} MB\n" \
+          f"文件大小：{get_file_size(path)} MB\n" \
           f"\n{cap_}" \
           f"#netease #{int(track_info['data'][0]['br'] / 1000)}kbps #{track_info['data'][0]['type']}"
     await context.client.send_file(
         context.chat_id,
         path,
-        reply_to=context.message.reply_to_msg_id,
+        reply_to=context.message.reply_to_msg_id if not outgoing else reply.id,
         caption=cap,
         link_preview=False,
         force_document=False,
