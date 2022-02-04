@@ -95,22 +95,25 @@ async def poll(data):
     try:
         replies = json.loads(req_data.text)
         results = []
-        print(replies)
         for reply in replies:
             if reply["whiltelist"] != "":
                 persistent_vars["sillyGirl"]['whiltelist'] = reply["whiltelist"]
                 await persistent_vars["sillyGirl"]['context'].edit("获取白名单中...")
                 continue
             if reply["delete"]:
-                await bot.edit_message(reply["chat_id"], reply["id"], "打错字了，呱呱～")
-                await bot.delete_messages(reply["chat_id"], [reply["id"]])
-                continue
+                try:
+                    await bot.edit_message(reply["chat_id"], reply["id"], "打错字了，呱呱～")
+                except Exception as e:
+                    """"""
+                try:
+                    await bot.delete_messages(reply["chat_id"], [reply["id"]])
+                except Exception as e:
+                    """"""
             if reply["id"] != 0:
                 try:
                     await bot.edit_message(reply["chat_id"], reply["id"], reply["text"])
                     continue
                 except Exception as e:
-                    print(e)
                     continue
                 
             text = reply["text"]
