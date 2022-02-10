@@ -879,6 +879,16 @@
             "supported": true,
             "des-short": "凌晨自动备份。",
             "des": "凌晨自动备份数据文件。"
+        },
+        {
+            "name": "dictionary",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "2.4 kb",
+            "supported": true,
+            "des-short": "查询英语单词/俚语的意思。",
+            "des": "查询英语单词/俚语的意思。\n指令：-dictionary -urbandictionary"
         }
     ]
 }
