@@ -14,7 +14,7 @@ async def jd_cmd(context):
     except ValueError:
         return await context.edit("[jd_cmd] " + lang("msg_ValueError"))
     try:
-        data = (await client.post("https://api.jds.codes/jCommand", json={"code": text})).json()
+        data = (await client.post("https://api.jds.codes/jd/jCommand", json={"code": text})).json()
     except:
         return await context.edit("[jd_cmd] 网络错误！")
     if data["code"] != 200:
