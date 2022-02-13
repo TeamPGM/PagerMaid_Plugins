@@ -889,6 +889,16 @@
             "supported": true,
             "des-short": "查询英语单词/俚语的意思。",
             "des": "查询英语单词/俚语的意思。\n指令：-dictionary -urbandictionary"
+        },
+        {
+            "name": "base64",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "zhxycn,xtaodada",
+            "size": "1.4 kb",
+            "supported": true,
+            "des-short": "Base64编码/解码。",
+            "des": "Base64编码/解码。\n指令：-b64e -b64d"
         }
     ]
 }
