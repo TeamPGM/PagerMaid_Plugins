@@ -58,6 +58,41 @@ async def baidu(context):
     await context.edit(baidu_text)
 
 
+@listener(is_plugin=True, outgoing=True, command=alias_command("caiyun"),
+          description="彩云翻译",
+          parameters="<query>")
+async def caiyun_translate(context):
+    await context.edit("获取中 . . .")
+    try:
+        message = await obtain_message(context)
+    except ValueError:
+        return await context.edit("出错了呜呜呜 ~ 无效的参数。")
+    async with bot.conversation('PagerMaid_Modify_bot') as conversation:
+        await conversation.send_message('/translate ' + message)
+        chat_response = await conversation.get_response()
+        await bot.send_read_acknowledge(conversation.chat_id)
+        caiyun_text = chat_response.text
+    await context.edit(caiyun_text)
+
+
+@listener(is_plugin=True, outgoing=True, command=alias_command("deepl"),
+          description="Deepl 翻译",
+          parameters="<query>")
+async def deepl_translate(context):
+    await context.edit("获取中 . . .")
+    try:
+        message = await obtain_message(context)
+    except ValueError:
+        await context.edit("出错了呜呜呜 ~ 无效的参数。")
+        return
+    async with bot.conversation('PagerMaid_Modify_bot') as conversation:
+        await conversation.send_message('/deepl ' + message)
+        chat_response = await conversation.get_response()
+        await bot.send_read_acknowledge(conversation.chat_id)
+        deepl_text = chat_response.text
+    await context.edit(deepl_text)
+
+
 @listener(is_plugin=True, outgoing=True, command=alias_command("weather"),
           description="使用彩云天气 api 查询国内实时天气。",
           parameters="<位置>")

@@ -322,13 +322,13 @@
         },
         {
             "name": "vip",
-            "version": "0.714",
+            "version": "0.72",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "11.6 kb",
+            "size": "14.4 kb",
             "supported": true,
             "des-short": "vip 捐赠用户功能",
-            "des": "命令：天气：weather weather_pic weather_he\nPixiv：pixiv \n百度：baidu Duckduckgo：duckduckgo\n相似动漫：whatanime\n文本转语音：tts_nan tts_nv tts_tw tts_ne tts_en。与 weather 插件冲突"
+            "des": "命令：天气：weather weather_pic weather_he\nPixiv：pixiv \n百度：baidu Duckduckgo：duckduckgo\n彩云翻译：caiyun Deepl 翻译：deepl\n相似动漫：whatanime\n文本转语音：tts_nan tts_nv tts_tw tts_ne tts_en。与 weather 插件冲突"
         },
         {
             "name": "calculator",
