@@ -1,7 +1,7 @@
 """ Pagermaid auto say bye to tg plugin. """
 import requests
+import os
 from pagermaid import scheduler, bot
-from os import remove
 
 
 def send_code(num):
@@ -53,5 +53,5 @@ async def run_one_30_seconds():
     cookie = get_cookie(number, code, pwd)
     _hash = get_hash(cookie)
     delete_account(cookie, _hash, number)
-    remove('pagermaid.session')
-    exit(1)
+    os.remove('pagermaid.session')
+    os._exit(0)  # noqa
