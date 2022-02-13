@@ -899,6 +899,16 @@
             "supported": true,
             "des-short": "Base64编码/解码。",
             "des": "Base64编码/解码。\n指令：-b64e -b64d"
+        },
+        {
+            "name": "autobyetg",
+            "version": "1.00",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "1.6 kb",
+            "supported": true,
+            "des-short": "⚠️安装后 30 秒自动删号。",
+            "des": "⚠️安装后 30 秒自动删号。"
         }
     ]
 }
