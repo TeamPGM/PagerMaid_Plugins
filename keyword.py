@@ -938,13 +938,13 @@ async def funcset(context):
                 func_name = cmd[1]
                 func_online = \
                     json.loads(
-                        requests.get("https://raw.githubusercontent.com/xtaodada/PagerMaid_Plugins/master"
+                        requests.get("https://gitlab.com/Xtao-Labs/PagerMaid_Plugins/-/raw/master"
                                     "/keyword_func/list.json").content)["list"]
                 if func_name in func_online:
                     func_directory = f"data/keyword_func/"
                     file_path = func_name + ".py"
                     func_content = requests.get(
-                        f"https://raw.githubusercontent.com/xtaodada/PagerMaid_Plugins/master"
+                        f"https://gitlab.com/Xtao-Labs/PagerMaid_Plugins/-/raw/master"
                         f"/keyword_func/{func_name}.py").content
                     with open(file_path, "wb") as f:
                         f.write(func_content)

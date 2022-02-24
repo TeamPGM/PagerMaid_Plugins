@@ -160,20 +160,20 @@ async def yv_lu_(context):
     # 下载资源文件
     for num in range(1, 5):
         if not exists('plugins/yvlu/p' + str(num) + '.png'):
-            re = get('https://raw.githubusercontent.com/Xtao-Labs/PagerMaid_Plugins/master/yvlu/p' + str(num) + '.png')
+            re = get('https://gitlab.com/Xtao-Labs/PagerMaid_Plugins/-/raw/master/yvlu/p' + str(num) + '.png')
             with open('plugins/yvlu/p' + str(num) + '.png', 'wb') as bg:
                 bg.write(re.content)
     if not exists('plugins/yvlu/mask.png'):
-        re = get('https://raw.githubusercontent.com/Xtao-Labs/PagerMaid_Plugins/master/yvlu/mask.png')
+        re = get('https://gitlab.com/Xtao-Labs/PagerMaid_Plugins/-/raw/master/yvlu/mask.png')
         with open('plugins/yvlu/mask.png', 'wb') as bg:
             bg.write(re.content)
     if not exists('plugins/yvlu/mask1.png'):
-        re = get('https://raw.githubusercontent.com/Xtao-Labs/PagerMaid_Plugins/master/yvlu/mask1.png')
+        re = get('https://gitlab.com/Xtao-Labs/PagerMaid_Plugins/-/raw/master/yvlu/mask1.png')
         with open('plugins/yvlu/mask1.png', 'wb') as bg:
             bg.write(re.content)
     if not exists('plugins/yvlu/ZhuZiAWan-2.ttc'):
         await context.edit('下载字体中。。。')
-        re = get('https://raw.githubusercontent.com/Xtao-Labs/Telegram_PaimonBot/master/assets/fonts/ZhuZiAWan-2.ttc')
+        re = get('https://gitlab.com/Xtao-Labs/Telegram_PaimonBot/-/raw/master/assets/fonts/ZhuZiAWan-2.ttc')
         with open('plugins/yvlu/ZhuZiAWan-2.ttc', 'wb') as bg:
             bg.write(re.content)
     # 获取回复信息

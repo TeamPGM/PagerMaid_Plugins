@@ -22,7 +22,7 @@ import json
 try:
     git_source = config['git_source']
 except:
-    git_source = "https://raw.githubusercontent.com/Xtao-Labs/PagerMaid_Plugins/master/"
+    git_source = "https://gitlab.com/Xtao-Labs/PagerMaid_Plugins/-/raw/master/"
 positions = {
     "1": [297, 288],
     "2": [85, 368],
