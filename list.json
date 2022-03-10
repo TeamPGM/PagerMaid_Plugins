@@ -492,13 +492,13 @@
         },
         {
             "name": "groupword",
-            "version": "1.061",
+            "version": "1.1",
             "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "3.32 kb",
+            "maintainer": "xtaodada, matsuri_nya",
+            "size": "4.5 kb",
             "supported": true,
             "des-short": "将聊天内容生成为词云",
-            "des": "拉取最新 300 条消息生成一张词云图片。\n\n命令：-groupword"
+            "des": "拉取最新 500 条消息生成词云，回复图片可自定义背景图。（图片白色区域为不显示部分）\n\n命令：-groupword"
         },
         {
             "name": "kongge",
