@@ -919,6 +919,16 @@
             "supported": true,
             "des-short": "每日一句英文句子",
             "des": "每日一句英文句子。\n指令：-everyday_en"
+        },
+        {
+            "name": "bili_item_upload",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "CaroyalKnight",
+            "size": "11.2 kb",
+            "supported": true,
+            "des-short": "上传B站动态到TG",
+            "des": "上传B站动态到TG。\n指令：-bup"
         }
     ]
 }
