@@ -252,10 +252,10 @@
         },
         {
             "name": "shangliu",
-            "version": "1.011",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "TNTcraftHIM",
-            "size": "2.5 kb",
+            "size": "2.6 kb",
             "supported": true,
             "des-short": "上流对话工具",
             "des": "让你可以随时放彩虹屁，毒鸡汤，或者变身营销号（迫真，配合-tts食用更佳）。命令：chp，djt，yxh。"
