@@ -49,6 +49,16 @@
             "supported": true,
             "des-short": "每日英语",
             "des": "支持群订阅"
+        },
+        {
+            "name": "pmcaptcha",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "cloudreflection",
+            "size": "6.3 kb",
+            "supported": true,
+            "des-short": "一个简单的私聊验证",
+            "des": "支持自定义验证成功后消息及关键词黑名单"
         }
     ]
 }
