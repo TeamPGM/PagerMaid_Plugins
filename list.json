@@ -332,13 +332,13 @@
         },
         {
             "name": "calculator",
-            "version": "1.021",
+            "version": "1.1",
             "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "1.0 kb",
+            "maintainer": "Pentacene,zhxycn",
+            "size": "1.48 kb",
             "supported": true,
             "des-short": "小型计算器",
-            "des": "/cal 6+4。"
+            "des": "支持基本运算（加减乘除乘方开方）及进制转换。\n命令：-cal [表达式] -con [进制] [数字]\n例如：`-cal 1+2` `-con 16 10`"
         },
         {
             "name": "paolu",
