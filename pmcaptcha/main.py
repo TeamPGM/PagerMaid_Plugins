@@ -140,7 +140,7 @@ async def pm_captcha(client: Client, message: Message):
             await message.edit(''',pmcaptcha
 查询当前私聊用户验证状态
 
-,pmcaptcha chk id
+,pmcaptcha check id
 查询指定id用户验证状态
 
 ,pmcaptcha add [id]
