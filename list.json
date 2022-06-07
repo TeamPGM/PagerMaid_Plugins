@@ -139,6 +139,16 @@
             "supported": true,
             "des-short": "查询天气。",
             "des": "这个人很懒，什么都没有留下。"
+        },
+        {
+            "name": "resou",
+            "version": "1.221",
+            "section": "daily",
+            "maintainer": "KorenKrita、xtaodada、monsterxcn",
+            "size": "2.5 kb",
+            "supported": true,
+            "des-short": "微博，知乎，抖音实时热搜。",
+            "des": "命令：wbrs，zhrs，dyrs。"
         }
     ]
 }
