@@ -25,7 +25,7 @@ async def zhrs(_: Client, context: Message):
         await context.edit("出错了呜呜呜 ~ 无法访问到 API 服务器 。")
 
 
-@listener(is_plugin=True, outgoing=True, command="wbrs",
+@listener(command="wbrs",
           description="微博热搜。")
 async def wbrs(_: Client, context: Message):
     await context.edit("获取中 . . .")
@@ -45,7 +45,7 @@ async def wbrs(_: Client, context: Message):
         await context.edit("出错了呜呜呜 ~ 无法访问到 API 服务器 。")
 
 
-@listener(is_plugin=True, outgoing=True, command="dyrs",
+@listener(command="dyrs",
           description="抖音热搜。")
 async def dyrs(_: Client, context: Message):
     await context.edit("获取中 . . .")
