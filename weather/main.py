@@ -1,9 +1,7 @@
-import json
 import datetime
-from requests import get
 from pyrogram import Client
 from pagermaid.listener import listener
-from pagermaid.utils import Message
+from pagermaid.utils import Message, client
 
 icons = {
     "01d": "🌞",
@@ -41,19 +39,15 @@ def calcWindDirection(windDirection):
 @listener(command="weather",
           description="查询天气",
           parameters="<城市>")
-async def weather(_: Client, context: Message):
-    await context.edit("获取中 . . .")
+async def weather(_: Client, message: Message):
+    of not message.arguments:
+        return await context.edit("出错了呜呜呜 ~ 无效的参数。")
     try:
-        message = context.arguments
-    except ValueError:
-        await context.edit("出错了呜呜呜 ~ 无效的参数。")
-        return
-    try:
-        req = get(
+        req = await client.get(
             "http://api.openweathermap.org/data/2.5/weather?appid=973e8a21e358ee9d30b47528b43a8746&units=metric&lang"
-            "=zh_cn&q=" + message)
+            "=zh_cn&q=" + message.arguments)
         if req.status_code == 200:
-            data = json.loads(req.text)
+            data = req.json()
             cityName = "{}, {}".format(data["name"], data["sys"]["country"])
             timeZoneShift = data["timezone"]
             temp_Max = round(data["main"]["temp_max"], 2)
@@ -75,9 +69,9 @@ async def weather(_: Client, context: Message):
                 cityName, icons[icon], desc, windDirection, windSpeed, tempInC, tempInF, humidity, fellsTemp, pressure,
                 sunriseTime, sunsetTime
             )
-            await context.edit(res)
+            await message.edit(res)
         if req.status_code == 404:
-            await context.edit("出错了呜呜呜 ~ 无效的城市名，请使用拼音输入 ~ ")
+            await message.edit("出错了呜呜呜 ~ 无效的城市名，请使用拼音输入 ~ ")
             return
     except Exception:
-        await context.edit("出错了呜呜呜 ~ 无法访问到 openweathermap.org 。")
+        await message.edit("出错了呜呜呜 ~ 无法访问到 openweathermap.org 。")
