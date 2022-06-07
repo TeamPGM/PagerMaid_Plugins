@@ -41,7 +41,7 @@ def calcWindDirection(windDirection):
           parameters="<城市>")
 async def weather(_: Client, message: Message):
     of not message.arguments:
-        return await context.edit("出错了呜呜呜 ~ 无效的参数。")
+        return await message.edit("出错了呜呜呜 ~ 无效的参数。")
     try:
         req = await client.get(
             "http://api.openweathermap.org/data/2.5/weather?appid=973e8a21e358ee9d30b47528b43a8746&units=metric&lang"
