@@ -11,21 +11,21 @@ jobs:
     steps:
     # 此步骤使用 GitHub 的 https://github.com/actions/checkout
     - name: checkout actions
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     # 设置python环境
     # 此步骤使用 GitHub 的 https://github.com/actions/setup-python
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
       with:
-        python-version: 3.7
+        python-version: 3.9
 
     # 安装依赖
     - name: Install dependencies
       run: |
         mkdir tmp && cd tmp
         python -m pip install --upgrade pip
-        pip install requests
+        pip install httpx
 
     # 发送通知
     - name: Send notice
