@@ -149,6 +149,16 @@
             "supported": true,
             "des-short": "微博，知乎，抖音实时热搜。",
             "des": "命令：wbrs，zhrs，dyrs。"
+        },
+        {
+            "name": "dme",
+            "version": "1.21",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "0.5 kb",
+            "supported": true,
+            "des-short": "删除当前对话您发送的特定数量的消息。",
+            "des": "删除当前对话您发送的特定数量的消息。\n指令：-dme"
         }
     ]
 }
