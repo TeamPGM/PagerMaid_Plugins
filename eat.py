@@ -82,7 +82,7 @@ async def eat_it(context, uid, base, mask, photo, number, layer=0):
         )
         try:
             markImg = Image.open("plugins/eat/" + str(uid) + ".jpg")
-            maskImg = Image.open("plugins/eat/mask" + str(numberPosition[2]) + ".png")
+            maskImg = Image.open("plugins/eat/mask" + str(numberPosition[2]) + ".png").convert("RGBA")
         except:
             await context.edit(f"图片模版加载出错，请检查并更新配置：mask{str(numberPosition[2])}.png")
             return base
@@ -438,7 +438,7 @@ async def eat(context: NewMessage.Event):
         markImg = Image.open("plugins/eat/" + str(target_user_id) + ".jpg")
         try:
             eatImg = Image.open("plugins/eat/eat" + str(number) + ".png")
-            maskImg = Image.open("plugins/eat/mask" + str(number) + ".png")
+            maskImg = Image.open("plugins/eat/mask" + str(number) + ".png").convert("RGBA")
         except:
             await context.edit(f"图片模版加载出错，请检查并更新配置：{str(number)}")
             return
