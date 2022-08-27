@@ -15,10 +15,10 @@ persistent_vars.update(
             'times': 0,
             'started': False,
             'self_user_id': 0,
-            'secret': '',
+            'token': '',
             'url': '',
             'init': False,
-            'whiltelist': '',
+            'restart': False,
         }
      }
 )
@@ -43,7 +43,7 @@ async def sillyGirl(context):
     if '@' in text:
         s1 = text.split("//", 1)
         s2 = s1[1].split("@", 1)
-        persistent_vars["sillyGirl"]['secret'] = s2[0]
+        persistent_vars["sillyGirl"]['token'] = s2[0]
         text = s1[0]+"//"+s2[1]
     os.close(fd)
     persistent_vars["sillyGirl"]['url'] = text
@@ -51,43 +51,42 @@ async def sillyGirl(context):
     persistent_vars["sillyGirl"]['self_user_id'] = myself.id
     if persistent_vars["sillyGirl"]['started'] == False:
         persistent_vars["sillyGirl"]['started'] = True
-        while(True):
+        while(persistent_vars["sillyGirl"]['restart']==False):
             await poll([])
 
-
 @listener(is_plugin=True, outgoing=True, incoming=True)
-async def xxx(context):
+async def handle_receive(context):
     if persistent_vars["sillyGirl"]['started'] == False:
-        return
+        await sillyGirl(context)
     reply_to = 0
     reply_to = context.id
     reply = await context.get_reply_message()
     reply_to_sender_id = 0
-    if context.sender_id == persistent_vars["sillyGirl"]['self_user_id'] or str(context.sender_id) in persistent_vars["sillyGirl"]['whiltelist'] or str(context.chat_id) in persistent_vars["sillyGirl"]['whiltelist']:
-        if reply:
-            reply_to = reply.id
-            reply_to_sender_id = reply.sender_id
-        elif persistent_vars["sillyGirl"]['self_user_id'] == context.sender_id or context.is_private:
-            reply_to = 0
-        await poll(
-            [{
-                'id': context.id,
-                'chat_id': context.chat_id,
-                'text': context.text,
-                'sender_id': context.sender_id,
-                'reply_to': reply_to,
-                'reply_to_sender_id': reply_to_sender_id,
-                'bot_id': persistent_vars["sillyGirl"]['self_user_id'],
-                'is_group': context.is_private == False,
-            }])
-
+    if context.text == "-restart" and persistent_vars["sillyGirl"]['self_user_id'] == context.sender_id:
+        persistent_vars["sillyGirl"]['restart'] = True
+    if reply:
+        reply_to = reply.id
+        reply_to_sender_id = reply.sender_id
+    elif persistent_vars["sillyGirl"]['self_user_id'] == context.sender_id or context.is_private:
+        reply_to = 0
+    await poll(
+        [{
+            'id': context.id,
+            'chat_id': context.chat_id,
+            'text': context.text,
+            'sender_id': context.sender_id,
+            'reply_to': reply_to,
+            'reply_to_sender_id': reply_to_sender_id,
+            'bot_id': persistent_vars["sillyGirl"]['self_user_id'],
+            'is_group': context.is_private == False,
+        }])
 
 async def poll(data):
     try:
         init = ""
         if persistent_vars["sillyGirl"]['init'] == False:
-            init = "?init=true"
-        req_data = await client.post(persistent_vars["sillyGirl"]['url']+"/pgm"+init, json=data)
+            init = "&init=true"
+        req_data = await client.post(persistent_vars["sillyGirl"]['url']+"/pgm?token="+persistent_vars["sillyGirl"]['token']+init, json=data)
     except Exception as e:
         return
     if not req_data.status_code == 200:
@@ -96,10 +95,6 @@ async def poll(data):
         replies = json.loads(req_data.text)
         results = []
         for reply in replies:
-            if reply["whiltelist"] != "":
-                persistent_vars["sillyGirl"]['whiltelist'] = reply["whiltelist"]
-                await persistent_vars["sillyGirl"]['context'].edit("获取白名单中...")
-                continue
             if reply["delete"]:
                 try:
                     await bot.edit_message(reply["chat_id"], reply["id"], "打错字了，呱呱～")
@@ -142,4 +137,5 @@ async def poll(data):
             await persistent_vars["sillyGirl"]['context'].edit("傻妞连接成功，愉快玩耍吧。")
             await persistent_vars["sillyGirl"]['context'].delete()
     except Exception as e:
+
         return
