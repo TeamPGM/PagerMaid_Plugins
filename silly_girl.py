@@ -1,3 +1,4 @@
+
 from asyncio import sleep
 from pagermaid.listener import listener
 from pagermaid import persistent_vars, bot
@@ -52,7 +53,7 @@ async def sillyGirl(context):
     persistent_vars["sillyGirl"]['self_user_id'] = myself.id
     if persistent_vars["sillyGirl"]['started'] == False:
         persistent_vars["sillyGirl"]['started'] = True
-        while(persistent_vars["sillyGirl"]['restart']==False):
+        while(context.client._user_connected()):
             await poll([])
 
 @listener(is_plugin=True, outgoing=True, incoming=True)
@@ -63,8 +64,6 @@ async def handle_receive(context):
     reply_to = context.id
     reply = await context.get_reply_message()
     reply_to_sender_id = 0
-    if context.text == "-restart" and persistent_vars["sillyGirl"]['self_user_id'] == context.sender_id:
-        persistent_vars["sillyGirl"]['restart'] = True
     if reply:
         reply_to = reply.id
         reply_to_sender_id = reply.sender_id
