@@ -21,7 +21,7 @@ if config["application_language"] == "en":
                  "notice": "Data are updated daily, for encrypted currencies we recommend to use the `bc` plugin.",
                  "warning": "Data are updated daily"}
 
-API = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.json"
+API = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json"
 currencies = []
 data = {}
 
@@ -88,12 +88,12 @@ async def rate(context):
     if currencies.count(TO) == 0:
         await context.edit(f"{TO}{lang_rate['nc']}{', '.join(currencies)}`")
         return
-    endpoint = f"https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/{FROM.lower()}/{TO.lower()}.json"
+    endpoint = f"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{FROM.lower()}.json"
     with urllib.request.urlopen(endpoint) as response:
         result = response.read()
         try:
             rate_data = json.loads(result)
             await context.edit(
-                f'`{FROM} : {TO} = {NB} : {round(NB * rate_data[TO.lower()], 4)}`\n\n{lang_rate["warning"]}')
+                f'`{FROM} : {TO} = {NB} : {round(NB * rate_data[FROM.lower()][TO.lower()], 4)}`\n\n{lang_rate["warning"]}')
         except Exception as e:
             await context.edit(str(e))
