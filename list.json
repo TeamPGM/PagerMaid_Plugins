@@ -1,934 +1,304 @@
 {
     "list": [
         {
-            "name": "autorespond",
-            "version": "0.212",
+            "name": "1A2B",
+            "version": "1.04",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "1.9 kb",
+            "size": "2.497 kb",
             "supported": true,
-            "des-short": "自动回复。",
-            "des": "此插件用于需要自动回复的场景。"
+            "des_short": "Play a game of 1A2B",
+            "des": "Play a game of 1A2B, command:,1a2b\n\n# 例如\n\n,1a2b start\n\n,1a2b 1234\n\n,1a2b 5678\n\n..."
         },
         {
-            "name": "autochangename",
-            "version": "1.111",
-            "section": "profile",
-            "maintainer": "xtaodada",
-            "size": "2.1 kb",
-            "supported": true,
-            "des-short": "自动更新 last_name 为时间等。",
-            "des": "每 30 秒自动更新 last_name 为时间等小玩意。"
-        },
-        {
-            "name": "autorm",
-            "version": "1.033",
-            "section": "chat",
-            "maintainer": "fruitymelon",
-            "size": "6.7 kb",
-            "supported": true,
-            "des-short": "在指定的时间后删除自己的消息。",
-            "des": "这个人很懒，什么都没有留下。"
-        },
-        {
-            "name": "sendat",
-            "version": "1.322",
-            "section": "chat",
-            "maintainer": "fruitymelon",
-            "size": "15.0 kb",
-            "supported": true,
-            "des-short": "定时发送消息。",
-            "des": "命令：sendat，详情见 -help sendat"
-        },
-        {
-            "name": "weather",
-            "version": "1.111",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "2.9 kb",
-            "supported": true,
-            "des-short": "查询天气。",
-            "des": "这个人很懒，什么都没有留下。"
-        },
-        {
-            "name": "xtao-some",
-            "version": "1.23",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "12.9 kb",
-            "supported": true,
-            "des-short": "一大堆便民功能。",
-            "des": "超多功能 例如 -ip -ipping -guess -getdel -get_bots -wiki 等。"
-        },
-        {
-            "name": "yb-dl",
-            "version": "1.031",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "18.8 kb",
-            "supported": false,
-            "des-short": "上传 Youtube、Bilibili 视频到 telegram。",
-            "des": "这个人很懒，什么都没有留下。"
-        },
-        {
-            "name": "throwit",
-            "version": "1.621",
-            "section": "profile",
-            "maintainer": "xtaodada",
-            "size": "6.9 kb",
-            "supported": true,
-            "des-short": "生成一张 扔头像 图片。",
-            "des": "支持旋转图片，随机生成丢头像的人物。"
-        },
-        {
-            "name": "rate",
-            "version": "1.412",
-            "section": "daily",
-            "maintainer": "fruitymelon",
-            "size": "3.4 kb",
-            "supported": true,
-            "des-short": "汇率转换。",
-            "des": "汇率转换插件，数据每日更新"
-        },
-        {
-            "name": "netease",
-            "version": "1.311",
-            "section": "daily",
-            "maintainer": "xtaodada、KorenKrita",
-            "size": "0.7 kb",
-            "supported": true,
-            "des-short": "随机一条网易云音乐热评。",
-            "des": "大多数情况下稍等TG缓存片刻即可有歌曲在下方预览，若无则为该歌曲已被网易云下架。"
-        },
-        {
-            "name": "atadmins_atall",
-            "version": "1.121",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "2.5 kb",
-            "supported": true,
-            "des-short": "一键 AT 本群管理员、群员。",
-            "des": "仅在群组中有效。"
-        },
-        {
-            "name": "denyu",
-            "version": "1.12",
-            "section": "chat",
-            "maintainer": "fruitymelon",
-            "size": "2.7 kb",
-            "supported": true,
-            "des-short": "在某群中强制禁言某用户。",
-            "des": "需要删除他人消息权限，需要 redis。"
-        },
-        {
-            "name": "hyperlink",
-            "version": "1.011",
-            "section": "daily",
-            "maintainer": "OahiewUoil",
-            "size": "0.5 kb",
-            "supported": true,
-            "des-short": "生成隐藏链接。",
-            "des": "非链接的纯文字将直接隐藏。"
-        },
-        {
-            "name": "nthmsg",
-            "version": "1.021",
-            "section": "chat",
-            "maintainer": "seiuneko",
-            "size": "0.9 kb",
-            "supported": true,
-            "des-short": "获取你发送的第 n 条消息。",
-            "des": "这个人很懒，什么都没有留下。"
-        },
-        {
-            "name": "portball",
-            "version": "1.453",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "2.8 kb",
-            "supported": true,
-            "des-short": "回复你要临时禁言的人的消息来实现XX秒的禁言。",
-            "des": "portball <原因> <秒数>"
-        },
-        {
-            "name": "resou",
-            "version": "1.221",
-            "section": "daily",
-            "maintainer": "KorenKrita、xtaodada、monsterxcn",
-            "size": "6.1 kb",
-            "supported": true,
-            "des-short": "微博，知乎，抖音实时热搜，B站实时排行榜。",
-            "des": "命令：wbrs，zhrs，dyrs，brank。"
-        },
-        {
-            "name": "mjx",
-            "version": "1.011",
-            "section": "profile",
-            "maintainer": "KorenKrita",
-            "size": "1 kb",
-            "supported": true,
-            "des-short": "随机带评价买家秀，随机涩气买家秀",
-            "des": "命令：mjx，sqmjx。"
-        },
-        {
-            "name": "tel",
-            "version": "1.111",
-            "section": "daily",
-            "maintainer": "KorenKrita、xtaodada",
-            "size": "1 kb",
-            "supported": true,
-            "des-short": "查询手机号码归属地等信息",
-            "des": "查询电话号码归属地，号码段，卡类型，运营商及通信标准。命令：tel。"
-        },
-        {
-            "name": "whois",
-            "version": "1.141",
-            "section": "daily",
-            "maintainer": "KorenKrita",
-            "size": "1.1 kb",
-            "supported": true,
-            "des-short": "查询域名whois信息",
-            "des": "查看域名是否已被注册、注册日期、过期日期、域名状态、DNS解析服务器等。"
-        },
-        {
-            "name": "eat",
-            "version": "1.045",
-            "section": "profile",
-            "maintainer": "SF_PICK",
-            "size": "22.3 kb",
-            "supported": false,
-            "des-short": "生成一张 吃头像 图片。",
-            "des": "这个人很懒，什么都没有留下。"
-        },
-        {
-            "name": "cosplay-multi",
-            "version": "1.311",
-            "section": "daily",
-            "maintainer": "TNTcraftHIM",
-            "size": "2.4 kb",
-            "supported": true,
-            "des-short": "多网站随机获取Cos图",
-            "des": "在不同的几个网站中随机获取Cosplay图片，解决了cosplay单个API流量用尽后无法获取的问题。命令：cosm。"
-        },
-        {
-            "name": "meizi",
-            "version": "1.811",
-            "section": "daily",
-            "maintainer": "TNTcraftHIM",
-            "size": "4.0 kb",
-            "supported": true,
-            "des-short": "多网站随机获取写真",
-            "des": "从不同的网站中调取妹子写真/视频，但是无漏点，放心使用（安全版ghs）。命令：mz，sp。"
-        },
-        {
-            "name": "acg-multi",
-            "version": "1.411",
-            "section": "daily",
-            "maintainer": "TNTcraftHIM",
-            "size": "2.4 kb",
-            "supported": true,
-            "des-short": "多网站随机获取ACG图",
-            "des": "从几个不同的图库中随机获取二刺螈（bushi）ACG图片，基本都是手机尺寸的图。命令：acgm。"
-        },
-        {
-            "name": "da",
-            "version": "1.022",
-            "section": "chat",
-            "maintainer": "yxkumad",
-            "size": "1.6 kb",
-            "supported": true,
-            "des-short": "删除所有信息",
-            "des": "删除所有信息（非群组管理员只删除自己的消息），需要二次确定（-da true）。命令：da"
-        },
-        {
-            "name": "diss",
-            "version": "1.114",
-            "section": "chat",
-            "maintainer": "TNTcraftHIM",
-            "size": "1.4 kb",
-            "supported": true,
-            "des-short": "祖安对线语录",
-            "des": "让你在祖安大舞台能够时而儒雅，时而火力全开的对线。命令：diss，biss。"
-        },
-        {
-            "name": "shangliu",
+            "name": "abstract",
             "version": "1.02",
             "section": "chat",
-            "maintainer": "TNTcraftHIM",
-            "size": "2.6 kb",
-            "supported": true,
-            "des-short": "上流对话工具",
-            "des": "让你可以随时放彩虹屁，毒鸡汤，或者变身营销号（迫真，配合-tts食用更佳）。命令：chp，djt，yxh。"
-        },
-        {
-            "name": "neteaseshuffle",
-            "version": "1.113",
-            "section": "daily",
-            "maintainer": "TNTcraftHIM",
-            "size": "3.0 kb",
-            "supported": false,
-            "des-short": "随机网抑热歌",
-            "des": "从热歌榜随机获取一首歌，可以多进程同开，且附带歌曲信息。命令：ns。"
-        },
-        {
-            "name": "neteasedown",
-            "version": "1.231",
-            "section": "daily",
             "maintainer": "xtaodada",
-            "size": "12.8 kb",
+            "size": "47.343 kb",
             "supported": true,
-            "des-short": "网易云搜歌/点歌",
-            "des": "可以在线搜索并且快速点歌，支持解锁VIP歌曲。命令：ned。"
-        },
-        {
-            "name": "killallmembers",
-            "version": "1.121",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "idk",
-            "supported": true,
-            "des-short": "一键扬了群",
-            "des": "⚠⚠慎用! 一件扬了群内所有成员⚠⚠"
-        },
-        {
-            "name": "videodl",
-            "version": "0.122",
-            "section": "daily",
-            "maintainer": "TNTcraftHIM",
-            "size": "5.3 kb",
-            "supported": true,
-            "des-short": "下载YTB/B站视频",
-            "des": "随手写的youtube/B站下载视频插件，B站的似乎因为TG编码问题不支持在线播放，先这样吧（我懒）。命令：vdl。"
+            "des_short": "语句抽象化",
+            "des": "能够将你的语句变得抽象起来~"
         },
         {
             "name": "aff",
-            "version": "1.211",
-            "section": "chat",
-            "maintainer": "TNTcraftHIM",
-            "size": "2.0 kb",
-            "supported": true,
-            "des-short": "光速发Aff信息",
-            "des": "在别人要打算买机场的时候光速发出提前准备好的Aff信息与链接~ （尽量用短链接哦）。命令：aff。"
-        },
-        {
-            "name": "stickertopic",
-            "version": "1.121",
-            "section": "chat",
-            "maintainer": "TNTcraftHIM",
-            "size": "3.5 kb",
-            "supported": true,
-            "des-short": "贴纸转图片",
-            "des": "把别人发的贴纸转换成图片（只支持静态）。命令：stickertopic 。"
-        },
-        {
-            "name": "vip",
-            "version": "0.72",
+            "version": "1.03",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "14.4 kb",
+            "size": "1.912 kb",
             "supported": true,
-            "des-short": "vip 捐赠用户功能",
-            "des": "命令：天气：weather weather_pic weather_he\nPixiv：pixiv \n百度：baidu Duckduckgo：duckduckgo\n彩云翻译：caiyun Deepl 翻译：deepl\n相似动漫：whatanime\n文本转语音：tts_nan tts_nv tts_tw tts_ne tts_en。与 weather 插件冲突"
+            "des_short": "aff 快速发送 aff",
+            "des": "aff 快速发送 aff"
         },
         {
-            "name": "calculator",
-            "version": "1.1",
+            "name": "atadmins",
+            "version": "1.05",
             "section": "chat",
-            "maintainer": "Pentacene,zhxycn",
-            "size": "1.48 kb",
+            "maintainer": "xtaodada、Pentacene",
+            "size": "0.999 kb",
             "supported": true,
-            "des-short": "小型计算器",
-            "des": "支持基本运算（加减乘除乘方开方）及进制转换。\n命令：-cal [表达式] -con [进制] [数字]\n例如：`-cal 1+2` `-con 16 10`"
+            "des_short": "一键 AT 本群管理员。",
+            "des": "一键 AT 本群管理员。\n指令：,atadmins"
         },
         {
-            "name": "paolu",
-            "version": "1.022",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "1.0 kb",
+            "name": "autochangename",
+            "version": "1.142",
+            "section": "profile",
+            "maintainer": "xtaodada、xiluo",
+            "size": "1.718 kb",
             "supported": true,
-            "des-short": "一键跑路（删所有消息并禁言）",
-            "des": "paolu。"
-        },
-        {
-            "name": "autoreplysticker",
-            "version": "1.233",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "12 kb",
-            "supported": true,
-            "des-short": "自动回复sticker",
-            "des": "-ars"
-        },
-        {
-            "name": "deletemsgsfromgrps",
-            "version": "1.021",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "4 kb",
-            "supported": true,
-            "des-short": "删除所有群内消息或所有与他人对话",
-            "des": "-dmfg"
-        },
-        {
-            "name": "keyword",
-            "version": "2.703",
-            "section": "chat",
-            "maintainer": "c3b2a,xtaodada",
-            "size": "47.6 kb",
-            "supported": true,
-            "des-short": "关键词自动回复插件。",
-            "des": "命令: keyword, keydata, replyset, funcset。"
-        },
-        {
-            "name": "transfer",
-            "version": "1.021",
-            "section": "daily",
-            "maintainer": "c3b2a",
-            "size": "2.7 kb",
-            "supported": true,
-            "des-short": "上传和下载文件。",
-            "des": "命令: transfer"
-        },
-        {
-            "name": "xjj",
-            "version": "1.021",
-            "section": "daily",
-            "maintainer": "Moriarty-989",
-            "size": "1.4 kb",
-            "supported": true,
-            "des-short": "随机小姐姐写真。",
-            "des": "命令: xjj"
-        },
-        {
-            "name": "zpr",
-            "version": "1.011",
-            "section": "daily",
-            "maintainer": "Moriarty-989",
-            "size": "1.4 kb",
-            "supported": true,
-            "des-short": "随机小姐姐或纸片人写真。",
-            "des": "命令: xjj"
-        },
-        {
-            "name": "forcesend",
-            "version": "1.011",
-            "section": "chat",
-            "maintainer": "fruitymelon",
-            "size": "1.3 kb",
-            "supported": true,
-            "des-short": "无需进群，向频道附属群内发送消息",
-            "des": "命令：forcesend"
-        },
-        {
-            "name": "ghs",
-            "version": "1.011",
-            "section": "chat",
-            "maintainer": "akun",
-            "size": "1.3 kb",
-            "supported": true,
-            "des-short": "发送ghs获取一张色图",
-            "des": "命令：ghs"
-        },
-        {
-            "name": "bc",
-            "version": "1.3",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "4.14 kb",
-            "supported": true,
-            "des-short": "查询含虚拟货币在内的货币价格",
-            "des": "命令：bc 数量 货币1 货币2"
-        },
-        {
-            "name": "diy",
-            "version": "1.012",
-            "section": "chat",
-            "maintainer": "ahhhiiii,xtaodada",
-            "size": "2.9 kb",
-            "supported": true,
-            "des-short": "api 聚合",
-            "des": "命令：diy ['sao', 'qh', 'zn', 'tg', 'ba', 'gs']"
-        },
-        {
-            "name": "bingwall",
-            "version": "1.011",
-            "section": "chat",
-            "maintainer": "ahhhiiii",
-            "size": "1.9 kb",
-            "supported": true,
-            "des-short": "获取Bing每日壁纸",
-            "des": "命令：bing"
-        },
-        {
-            "name": "pl",
-            "version": "1.032",
-            "section": "chat",
-            "maintainer": "lowking",
-            "size": "4.0 kb",
-            "supported": true,
-            "des-short": "查询食物嘌呤含量",
-            "des": "命令：pl"
-        },
-        {
-            "name": "rape",
-            "version": "1.034",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "4.0 kb",
-            "supported": true,
-            "des-short": "只踢出不ban群成员",
-            "des": "命令：(在群内回复该人)-rape 或 -rape <telegramID> "
-        },
-        {
-            "name": "fuck",
-            "version": "1.024",
-            "section": "chat",
-            "maintainer": "Pentacene",
-            "size": "4.0 kb",
-            "supported": true,
-            "des-short": "踢出并ban群成员",
-            "des": "命令：(在群内回复该人)-fuck 或 -fuck <telegramID> "
-        },
-        {
-            "name": "groupword",
-            "version": "1.1",
-            "section": "chat",
-            "maintainer": "xtaodada, matsuri_nya",
-            "size": "4.5 kb",
-            "supported": true,
-            "des-short": "将聊天内容生成为词云",
-            "des": "拉取最新 500 条消息生成词云，回复图片可自定义背景图。（图片白色区域为不显示部分）\n\n命令：-groupword"
-        },
-        {
-            "name": "kongge",
-            "version": "1.041",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "4.0 kb",
-            "supported": false,
-            "des-short": "打字带空格",
-            "des": "需要 pypi 前置 jieba 。"
-        },
-        {
-            "name": "getstickers",
-            "version": "1.112",
-            "section": "chat",
-            "maintainer": "xtaodada,Vesugierii",
-            "size": "5.4 kb",
-            "supported": true,
-            "des-short": "贴纸包批量导出",
-            "des": "可选 pypi 前置 lottie[gif] 。"
-        },
-        {
-            "name": "fucksticker",
-            "version": "1.01",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "1.14 kb",
-            "supported": true,
-            "des-short": "删除烦人的贴纸",
-            "des": "删除最近 50 条消息中的 sticker 。"
-        },
-        {
-            "name": "pic2sticker",
-            "version": "1.011",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "4.7 kb",
-            "supported": true,
-            "des-short": "图片转贴纸",
-            "des": "把别人发的图片转换成贴纸（只支持静态）。命令：pic2sticker 。"
-        },
-        {
-            "name": "listusernames",
-            "version": "1.01",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "0.7 kb",
-            "supported": true,
-            "des-short": "列出所有属于自己的公开群组/频道。",
-            "des": "列出所有属于自己的公开群组/频道。命令：listusernames 。"
-        },
-        {
-            "name": "fuckadmin",
-            "version": "1.111",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "2.9 kb",
-            "supported": true,
-            "des-short": "列出群组中所有潜水超过 n 天的管理员。",
-            "des": "列出群组中所有潜水超过 n 天的管理员。（n>=7）。命令：fuckadmin 。"
-        },
-        {
-            "name": "bin",
-            "version": "1.021",
-            "section": "daily",
-            "maintainer": "paulkm",
-            "size": "1.8 kb",
-            "supported": true,
-            "des-short": "查询信用卡bin信息。",
-            "des": "使用binlist api查询，1分钟限额10次否则报错。使用方法：-bin xxx （xxx为信用卡卡号前4-8位，推荐6位）"
-        },
-        {
-            "name": "fuckmember",
-            "version": "1.034",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "3.0 kb",
-            "supported": true,
-            "des-short": "查找/清理群组中所有潜水超过一定天数的成员。",
-            "des": "查找/清理群组中所有潜水超过 n 天的成员。（n>=7）。命令：fuckmember 。"
-        },
-        {
-            "name": "unbanby",
-            "version": "1.011",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "2.8 kb",
-            "supported": true,
-            "des-short": "查询/解除群组中被所回复用户所封禁的用户。",
-            "des": "查询/解除群组中被所回复用户所封禁的用户。命令：unbanby 。"
-        },
-        {
-            "name": "forcesubscribe",
-            "version": "1.061",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "4.2 kb",
-            "supported": true,
-            "des-short": "自动删除未关注指定公开频道的用户的发言。",
-            "des": "自动删除未关注指定公开频道的用户的发言。命令：forcesub 。"
-        },
-        {
-            "name": "forcegroup",
-            "version": "1.021",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "3.6 kb",
-            "supported": true,
-            "des-short": "强制加入频道讨论群。",
-            "des": "自动删除未加入频道讨论群用户的发言。命令：forcegroup 。"
-        },
-        {
-            "name": "repeat",
-            "version": "1.01",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "1.8 kb",
-            "supported": true,
-            "des-short": "自动复读（无引用）一个人的消息。",
-            "des": "自动复读（无引用）一个人的消息。命令：repeat 。"
-        },
-        {
-            "name": "kickanddm",
-            "version": "1.01",
-            "section": "chat",
-            "maintainer": "lowking",
-            "size": "5.6 kb",
-            "supported": true,
-            "des-short": "删除某人的消息并踢出/禁言",
-            "des": "回复你要删除消息和踢的人或者要禁言的人\n指令：\n-kickanddm 直接删除消息并踢人\n-kickanddm 100 禁言100秒（tg不支持60秒以下的时间，少于60变成永久）并删除最近999条消息\n⚠️kickanddm 后面带时间的只是禁言，不带时间的直接踢。"
-        },
-        {
-            "name": "fuckmessage",
-            "version": "1.011",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "1.3 kb",
-            "supported": true,
-            "des-short": "删除烦人的消息",
-            "des": "删除最近 200 条消息中包含指定关键字的消息。"
-        },
-        {
-            "name": "yyr",
-            "version": "1.011",
-            "section": "chat",
-            "maintainer": "xtaodada、kld",
-            "size": "0.9 kb",
-            "supported": true,
-            "des-short": "抽象话转换",
-            "des": "把普通的话转换成抽象话"
-        },
-        {
-            "name": "chatbot",
-            "version": "1.01",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "1.2 kb",
-            "supported": true,
-            "des-short": "智能聊天机器人。（支持回复）",
-            "des": "使用自然语言处理 (NLP) 来帮助用户通过文本进行交互。（支持回复）。\n指令：-chatbot"
-        },
-        {
-            "name": "square",
-            "version": "1.01",
-            "section": "chat",
-            "maintainer": "Vesugierii",
-            "size": "1.2 kb",
-            "supported": true,
-            "des-short": "生成文本矩形",
-            "des": "指令：-square"
-        },
-        {
-            "name": "groupindex",
-            "version": "1.122",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "3.2 kb",
-            "supported": true,
-            "des-short": "获取群组当日活跃数据",
-            "des": "获取群组当日活跃数据。\n指令：-groupindex"
-        },
-        {
-            "name": "yvlu",
-            "version": "1.22",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "10.4 kb",
-            "supported": true,
-            "des-short": "将回复的消息转换成语录图片",
-            "des": "将回复的消息或者输入字符串转换成语录图片。\n指令：-yvlu -yvlu_"
-        },
-        {
-            "name": "antichannelmsg",
-            "version": "1.02",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "4.8 kb",
-            "supported": true,
-            "des-short": "自动删除频道消息并且封禁频道",
-            "des": "自动删除频道消息并且封禁频道。\n指令：-antichannelmsg"
-        },
-        {
-            "name": "antichannelpin",
-            "version": "1.01",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "2.8 kb",
-            "supported": true,
-            "des-short": "自动取消关联频道消息置顶",
-            "des": "自动取消关联频道消息置顶。\n指令：-antichannelpin"
-        },
-        {
-            "name": "shift",
-            "version": "1.031",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "5.3 kb",
-            "supported": true,
-            "des-short": "自动转发/备份频道消息",
-            "des": "自动转发频道新消息或者从零开始备份频道。\n指令：-shift\n查看帮助：-help shift"
-        },
-        {
-            "name": "getstickerset",
-            "version": "1.011",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "4.4 kb",
-            "supported": true,
-            "des-short": "获取所回复贴纸的贴纸包信息",
-            "des": "获取所回复贴纸的贴纸包信息。\n指令：-getstickerset"
+            "des_short": "自动更新 last_name 为时间等。",
+            "des": "每 30 秒自动更新 last_name 为时间等小玩意。"
         },
         {
             "name": "autodel",
-            "version": "1.01",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "5.7 kb",
+            "size": "4.065 kb",
             "supported": true,
-            "des-short": "在指定的时间后删除他人的消息。",
-            "des": "在指定的时间后删除所回复用户发送的消息。\n指令：-autodel"
+            "des_short": "autodel 定时删除消息",
+            "des": "autodel 定时删除消息"
         },
         {
-            "name": "antisticker",
-            "version": "1.021",
+            "name": "base64",
+            "version": "1.03",
             "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "0.7 kb",
+            "maintainer": "zhxycn,xtaodada",
+            "size": "0.967 kb",
             "supported": true,
-            "des-short": "在贴纸被回复时自动删除贴纸防止被偷取",
-            "des": "在贴纸被回复时自动删除贴纸防止被偷取。\n网速争霸 不保证成功率"
+            "des_short": "Base64编码/解码。",
+            "des": "Base64编码/解码。\n命令：,b64e ,b64d"
         },
         {
-            "name": "yinglish",
-            "version": "1.001",
+            "name": "bin",
+            "version": "1.062",
+            "section": "daily",
+            "maintainer": "paulkm",
+            "size": "1.688 kb",
+            "supported": true,
+            "des_short": "查询信用卡bin信息。",
+            "des": "使用binlist api查询，1分钟限额10次否则报错。使用方法：,bin xxx （xxx为信用卡卡号前4-8位，推荐6位）"
+        },
+        {
+            "name": "bingwall",
+            "version": "1.04",
             "section": "chat",
-            "maintainer": "YU",
-            "size": "1.7 kb",
+            "maintainer": "xtaodada、ahhhiiii",
+            "size": "2.151 kb",
             "supported": true,
-            "des-short": "能把中文翻译成淫语的翻译机",
-            "des": "能把中文自动翻译成淫语的翻译机\n 需要 pypi 前置 jieba \n 灵感来自于https://github.com/RimoChan/yinglish \n指令：-yinglish"
+            "des_short": "获取 Bing 每日壁纸。",
+            "des": "获取 Bing 每日壁纸。\n指令：,bingwall"
         },
         {
-            "name": "findmessage",
-            "version": "1.001",
+            "name": "calculator",
+            "version": "1.13",
             "section": "chat",
-            "maintainer": "vesugier",
-            "size": "1.44 kb",
+            "maintainer": "Pentacene,zhxycn",
+            "size": "1.384 kb",
             "supported": true,
-            "des-short": "搜索消息插件",
-            "des": "查找最近50条消息中包含指定关键字的消息，并推送相应链接人名及信息至Log频道。\n指令：-findmessage"
-        },
-        {
-            "name": "epic",
-            "version": "1.011",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "5.80 kb",
-            "supported": true,
-            "des-short": "获取 Epic 喜加一信息",
-            "des": "获取 Epic 喜加一信息。\n指令：-epic"
-        },
-        {
-            "name": "covid-en",
-            "version": "1.01",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "1.70 kb",
-            "supported": true,
-            "des-short": "获取新冠疫情信息。（国家版）",
-            "des": "获取新冠疫情信息。（国家版）。\n指令：-covid-en"
-        },
-        {
-            "name": "covid",
-            "version": "1.012",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "3.90 kb",
-            "supported": true,
-            "des-short": "获取新冠疫情信息。（国内版）",
-            "des": "获取新冠疫情信息。（国内版）。\n指令：-covid"
-        },
-        {
-            "name": "moyu",
-            "version": "1.021",
-            "section": "daily",
-            "maintainer": "sam01101",
-            "size": "3.00 kb",
-            "supported": true,
-            "des-short": "获取假期剩余时间信息。",
-            "des": "获取假期剩余时间信息。\n指令：-moyu"
+            "des_short": "小型计算器",
+            "des": "支持基本运算（加减乘除乘方开方）及进制转换。\n命令：,cal [表达式] ,con [进制] [数字]\n例如：`,cal 1+2` `,con 16 10`"
         },
         {
             "name": "crazy4",
             "version": "1.01",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "17.10 kb",
+            "size": "71.995 kb",
             "supported": true,
-            "des-short": "天天疯狂！",
-            "des": "随机输出KFC疯狂星期四文案。\n指令：-crazy4"
+            "des_short": "crazy4 天天疯狂！随机输出KFC疯狂星期四文案",
+            "des": "crazy4 天天疯狂！随机输出KFC疯狂星期四文案"
         },
         {
-            "name": "dme",
-            "version": "1.21",
+            "name": "da",
+            "version": "1.03",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "0.4 kb",
+            "size": "1.435 kb",
             "supported": true,
-            "des-short": "删除当前对话您发送的特定数量的消息。",
-            "des": "删除当前对话您发送的特定数量的消息。\n指令：-dme"
+            "des_short": "da 删除群内所有消息（非群组管理员只删除自己的消息）",
+            "des": "da 删除群内所有消息（非群组管理员只删除自己的消息）"
         },
         {
             "name": "dc",
-            "version": "1.0",
+            "version": "1.025",
             "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "3.0 kb",
+            "maintainer": "xiluo",
+            "size": "2.757 kb",
             "supported": true,
-            "des-short": "查询特定用户的 DC。",
-            "des": "查询特定用户的 DC。\n指令：-dc"
-        },
-        {
-            "name": "autocaption",
-            "version": "1.01",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "2.83 kb",
-            "supported": true,
-            "des-short": "自动获取所发送文件的信息。",
-            "des": "自动获取所发送文件的信息。"
-        },
-        {
-            "name": "silly_girl",
-            "version": "1.042",
-            "section": "chat",
-            "maintainer": "cdle",
-            "size": "3 kb",
-            "supported": true,
-            "des-short": "傻妞机器人对接。",
-            "des": "把自己变成行走的傻妞。"
-        },
-        {
-            "name": "autobackup",
-            "version": "1.00",
-            "section": "daily",
-            "maintainer": "xtaodada",
-            "size": "1.4 kb",
-            "supported": true,
-            "des-short": "凌晨自动备份。",
-            "des": "凌晨自动备份数据文件。"
+            "des_short": "列出本群dc分布/查看某个人所在的dc服务器",
+            "des": "列出本群dc分布/查看某个人所在的dc服务器(指令: ,dc)"
         },
         {
             "name": "dictionary",
-            "version": "1.00",
+            "version": "1.02",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "2.4 kb",
+            "size": "1.172 kb",
             "supported": true,
-            "des-short": "查询英语单词/俚语的意思。",
-            "des": "查询英语单词/俚语的意思。\n指令：-dictionary -urbandictionary"
+            "des_short": "dictionary 查询英语单词的意思",
+            "des": "dictionary 查询英语单词的意思"
         },
         {
-            "name": "base64",
-            "version": "1.00",
-            "section": "chat",
-            "maintainer": "zhxycn,xtaodada",
-            "size": "1.4 kb",
-            "supported": true,
-            "des-short": "Base64编码/解码。",
-            "des": "Base64编码/解码。\n指令：-b64e -b64d"
-        },
-        {
-            "name": "autobyetg",
+            "name": "diss",
             "version": "1.01",
-            "section": "chat",
-            "maintainer": "xtaodada",
-            "size": "1.6 kb",
-            "supported": true,
-            "des-short": "⚠️安装后 30 秒自动删号。",
-            "des": "⚠️安装后 30 秒自动删号。"
-        },
-        {
-            "name": "news",
-            "version": "1.0",
             "section": "daily",
             "maintainer": "xtaodada",
-            "size": "1.3 kb",
+            "size": "0.618 kb",
             "supported": true,
-            "des-short": "每日新闻、历史上的今天、天天成语、慧语香风、诗歌天地",
-            "des": "每日新闻、历史上的今天、天天成语、慧语香风、诗歌天地。\n指令：-news"
+            "des_short": "儒雅随和版祖安语录。",
+            "des": "儒雅随和版祖安语录。"
+        },
+        {
+            "name": "dme",
+            "version": "1.251",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "0.679 kb",
+            "supported": true,
+            "des_short": "删除当前对话您发送的特定数量的消息。",
+            "des": "删除当前对话您发送的特定数量的消息。\n指令：,dme"
         },
         {
             "name": "everyday_en",
-            "version": "1.0",
-            "section": "daily",
+            "version": "1.02",
+            "section": "chat",
             "maintainer": "xtaodada",
-            "size": "1.0 kb",
+            "size": "4.503 kb",
             "supported": true,
-            "des-short": "每日一句英文句子",
-            "des": "每日一句英文句子。\n指令：-everyday_en"
+            "des_short": "每日英语",
+            "des": "支持群订阅"
         },
         {
-            "name": "bili_item_upload",
-            "version": "1.0",
+            "name": "everyday_greet",
+            "version": "1.02",
             "section": "chat",
-            "maintainer": "CaroyalKnight",
-            "size": "11.2 kb",
+            "maintainer": "xtaodada",
+            "size": "3.622 kb",
             "supported": true,
-            "des-short": "上传B站动态到TG",
-            "des": "上传B站动态到TG。\n指令：-bup"
+            "des_short": "每日问候。",
+            "des": "每日问候。\n指令：,everyday_greet"
+        },
+        {
+            "name": "listusernames",
+            "version": "1.01",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "0.727 kb",
+            "supported": true,
+            "des_short": "列出所有属于自己的公开群组/频道。",
+            "des": "列出所有属于自己的公开群组/频道。命令：,listusernames"
+        },
+        {
+            "name": "moyu",
+            "version": "1.051",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "3.076 kb",
+            "supported": true,
+            "des_short": "摸鱼日历",
+            "des": "支持群订阅"
+        },
+        {
+            "name": "news",
+            "version": "1.03",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "1.368 kb",
+            "supported": true,
+            "des_short": "每日新闻、历史上的今天、天天成语、慧语香风、诗歌天地",
+            "des": "每日新闻、历史上的今天、天天成语、慧语香风、诗歌天地。\n指令：,news"
+        },
+        {
+            "name": "paolu",
+            "version": "1.02",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "0.954 kb",
+            "supported": true,
+            "des_short": "paolu ⚠一键跑路 删除群内消息并禁言⚠",
+            "des": "paolu ⚠一键跑路 删除群内消息并禁言⚠"
+        },
+        {
+            "name": "print_official_notifications",
+            "version": "1.01",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "0.386 kb",
+            "supported": true,
+            "des_short": "print_official_notifications 将收到的官方私聊打印到控制台",
+            "des": "print_official_notifications 将收到的官方私聊打印到控制台"
+        },
+        {
+            "name": "repeat",
+            "version": "1.01",
+            "section": "chat",
+            "maintainer": "zhxy-CN",
+            "size": "2.197 kb",
+            "supported": true,
+            "des_short": "plugin: repeat",
+            "des": "repeat 自动复读（无引用）一个人的消息"
+        },
+        {
+            "name": "resou",
+            "version": "1.242",
+            "section": "daily",
+            "maintainer": "KorenKrita、xtaodada、monsterxcn",
+            "size": "2.771 kb",
+            "supported": true,
+            "des_short": "微博，知乎，抖音实时热搜。",
+            "des": "命令：resou\n\n- resou zhihu\n- resou wb\n- resou dy\n- resou baidu\n- resou b\n- resou tt"
+        },
+        {
+            "name": "tel",
+            "version": "1.131",
+            "section": "daily",
+            "maintainer": "KorenKrita、xtaodada",
+            "size": "1.064 kb",
+            "supported": true,
+            "des_short": "查询手机号码归属地等信息",
+            "des": "查询电话号码归属地，号码段，卡类型，运营商及通信标准。命令：tel。"
+        },
+        {
+            "name": "weather",
+            "version": "1.153",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "3.106 kb",
+            "supported": true,
+            "des_short": "查询天气。",
+            "des": "这个人很懒，什么都没有留下。"
+        },
+        {
+            "name": "whois",
+            "version": "1.161",
+            "section": "daily",
+            "maintainer": "xtaodada",
+            "size": "1.007 kb",
+            "supported": true,
+            "des_short": "查询域名whois信息",
+            "des": "查看域名是否已被注册、注册日期、过期日期、域名状态、DNS解析服务器等。"
+        },
+        {
+            "name": "xjj",
+            "version": "1.03",
+            "section": "chat",
+            "maintainer": "zero",
+            "size": "1.185 kb",
+            "supported": true,
+            "des_short": "xjj 生成小姐姐视频",
+            "des": "# 生成小姐姐视频\n\n```\n,xjj\n```"
+        },
+        {
+            "name": "ytdl",
+            "version": "1.07",
+            "section": "chat",
+            "maintainer": "xtaodada",
+            "size": "4.079 kb",
+            "supported": true,
+            "des_short": "ytdl Upload Youtube、Bilibili video to telegram",
+            "des": "ytdl Upload Youtube、Bilibili video to telegram"
         }
     ]
 }
