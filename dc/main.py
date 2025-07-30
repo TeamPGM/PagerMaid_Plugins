@@ -60,6 +60,7 @@ async def dc(context):
                 await context.edit(f"{lang('error_prefix')}{lang('profile_e_long')}")
                 return
             raise exception
-    if not target_user.user.photo:
-        return await context.edit("[dc] 需要先设置头像并且对我可见。")
-    await context.edit(f"[dc] 所在数据中心为: **DC{target_user.user.photo.dc_id}**")
+    user_info = target_user.users[0]
+    if not user_info.photo:
+        return await context.edit("[dc] 目标用户需要先设置头像并且对我可见。")
+    await context.edit(f"**{user_info.first_name}** 所在数据中心为: **DC{user_info.photo.dc_id}**")
