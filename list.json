@@ -251,6 +251,16 @@
             "des": "命令：resou\n\n- resou zhihu\n- resou wb\n- resou dy\n- resou baidu\n- resou b\n- resou tt"
         },
         {
+            "name": "speedtest",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "outlook84",
+            "size": "2.04 kb",
+            "supported": true,
+            "des_short": "使用 speedtest-cli 测试当前服务器的网络速度。",
+            "des": "# Speedtest\n\n使用 speedtest-cli 测试当前服务器的网络速度。"
+        },
+        {
             "name": "tel",
             "version": "1.131",
             "section": "daily",
