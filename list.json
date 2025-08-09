@@ -122,13 +122,13 @@
         },
         {
             "name": "dc",
-            "version": "1.025",
+            "version": "1.03",
             "section": "chat",
             "maintainer": "xiluo",
-            "size": "2.757 kb",
+            "size": "4.37 kb",
             "supported": true,
-            "des_short": "列出本群dc分布/查看某个人所在的dc服务器",
-            "des": "列出本群dc分布/查看某个人所在的dc服务器(指令: ,dc)"
+            "des_short": "获取指定用户或当前群组/频道的 DC 服务器",
+            "des": "获取指定用户或当前群组/频道的 DC 服务器(指令: ,dc)"
         },
         {
             "name": "dictionary",
