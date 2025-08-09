@@ -292,13 +292,13 @@
         },
         {
             "name": "ytdl",
-            "version": "1.07",
+            "version": "2.0",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "4.079 kb",
+            "size": "8.06 kb",
             "supported": true,
-            "des_short": "ytdl Upload Youtube、Bilibili video to telegram",
-            "des": "ytdl Upload Youtube、Bilibili video to telegram"
+            "des_short": "基于 `yt-dlp`，从各种网站下载视频或音频。",
+            "des": "## yt-dlp\n\n基于 `yt-dlp`，从 YouTube 等网站下载视频或音频。\n\n- `ytdl <链接/关键词>`: 下载视频\n- `ytdl m <链接/关键词>`: 下载音频"
         }
     ]
 }

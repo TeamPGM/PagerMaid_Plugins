@@ -2,115 +2,241 @@ import contextlib
 import os
 import pathlib
 import shutil
+import time
+import traceback
+import asyncio
+import httpx
 
-from concurrent.futures import ThreadPoolExecutor
-
-from pagermaid.listener import listener
-from pagermaid.utils import pip_install, lang
 from pagermaid.enums import Message
+from pagermaid.listener import listener
 from pagermaid.services import bot
+from pagermaid.utils import pip_install
+from telethon import types
+from telethon.tl.types import DocumentAttributeAudio
 
-pip_install("yt-dlp", version="==2024.8.6", alias="yt_dlp")
+pip_install("yt-dlp[default,curl-cffi]", alias="yt_dlp")
+pip_install("FastTelethonhelper")
 
 import yt_dlp
+from yt_dlp.utils import DownloadError, ExtractorError
 
+try:
+    from FastTelethonhelper import fast_upload
+except ImportError:
+    fast_upload = None
 
 ytdl_is_downloading = False
 
+# Common yt-dlp options
+base_opts = {
+    "default_search": "ytsearch",
+    "geo_bypass": True,
+    "nocheckcertificate": True,
+    "addmetadata": True,
+    "noplaylist": True,
+}
 
-def ytdl_download(url) -> dict:
-    response = {"status": True, "error": "", "filepath": []}
-    output = pathlib.Path("data/ytdl", "%(title).70s.%(ext)s").as_posix()
-    ydl_opts = {"outtmpl": output, "restrictfilenames": False, "quiet": True}
-    formats = [
-        "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio",
-        "bestvideo[vcodec^=avc]+bestaudio[acodec^=mp4a]/best[vcodec^=avc]/best",
-        None,
-    ]
-    if url.startswith("https://www.youtube.com/") or url.startswith(
-        "https://youtu.be/"
-    ):
-        formats.insert(0, "bestvideo[ext=mp4]+bestaudio[ext=m4a]")
-
-    for format_ in formats:
-        ydl_opts["format"] = format_
-        try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
-            response["status"] = True
-            response["error"] = ""
-            break
-        except Exception as e:
-            response["status"] = False
-            response["error"] = str(e)
-
-    if response["status"] is False:
-        return response
-
-    for i in os.listdir("data/ytdl"):
-        p = pathlib.Path("data/ytdl", i)
-        response["status"] = True
-        response["filepath"].append(p)
-
-    return response
-
-
-async def start_download(message: Message, url: str):
-    global ytdl_is_downloading
-    cid = message.chat_id
-    executor = ThreadPoolExecutor()
-    try:
-        result = await bot.loop.run_in_executor(executor, ytdl_download, url)
-    except Exception as e:
-        result = {"status": False, "error": str(e)}
-    if result["status"]:
-        with contextlib.suppress(Exception):
-            message: Message = await message.edit("文件上传中，请耐心等待。。。")
-        for file in result["filepath"]:
-            st_size = os.stat(file).st_size
-            if st_size > 2 * 1024 * 1024 * 1024 * 0.99:
-                result["status"] = False
-                result["error"] = "文件太大，无法发送"
-                continue
-            try:
-                await bot.send_file(
-                    cid,
-                    file,
-                )
-            except Exception:
-                try:
-                    await bot.send_file(
-                        cid,
-                        file,
-                        force_document=True,
-                    )
-                except Exception as e:
-                    result["status"] = False
-                    result["error"] = str(e)
+def ydv_opts(url: str) -> dict:
+    """Get video download options based on URL."""
+    opts = {
+        **base_opts,
+        "merge_output_format": "mp4",
+        "outtmpl": "data/ytdl/videos/%(title)s.%(ext)s",
+    }
+    if "youtube.com" in url or "youtu.be" in url:
+        opts["format"] = "bestvideo[vcodec^=vp9]+bestaudio[acodec=opus]/bestvideo[vcodec^=vp9]+bestaudio/bestvideo+bestaudio"
     else:
-        with contextlib.suppress(Exception):
-            await message.edit(f"下载/发送文件失败，发生错误：{result['error']}")
-    ytdl_is_downloading = False
-    with contextlib.suppress(Exception):
-        shutil.rmtree("data/ytdl")
-    if result["status"]:
-        await message.safe_delete()
+        opts["format"] = "bestvideo+bestaudio/best"
+    return opts
 
 
-@listener(
-    command="ytdl", description="Upload Youtube video to telegram", parameters="[url]"
-)
-async def ytdl(message: Message):
+ydm_opts = {
+    **base_opts,
+    "format": "bestaudio[vcodec=none]/best",
+    "outtmpl": "data/ytdl/audios/%(title)s.%(ext)s",
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'best',
+    }],
+}
+
+
+def _ytdl_download(url: str, message: Message, loop, opts: dict):
+    """Download media using yt-dlp."""
+    thumb_path = None
+    last_edit_time = time.time()
+
+    def progress_hook(d):
+        nonlocal last_edit_time
+        if d["status"] == "downloading":
+            if time.time() - last_edit_time > 5:
+                last_edit_time = time.time()
+                total_bytes = d.get("total_bytes") or d.get("total_bytes_estimate")
+                if total_bytes:
+                    downloaded_bytes = d.get("downloaded_bytes")
+                    percentage = downloaded_bytes / total_bytes * 100
+                    text = f"正在下载... {percentage:.1f}%"
+                    asyncio.run_coroutine_threadsafe(message.edit(text), loop)
+
+    opts_local = opts.copy()
+    opts_local["progress_hooks"] = [progress_hook]
+
+    try:
+        with yt_dlp.YoutubeDL(opts_local) as ydl:
+            info = ydl.extract_info(url, download=True)
+            entry_info = info
+            if "entries" in info and info["entries"]:
+                entry_info = info["entries"][0]
+
+            file_path = entry_info.get("filepath")
+            if not file_path or not os.path.exists(file_path):
+                # Fallback to scanning the directory
+                outtmpl = opts_local["outtmpl"]
+                if isinstance(outtmpl, dict):
+                    outtmpl = outtmpl.get("default")
+                download_dir = pathlib.Path(outtmpl).parent
+                downloaded_files = list(download_dir.glob("*.*"))
+                if not downloaded_files:
+                    raise DownloadError("Could not determine the path of the downloaded file.")
+                # Get the most recently modified file
+                file_path = max(downloaded_files, key=os.path.getmtime)
+
+            if os.stat(file_path).st_size > 2 * 1024 * 1024 * 1024 * 0.99:
+                raise DownloadError("文件太大(超过 2GB),无法发送。")
+
+            title = entry_info.get("title", "N/A")
+            duration = entry_info.get("duration")
+            width = entry_info.get("width")
+            height = entry_info.get("height")
+            thumb_url = entry_info.get("thumbnail")
+            webpage_url = entry_info.get("webpage_url")
+
+            if thumb_url:
+                thumb_path = "data/ytdl/thumb.jpg"
+                with contextlib.suppress(Exception):
+                    resp = httpx.get(thumb_url)
+                    resp.raise_for_status()
+                    with open(thumb_path, "wb") as f:
+                        f.write(resp.content)
+            return file_path, title, thumb_path, duration, width, height, webpage_url
+    except (DownloadError, ExtractorError) as e:
+        raise e
+
+
+async def ytdl_common(message: Message, file_type: str):
     global ytdl_is_downloading
-    if not message.arguments:
-        return await message.edit(lang("arg_error"))
     if ytdl_is_downloading:
         return await message.edit("有一个下载任务正在运行中，请不要重复使用命令。")
     ytdl_is_downloading = True
+
+    # Create temporary directory for download
+    download_path = pathlib.Path("data/ytdl")
     with contextlib.suppress(Exception):
-        shutil.rmtree("data/ytdl")
+        shutil.rmtree(download_path)
+    download_path.mkdir(parents=True, exist_ok=True)
+
     url = message.arguments
-    message: Message = await message.edit(
-        "文件开始后台下载，下载速度取决于你的服务器。\n请<b>不要删除此消息</b>并且耐心等待！！！"
+    if file_type == "audio":
+        opts = ydm_opts
+    else:
+        opts = ydv_opts(url)
+    message: Message = await message.edit(f"正在请求 {file_type}...")
+
+    try:
+        file_path, title, thumb_path, duration, width, height, webpage_url = await bot.loop.run_in_executor(
+            None, _ytdl_download, url, message, bot.loop, opts
+        )
+
+        caption = f"<code>{title}</code>"
+        if webpage_url:
+            caption += f"\n<a href='{webpage_url}'>Original URL</a>"
+
+        attributes = []
+        if duration:
+            if file_type == "video":
+                attributes.append(
+                    types.DocumentAttributeVideo(duration=duration, w=width or 0, h=height or 0)
+                )
+            else:
+                attributes.append(DocumentAttributeAudio(duration=duration, title=title))
+
+        if fast_upload:
+            file = await fast_upload(bot, file_path, message, os.path.basename(file_path))
+            await bot.send_file(
+                message.chat_id,
+                file,
+                thumb=thumb_path,
+                caption=caption,
+                force_document=False,
+                attributes=attributes,
+                workers=4,
+                parse_mode="html",
+            )
+            await message.delete()
+        else:
+            await message.edit(f"正在上传 {file_type}...")
+            last_edit_time = time.time()
+
+            async def progress(current, total):
+                nonlocal last_edit_time
+                if time.time() - last_edit_time > 5:
+                    last_edit_time = time.time()
+                    with contextlib.suppress(Exception):
+                        await message.edit(f"正在上传 {file_type}... {current / total:.2%}")
+
+            await bot.send_file(
+                message.chat_id,
+                file_path,
+                thumb=thumb_path,
+                caption=caption,
+                force_document=False,
+                attributes=attributes,
+                progress_callback=progress,
+                workers=4,
+                parse_mode="html",
+            )
+            await message.delete()
+    except Exception as e:
+        await message.edit(
+            "下载/发送文件失败，发生错误：\n"
+            f"<code>{traceback.format_exc()}</code>",
+            parse_mode="html",
+        )
+    finally:
+        ytdl_is_downloading = False
+        with contextlib.suppress(Exception):
+            shutil.rmtree(download_path)
+
+
+@listener(
+    command="ytdl",
+    description="从各种网站下载视频或音频。",
+    parameters="[m] <链接/关键词>",
+)
+async def ytdl(message: Message):
+    """
+    Downloads videos or audio from various sites.
+    - `ytdl <url/keyword>`: download video
+    - `ytdl m <url/keyword>`: download audio
+    """
+    help_text = (
+        "**Youtube-dl**\n\n"
+        "使用方法: `ytdl [m] <链接/关键词>`\n\n"
+        " - `ytdl <链接/关键词>`: 下载视频 (默认)\n"
+        " - `ytdl m <链接/关键词>`: 下载音频"
     )
-    bot.loop.create_task(start_download(message, url))
+    if not message.arguments:
+        return await message.edit(help_text, parse_mode="markdown")
+
+    parts = message.arguments.split(" ", 1)
+    is_audio = parts[0] == "m"
+
+    if is_audio:
+        if len(parts) < 2 or not parts[1].strip():
+            return await message.edit(help_text, parse_mode="markdown")
+        message.arguments = parts[1]
+        file_type = "audio"
+    else:
+        file_type = "video"
+
+    await ytdl_common(message, file_type)
