@@ -330,5 +330,16 @@
             "des_short": "高级备份恢复管理插件",
             "des": "## bf - 高级备份恢复管理插件\n\n安全的备份与恢复系统，支持多种备份模式和智能恢复功能。\n\n### 🔧 备份功能\n- `bf`: 标准备份（data + plugins，排除敏感session文件）\n- `bf all`: 完整程序备份（包含所有程序文件）\n- `bf all slim`: 瘦身完整备份（跳过大文件，上传更快）\n- `bf p`: Python插件备份（仅.py文件，便于分享）\n\n### 🔄 恢复功能\n- `hf`: 安全恢复备份（带确认机制和安全检查）\n- `hf confirm`: 确认执行恢复操作\n\n### ⚙️ 配置管理\n- `bf set <聊天ID>`: 设置备份目标聊天\n- `bf del <聊天ID|all>`: 删除备份目标\n- `bf cron <表达式>`: 设置定时自动备份\n- `bf cron off`: 关闭定时备份\n- `bf cron status`: 查看定时状态\n\n### 🛡️ 安全特性\n- 路径穿越攻击防护\n- 持久化确认机制\n- Session文件单独处理\n- 多目标上传优化\n- 安全的临时文件处理\n\n### 📝 使用示例\n```\nbf                    # 创建标准备份\nbf all               # 创建完整备份\nbf p                 # 备份Python插件\nbf set 123456789     # 设置备份目标\nbf cron 0 2 * * *    # 每天凌晨2点自动备份\nhf                   # 恢复最新备份\n```"
         }
+        {
+            "name": "shift",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "EAlyce",
+            "size": "95.40 kb",
+            "supported": true,
+            "des_short": "智能消息转发与备份插件",
+            "des": "## shift - 智能消息转发与备份插件\n\n高效管理消息转发规则，支持自动转发、关键词过滤、多级转发和历史备份。\n\n### 🔧 核心功能\n- `shift set <源> <目标> [选项...]`: 设置自动转发规则\n- `shift del <序号>`: 删除转发规则\n- `shift list`: 查看转发规则列表\n- `shift pause <序号>` / `shift resume <序号>`: 暂停/恢复转发规则\n- `shift backup <源> <目标> [选项...]`: 备份历史消息\n- `shift filter <序号> add|del|list [关键词...]`: 管理关键词过滤\n- `shift stats`: 查看转发统计\n\n### 🎯 支持的目标类型\n- 频道/群组：`@username` 或 `-100...ID`\n- 用户：`@username` 或 `user_id`\n- 当前会话：`me` 或 `here`\n\n### 📝 消息类型选项\n- `silent` 静音转发\n- `text` 文本\n- `photo` 图片\n- `document` 文档\n- `video` 视频\n- `sticker` 贴纸\n- `animation` 动图\n- `voice` 语音\n- `audio` 音频\n- `all` 全部类型\n\n### 🛡 高级特性\n- 循环检测：防止直接或间接循环转发\n- 多级转发：自动执行链式转发\n- 关键词过滤：按需屏蔽消息\n- 权限检测：自动移除失效规则\n- FloodWait 自动等待与重试\n\n### 📝 使用示例\n```\nshift set @channel1 @channel2 silent photo\nshift pause 1\nshift filter 1 add spam 广告\nshift backup here @backup_channel all\nshift stats\n```"
+        }
+
     ]
 }
