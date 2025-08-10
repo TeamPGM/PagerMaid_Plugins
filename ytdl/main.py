@@ -7,12 +7,13 @@ import traceback
 import asyncio
 import httpx
 
-from pagermaid.enums import Message
+from telethon import types
+from telethon.tl.types import DocumentAttributeAudio
+
+from pagermaid.enums import Message, AsyncClient
 from pagermaid.listener import listener
 from pagermaid.services import bot
 from pagermaid.utils import pip_install
-from telethon import types
-from telethon.tl.types import DocumentAttributeAudio
 
 pip_install("yt-dlp[default,curl-cffi]", alias="yt_dlp")
 pip_install("FastTelethonhelper")
@@ -36,6 +37,7 @@ base_opts = {
     "noplaylist": True,
 }
 
+
 def ydv_opts(url: str) -> dict:
     """Get video download options based on URL."""
     opts = {
@@ -44,7 +46,9 @@ def ydv_opts(url: str) -> dict:
         "outtmpl": "data/ytdl/videos/%(title)s.%(ext)s",
     }
     if "youtube.com" in url or "youtu.be" in url:
-        opts["format"] = "bestvideo[vcodec^=vp9]+bestaudio[acodec=opus]/bestvideo[vcodec^=vp9]+bestaudio/bestvideo+bestaudio"
+        opts["format"] = (
+            "bestvideo[vcodec^=vp9]+bestaudio[acodec=opus]/bestvideo[vcodec^=vp9]+bestaudio/bestvideo+bestaudio"
+        )
     else:
         opts["format"] = "bestvideo+bestaudio/best"
     return opts
@@ -54,10 +58,12 @@ ydm_opts = {
     **base_opts,
     "format": "bestaudio[vcodec=none]/best",
     "outtmpl": "data/ytdl/audios/%(title)s.%(ext)s",
-    'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'best',
-    }],
+    "postprocessors": [
+        {
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "best",
+        }
+    ],
 }
 
 
@@ -69,7 +75,7 @@ def _ytdl_download(url: str, message: Message, loop, opts: dict):
     def progress_hook(d):
         nonlocal last_edit_time
         if d["status"] == "downloading":
-            if time.time() - last_edit_time > 5:
+            if time.time() - last_edit_time > 10:
                 last_edit_time = time.time()
                 total_bytes = d.get("total_bytes") or d.get("total_bytes_estimate")
                 if total_bytes:
@@ -97,7 +103,9 @@ def _ytdl_download(url: str, message: Message, loop, opts: dict):
                 download_dir = pathlib.Path(outtmpl).parent
                 downloaded_files = list(download_dir.glob("*.*"))
                 if not downloaded_files:
-                    raise DownloadError("Could not determine the path of the downloaded file.")
+                    raise DownloadError(
+                        "Could not determine the path of the downloaded file."
+                    )
                 # Get the most recently modified file
                 file_path = max(downloaded_files, key=os.path.getmtime)
 
@@ -126,7 +134,7 @@ def _ytdl_download(url: str, message: Message, loop, opts: dict):
 async def ytdl_common(message: Message, file_type: str):
     if not shutil.which("ffmpeg"):
         return await message.edit(
-            "本插件需要 `ffmpeg` 才能正常工作，请先安装 `ffmpeg`。"
+            "本插件需要 `ffmpeg` 才能正常工作，请先安装 `ffmpeg`。", parse_mode="md",
         )
     global ytdl_is_downloading
     if ytdl_is_downloading:
@@ -147,7 +155,15 @@ async def ytdl_common(message: Message, file_type: str):
     message: Message = await message.edit(f"正在请求 {file_type}...")
 
     try:
-        file_path, title, thumb_path, duration, width, height, webpage_url = await bot.loop.run_in_executor(
+        (
+            file_path,
+            title,
+            thumb_path,
+            duration,
+            width,
+            height,
+            webpage_url,
+        ) = await bot.loop.run_in_executor(
             None, _ytdl_download, url, message, bot.loop, opts
         )
 
@@ -159,13 +175,19 @@ async def ytdl_common(message: Message, file_type: str):
         if duration:
             if file_type == "video":
                 attributes.append(
-                    types.DocumentAttributeVideo(duration=duration, w=width or 0, h=height or 0)
+                    types.DocumentAttributeVideo(
+                        duration=duration, w=width or 0, h=height or 0
+                    )
                 )
             else:
-                attributes.append(DocumentAttributeAudio(duration=duration, title=title))
+                attributes.append(
+                    DocumentAttributeAudio(duration=duration, title=title)
+                )
 
         if fast_upload:
-            file = await fast_upload(bot, file_path, message, os.path.basename(file_path))
+            file = await fast_upload(
+                bot, file_path, message, os.path.basename(file_path)
+            )
             await bot.send_file(
                 message.chat_id,
                 file,
@@ -183,10 +205,12 @@ async def ytdl_common(message: Message, file_type: str):
 
             async def progress(current, total):
                 nonlocal last_edit_time
-                if time.time() - last_edit_time > 5:
+                if time.time() - last_edit_time > 10:
                     last_edit_time = time.time()
                     with contextlib.suppress(Exception):
-                        await message.edit(f"正在上传 {file_type}... {current / total:.2%}")
+                        await message.edit(
+                            f"正在上传 {file_type}... {current / total:.2%}"
+                        )
 
             await bot.send_file(
                 message.chat_id,
@@ -202,8 +226,7 @@ async def ytdl_common(message: Message, file_type: str):
             await message.delete()
     except Exception as e:
         await message.edit(
-            "下载/发送文件失败，发生错误：\n"
-            f"<code>{traceback.format_exc()}</code>",
+            f"下载/发送文件失败，发生错误：\n<code>{traceback.format_exc()}</code>",
             parse_mode="html",
         )
     finally:
@@ -217,7 +240,7 @@ async def ytdl_common(message: Message, file_type: str):
     description="从各种网站下载视频或音频。",
     parameters="[m] <链接/关键词> | update (更新 yt-dlp)",
 )
-async def ytdl(message: Message):
+async def ytdl(message: Message, client: AsyncClient):
     """
     Downloads videos or audio from various sites.
     - `ytdl <url/keyword>`: download video
@@ -225,21 +248,7 @@ async def ytdl(message: Message):
     - `ytdl update`: update yt-dlp
     """
     if message.arguments == "update":
-        await message.edit("正在更新 yt-dlp...")
-        process = await asyncio.create_subprocess_shell(
-            "pip install -U 'yt-dlp[default,curl-cffi]'",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.STDOUT,
-        )
-        stdout, _ = await process.communicate()
-        output = stdout.decode("utf-8", "ignore")
-        if process.returncode == 0:
-            if "Successfully installed yt-dlp" in output:
-                await message.edit("yt-dlp 更新成功。")
-            else:
-                await message.edit("yt-dlp 已是最新版。")
-        else:
-            await message.edit(f"yt-dlp 更新失败：\n" f"<code>{output}</code>")
+        await ytdl_update(message, client)
         return
     help_text = (
         "**Youtube-dl**\n\n"
@@ -263,3 +272,17 @@ async def ytdl(message: Message):
         file_type = "video"
 
     await ytdl_common(message, file_type)
+
+
+async def ytdl_update(message: Message, client: AsyncClient):
+    """强制更新 yt-dlp 到最新版本。"""
+    await message.edit("正在更新 yt-dlp...")
+    try:
+        req = await client.get("https://pypi.org/pypi/yt-dlp/json")
+        data = req.json()
+        latest_version = data["info"]["version"]
+    except Exception:
+        await message.edit("获取最新版本信息失败，请稍后再试。")
+        return
+    pip_install("yt-dlp[default,curl-cffi]", version=f">={latest_version}", alias="a")
+    await message.edit(f"yt-dlp 已更新到最新版本：{latest_version}。")
