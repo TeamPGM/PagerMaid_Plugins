@@ -181,6 +181,16 @@
             "des": "每日问候。\n指令：,everyday_greet"
         },
         {
+            "name": "ip",
+            "version": "1.0",
+            "section": "daily",
+            "maintainer": "outlook84",
+            "size": "1.82 kb",
+            "supported": true,
+            "des_short": "查询 IP 地址信息。",
+            "des": "### IP 查询\n\n使用 ip2location.io 提供的 API 查询 IP 地址信息。\n\n**使用方法:** `.ip <ip>`"
+        },
+        {
             "name": "listusernames",
             "version": "1.01",
             "section": "daily",
