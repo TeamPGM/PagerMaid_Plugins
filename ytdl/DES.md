@@ -4,3 +4,4 @@
 
 - `ytdl <链接/关键词>`: 下载视频
 - `ytdl m <链接/关键词>`: 下载音频
+- `ytdl update`: 更新 yt-dlp

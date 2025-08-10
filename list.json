@@ -302,13 +302,13 @@
         },
         {
             "name": "ytdl",
-            "version": "2.0",
+            "version": "2.1",
             "section": "chat",
             "maintainer": "xtaodada",
-            "size": "8.06 kb",
+            "size": "9.06 kb",
             "supported": true,
             "des_short": "基于 `yt-dlp`，从各种网站下载视频或音频。",
-            "des": "## yt-dlp\n\n基于 `yt-dlp`，从 YouTube 等网站下载视频或音频。\n\n- `ytdl <链接/关键词>`: 下载视频\n- `ytdl m <链接/关键词>`: 下载音频"
+            "des": "## yt-dlp\n\n基于 `yt-dlp`，从 YouTube 等网站下载视频或音频。\n\n- `ytdl <链接/关键词>`: 下载视频\n- `ytdl m <链接/关键词>`: 下载音频\n- `ytdl update`: 更新 yt-dlp"
         }
     ]
 }

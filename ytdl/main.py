@@ -124,6 +124,10 @@ def _ytdl_download(url: str, message: Message, loop, opts: dict):
 
 
 async def ytdl_common(message: Message, file_type: str):
+    if not shutil.which("ffmpeg"):
+        return await message.edit(
+            "本插件需要 `ffmpeg` 才能正常工作，请先安装 `ffmpeg`。"
+        )
     global ytdl_is_downloading
     if ytdl_is_downloading:
         return await message.edit("有一个下载任务正在运行中，请不要重复使用命令。")
@@ -211,19 +215,38 @@ async def ytdl_common(message: Message, file_type: str):
 @listener(
     command="ytdl",
     description="从各种网站下载视频或音频。",
-    parameters="[m] <链接/关键词>",
+    parameters="[m] <链接/关键词> | update (更新 yt-dlp)",
 )
 async def ytdl(message: Message):
     """
     Downloads videos or audio from various sites.
     - `ytdl <url/keyword>`: download video
     - `ytdl m <url/keyword>`: download audio
+    - `ytdl update`: update yt-dlp
     """
+    if message.arguments == "update":
+        await message.edit("正在更新 yt-dlp...")
+        process = await asyncio.create_subprocess_shell(
+            "pip install -U 'yt-dlp[default,curl-cffi]'",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT,
+        )
+        stdout, _ = await process.communicate()
+        output = stdout.decode("utf-8", "ignore")
+        if process.returncode == 0:
+            if "Successfully installed yt-dlp" in output:
+                await message.edit("yt-dlp 更新成功。")
+            else:
+                await message.edit("yt-dlp 已是最新版。")
+        else:
+            await message.edit(f"yt-dlp 更新失败：\n" f"<code>{output}</code>")
+        return
     help_text = (
         "**Youtube-dl**\n\n"
-        "使用方法: `ytdl [m] <链接/关键词>`\n\n"
+        "使用方法: `ytdl [m|update] <链接/关键词>`\n\n"
         " - `ytdl <链接/关键词>`: 下载视频 (默认)\n"
-        " - `ytdl m <链接/关键词>`: 下载音频"
+        " - `ytdl m <链接/关键词>`: 下载音频\n"
+        " - `ytdl update`: 更新 yt-dlp"
     )
     if not message.arguments:
         return await message.edit(help_text, parse_mode="markdown")
