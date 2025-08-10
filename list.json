@@ -319,6 +319,16 @@
             "supported": true,
             "des_short": "基于 `yt-dlp`，从各种网站下载视频或音频。",
             "des": "## yt-dlp\n\n基于 `yt-dlp`，从 YouTube 等网站下载视频或音频。\n\n- `ytdl <链接/关键词>`: 下载视频\n- `ytdl m <链接/关键词>`: 下载音频\n- `ytdl update`: 更新 yt-dlp"
+        },
+        {
+            "name": "bf",
+            "version": "1.0",
+            "section": "chat",
+            "maintainer": "EAlyce",
+            "size": "57.80 kb",
+            "supported": true,
+            "des_short": "高级备份恢复管理插件",
+            "des": "## bf - 高级备份恢复管理插件\n\n安全的备份与恢复系统，支持多种备份模式和智能恢复功能。\n\n### 🔧 备份功能\n- `bf`: 标准备份（data + plugins，排除敏感session文件）\n- `bf all`: 完整程序备份（包含所有程序文件）\n- `bf all slim`: 瘦身完整备份（跳过大文件，上传更快）\n- `bf p`: Python插件备份（仅.py文件，便于分享）\n\n### 🔄 恢复功能\n- `hf`: 安全恢复备份（带确认机制和安全检查）\n- `hf confirm`: 确认执行恢复操作\n\n### ⚙️ 配置管理\n- `bf set <聊天ID>`: 设置备份目标聊天\n- `bf del <聊天ID|all>`: 删除备份目标\n- `bf cron <表达式>`: 设置定时自动备份\n- `bf cron off`: 关闭定时备份\n- `bf cron status`: 查看定时状态\n\n### 🛡️ 安全特性\n- 路径穿越攻击防护\n- 持久化确认机制\n- Session文件单独处理\n- 多目标上传优化\n- 安全的临时文件处理\n\n### 📝 使用示例\n```\nbf                    # 创建标准备份\nbf all               # 创建完整备份\nbf p                 # 备份Python插件\nbf set 123456789     # 设置备份目标\nbf cron 0 2 * * *    # 每天凌晨2点自动备份\nhf                   # 恢复最新备份\n```"
         }
     ]
 }
