@@ -340,6 +340,15 @@
             "des_short": "智能消息转发与备份插件",
             "des": "## shift - 智能消息转发与备份插件\n\n高效管理消息转发规则，支持自动转发、关键词过滤、多级转发和历史备份。\n\n### 🔧 核心功能\n- `shift set <源> <目标> [选项...]`: 设置自动转发规则\n- `shift del <序号>`: 删除转发规则\n- `shift list`: 查看转发规则列表\n- `shift pause <序号>` / `shift resume <序号>`: 暂停/恢复转发规则\n- `shift backup <源> <目标> [选项...]`: 备份历史消息\n- `shift filter <序号> add|del|list [关键词...]`: 管理关键词过滤\n- `shift stats`: 查看转发统计\n\n### 🎯 支持的目标类型\n- 频道/群组：`@username` 或 `-100...ID`\n- 用户：`@username` 或 `user_id`\n- 当前会话：`me` 或 `here`\n\n### 📝 消息类型选项\n- `silent` 静音转发\n- `text` 文本\n- `photo` 图片\n- `document` 文档\n- `video` 视频\n- `sticker` 贴纸\n- `animation` 动图\n- `voice` 语音\n- `audio` 音频\n- `all` 全部类型\n\n### 🛡 高级特性\n- 循环检测：防止直接或间接循环转发\n- 多级转发：自动执行链式转发\n- 关键词过滤：按需屏蔽消息\n- 权限检测：自动移除失效规则\n- FloodWait 自动等待与重试\n\n### 📝 使用示例\n```\nshift set @channel1 @channel2 silent photo\nshift pause 1\nshift filter 1 add spam 广告\nshift backup here @backup_channel all\nshift stats\n```"
         }
-
+        {
+            "name": "clear_member",
+            "version": "4.0",
+            "section": "chat",
+            "maintainer": "EAlyce",
+            "size": "24.9 kb",
+            "supported": true,
+            "des_short": "群成员清理插件。",
+            "des": "## clear_member\n\n用于清理群聊中的成员，支持批量移除不活跃或违规成员。"
+        }
     ]
 }
