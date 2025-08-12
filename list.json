@@ -122,10 +122,10 @@
         },
         {
             "name": "dc",
-            "version": "1.03",
+            "version": "1.04",
             "section": "chat",
-            "maintainer": "xiluo",
-            "size": "4.37 kb",
+            "maintainer": "xiluo、outlook84",
+            "size": "5.87 kb",
             "supported": true,
             "des_short": "获取指定用户或当前群组/频道的 DC 服务器",
             "des": "获取指定用户或当前群组/频道的 DC 服务器(指令: ,dc)"
