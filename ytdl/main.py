@@ -6,17 +6,26 @@ import time
 import traceback
 import asyncio
 import httpx
+import importlib
 
 from telethon import types
 from telethon.tl.types import DocumentAttributeAudio
 
 from pagermaid.enums import Message, AsyncClient
 from pagermaid.listener import listener
-from pagermaid.services import bot
+from pagermaid.services import bot, sqlite as db
 from pagermaid.utils import pip_install
 
-pip_install("yt-dlp[default,curl-cffi]", alias="yt_dlp")
-pip_install("FastTelethonhelper")
+dependencies = {
+    "yt_dlp": "yt-dlp[default,curl-cffi]",
+    "FastTelethonhelper": "FastTelethonhelper",
+}
+
+for module, package in dependencies.items():
+    try:
+        importlib.import_module(module)
+    except ModuleNotFoundError:
+        pip_install(package)
 
 import yt_dlp
 from yt_dlp.utils import DownloadError, ExtractorError
@@ -131,7 +140,7 @@ def _ytdl_download(url: str, message: Message, loop, opts: dict):
         raise e
 
 
-async def ytdl_common(message: Message, file_type: str):
+async def ytdl_common(message: Message, file_type: str, proxy: str = None):
     if not shutil.which("ffmpeg"):
         return await message.edit(
             "本插件需要 `ffmpeg` 才能正常工作，请先安装 `ffmpeg`。", parse_mode="md",
@@ -149,9 +158,11 @@ async def ytdl_common(message: Message, file_type: str):
 
     url = message.arguments
     if file_type == "audio":
-        opts = ydm_opts
+        opts = ydm_opts.copy()
     else:
         opts = ydv_opts(url)
+    if proxy:
+        opts["proxy"] = proxy
     message: Message = await message.edit(f"正在请求 {file_type}...")
 
     try:
@@ -238,29 +249,47 @@ async def ytdl_common(message: Message, file_type: str):
 @listener(
     command="ytdl",
     description="从各种网站下载视频或音频。",
-    parameters="[m] <链接/关键词> | update (更新 yt-dlp)",
+    parameters="[m] <链接/关键词> | _proxy [<url>] | update",
 )
 async def ytdl(message: Message, client: AsyncClient):
     """
     Downloads videos or audio from various sites.
     - `ytdl <url/keyword>`: download video
     - `ytdl m <url/keyword>`: download audio
+    - `ytdl _proxy <url>`: set HTTP/SOCKS proxy
+    - `ytdl _proxy`: delete proxy
     - `ytdl update`: update yt-dlp
     """
-    if message.arguments == "update":
+    arguments = message.arguments
+    if arguments.startswith("_proxy"):
+        parts = arguments.split(" ", 1)
+        if len(parts) > 1 and parts[1]:
+            db["custom.ytdl_proxy"] = parts[1]
+            return await message.edit(f"代理已设置为: `{parts[1]}`")
+        else:
+            proxy = db.get("custom.ytdl_proxy")
+            if proxy:
+                del db["custom.ytdl_proxy"]
+                return await message.edit(f"代理 `{proxy}` 已删除。")
+            else:
+                return await message.edit("未设置代理。")
+
+    if arguments == "update":
         await ytdl_update(message, client)
         return
     help_text = (
         "**Youtube-dl**\n\n"
-        "使用方法: `ytdl [m|update] <链接/关键词>`\n\n"
+        "使用方法: `ytdl [m] <链接/关键词> | _proxy [<url>] | update`\n\n"
         " - `ytdl <链接/关键词>`: 下载视频 (默认)\n"
         " - `ytdl m <链接/关键词>`: 下载音频\n"
+        " - `ytdl _proxy <url>`: 设置 HTTP/SOCKS 代理\n"
+        " - `ytdl _proxy`: 删除代理\n"
         " - `ytdl update`: 更新 yt-dlp"
     )
-    if not message.arguments:
+    if not arguments:
         return await message.edit(help_text, parse_mode="markdown")
 
-    parts = message.arguments.split(" ", 1)
+    parts = arguments.split(" ", 1)
     is_audio = parts[0] == "m"
 
     if is_audio:
@@ -269,9 +298,11 @@ async def ytdl(message: Message, client: AsyncClient):
         message.arguments = parts[1]
         file_type = "audio"
     else:
+        message.arguments = arguments
         file_type = "video"
 
-    await ytdl_common(message, file_type)
+    proxy = db.get("custom.ytdl_proxy")
+    await ytdl_common(message, file_type, proxy)
 
 
 async def ytdl_update(message: Message, client: AsyncClient):
