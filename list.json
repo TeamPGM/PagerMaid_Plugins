@@ -182,13 +182,13 @@
         },
         {
             "name": "gemini",
-            "version": "0.8",
+            "version": "0.81",
             "section": "chat",
             "maintainer": "outlook84",
-            "size": "36.6 kb",
+            "size": "36.8 kb",
             "supported": true,
             "des_short": "Google Gemini AI 插件。",
-            "des": "## Gemini\n\nGoogle Gemini AI 插件。需要 PagerMaid-Modify 1.5.8 及以上版本。\n\n### 命令\n\n- `,gemini [query]`: 与模型聊天 (默认)。\n- `,gemini image [prompt]`: 生成或编辑图片。\n- `,gemini search [query]`: 使用 Google 搜索进行支持的搜索。\n- `,gemini settings`: 显示当前配置。\n- `,gemini set_api_key [key]`: 设置您的 Gemini API 密钥。\n- `,gemini set_base_url [url]`: 设置自定义基础 URL (例如，用于代理)。留空以清除。\n- `,gemini max_tokens [number]`: 设置最大输出 token 数 (0 表示无限制)。\n- `,gemini model list`: 列出可用模型。\n- `,gemini model set [chat|search|image] [name]`: 设置聊天、搜索或图片模型。\n- `,gemini prompt list`: 列出所有已保存的系统提示。\n- `,gemini prompt add [name] [prompt]`: 添加一个新的系统提示。\n- `,gemini prompt del [name]`: 删除一个系统提示。\n- `,gemini prompt set [chat|search] [name]`: 设置聊天或搜索的激活系统提示。\n- `,gemini context [on|off]`: 开启或关闭对话上下文。\n- `,gemini context clear`: 清除对话历史。\n- `,gemini context show`: 显示对话历史。\n- `,gemini telegraph [on|off]`: 开启或关闭 Telegraph 集成。\n- `,gemini telegraph limit [number]`: 设置 Telegraph 发布字数限制 (0 表示无限制)。\n- `,gemini telegraph list [page]`: 列出已创建的 Telegraph 文章。\n- `,gemini telegraph del [id|all]`: 删除指定的 Telegraph 文章或全部文章。\n- `,gemini telegraph clear`: 从列表中清除所有 Telegraph 文章记录。"
+            "des": "## Gemini\n\nGoogle Gemini AI 插件。需要 PagerMaid-Modify 1.5.8 及以上版本。\n\n核心功能:\n- `gemini [query]`: 与模型聊天 (默认)。\n- `gemini image [prompt]`: 生成或编辑图片。\n- `gemini search [query]`: 使用 Gemini AI 支持的 Google 搜索。\n\n设置:\n- `gemini settings`: 显示当前配置。\n- `gemini set_api_key [key]`: 设置您的 Gemini API 密钥。\n- `gemini set_base_url [url]`: 设置自定义 Gemini API 基础 URL。留空以清除。\n- `gemini max_tokens [number]`: 设置最大输出 token 数 (0 表示无限制)。\n\n模型管理:\n- `gemini model list`: 列出可用模型。\n- `gemini model set [chat|search|image] [name]`: 设置聊天、搜索或图片模型。\n\n提示词管理:\n- `gemini prompt list`: 列出所有已保存的系统提示。\n- `gemini prompt add [name] [prompt]`: 添加一个新的系统提示。\n- `gemini prompt del [name]`: 删除一个系统提示。\n- `gemini prompt set [chat|search] [name]`: 设置聊天或搜索的激活系统提示。\n\n上下文管理:\n- `gemini context [on|off]`: 开启或关闭对话上下文。\n- `gemini context clear`: 清除对话历史。\n- `gemini context show`: 显示对话历史。\n\nTelegraph 集成:\n- `gemini telegraph [on|off]`: 开启或关闭 Telegraph 集成。\n- `gemini telegraph limit [number]`: 设置消息字符数超过多少时自动发送至 Telegraph (0 表示消息字数超过 Telegram 限制时发送)。\n- `gemini telegraph list [page]`: 列出已创建的 Telegraph 文章。\n- `gemini telegraph del [id|all]`: 删除指定的 Telegraph 文章或全部文章。\n- `gemini telegraph clear`: 从列表中清除所有 Telegraph 文章记录。"
         },
         {
             "name": "ip",
@@ -338,7 +338,7 @@
             "size": "61.00 kb",
             "supported": true,
             "des_short": "高级备份恢复管理插件",
-            "des": "## bf - 高级备份恢复管理插件\n\n安全的备份与恢复系统，支持多种备份模式和智能恢复功能。\n\n### 🔧 备份功能\n- `bf`: 标准备份（data + plugins，排除敏感session文件）\n- `bf all`: 完整程序备份（包含所有程序文件）\n- `bf all slim`: 瘦身完整备份（跳过大文件，上传更快）\n- `bf p`: Python插件备份（仅.py文件，便于分享）\n\n### 🔄 恢复功能\n- `hf`: 安全恢复备份（带确认机制和安全检查）\n- `hf confirm`: 确认执行恢复操作\n\n### ⚙️ 配置管理\n- `bf set <聊天ID>`: 设置备份目标聊天\n- `bf del <聊天ID|all>`: 删除备份目标\n- `bf cron <表达式>`: 设置定时自动备份\n- `bf cron off`: 关闭定时备份\n- `bf cron status`: 查看定时状态\n\n### 🛡️ 安全特性\n- 路径穿越攻击防护\n- 持久化确认机制\n- Session文件单独处理\n- 多目标上传优化\n- 安全的临时文件处理\n\n### 📝 使用示例\n```\nbf                    # 创建标准备份\nbf all               # 创建完整备份\nbf p                 # 备份Python插件\nbf set 123456789     # 设置备份目标\nbf cron 0 2 * * *    # 每天凌晨2点自动备份\nhf                   # 恢复最新备份\n```"
+            "des": "备份功能 \n· `bf help` 查看帮助帮助\n· `bf` 标准备份（data + plugins，排除敏感 session）\n· `bf all` 完整备份（含全部文件）\n· `bf all slim` 瘦身备份（跳过大文件）\n· `bf p` 插件备份（仅 Python 插件）\n\n恢复功能\n· `hf` 恢复备份（需确认）\n· `hf confirm` 确认恢复（5分钟内有效）\n\n配置管理\n· `bf set <ID...>` 设置目标聊天ID\n· `bf del <ID|all>` 删除指定目标或全部\n· `bf cron <表达式>` 定时备份（5段 Cron）\n· `bf cron off` 关闭定时\n· `bf cron show` 查看定时"
         },
         {
             "name": "shift",
@@ -348,7 +348,7 @@
             "size": "24.70 kb",
             "supported": true,
             "des_short": "智能消息转发与备份插件",
-            "des": "## shift - 智能消息转发与备份插件\n\n高效管理消息转发规则，支持自动转发、关键词过滤、多级转发和历史备份。\n\n### 🔧 核心功能\n- `shift set <源> <目标> [选项...]`: 设置自动转发规则\n- `shift del <序号>`: 删除转发规则\n- `shift list`: 查看转发规则列表\n- `shift pause <序号>` / `shift resume <序号>`: 暂停/恢复转发规则\n- `shift backup <源> <目标> [选项...]`: 备份历史消息\n- `shift filter <序号> add|del|list [关键词...]`: 管理关键词过滤\n- `shift stats`: 查看转发统计\n\n### 🎯 支持的目标类型\n- 频道/群组：`@username` 或 `-100...ID`\n- 用户：`@username` 或 `user_id`\n- 当前会话：`me` 或 `here`\n\n### 📝 消息类型选项\n- `silent` 静音转发\n- `text` 文本\n- `photo` 图片\n- `document` 文档\n- `video` 视频\n- `sticker` 贴纸\n- `animation` 动图\n- `voice` 语音\n- `audio` 音频\n- `all` 全部类型\n\n### 🛡 高级特性\n- 循环检测：防止直接或间接循环转发\n- 多级转发：自动执行链式转发\n- 关键词过滤：按需屏蔽消息\n- 权限检测：自动移除失效规则\n- FloodWait 自动等待与重试\n\n### 📝 使用示例\n```\nshift set @channel1 @channel2 silent photo\nshift pause 1\nshift filter 1 add spam 广告\nshift backup here @backup_channel all\nshift stats\n```"
+            "des": "# 智能转发助手（shift 模块）\n\n## 📌 插件简介\n\n该插件为 PagerMaid 添加了 **智能转发与消息备份** 功能，支持自动转发频道、群组、私聊消息到目标对话，并支持关键词过滤、消息类型筛选、多级转发、统计分析等高级功能。\n\n适合需要自动同步频道消息、跨群备份、或多层级信息流转的场景。\n\n---\n\n## ⚙ 功能概览\n\n* **转发规则管理**\n\n  * 新建、删除、暂停、恢复转发规则\n  * 支持多种消息类型筛选（文本、图片、视频、音频等）\n  * 支持静音转发\n* **关键词过滤**\n\n  * 添加/删除过滤关键词\n  * 按关键词屏蔽消息转发\n* **多级转发**\n\n  * 自动检测并执行链式转发（源→目标→下一级目标）\n* **历史消息备份**\n\n  * 一次性批量备份历史消息\n* **数据统计**\n\n  * 按天统计转发数量\n  * 查看近 7 天的每日转发量\n* **循环检测**\n\n  * 防止直接或间接循环转发\n\n---\n\n## 📝 命令说明\n\n### 1. 基础命令\n\n```\nshift set [源] [目标] [选项...]\n```\n\n创建转发规则。\n\n* **源**：消息来源（可用 `here` 表示当前会话）\n* **目标**：消息接收方\n* **选项**：`silent`, `text`, `photo`, `document`, `video`, `sticker`, `animation`, `voice`, `audio`, `all`\n\n示例：\n\n```\nshift set @channel1 @channel2 silent photo\n```\n\n---\n\n```\nshift del [序号]\n```\n\n删除指定序号的转发规则（序号可用逗号分隔）。\n\n---\n\n```\nshift list\n```\n\n查看所有转发规则及其状态。\n\n---\n\n```\nshift pause [序号]\nshift resume [序号]\n```\n\n暂停/恢复转发规则。\n\n---\n\n```\nshift backup [源] [目标] [选项...]\n```\n\n将源对话的历史消息批量转发到目标对话。\n\n---\n\n```\nshift filter [序号] add [关键词...]\nshift filter [序号] del [关键词...]\nshift filter [序号] list\n```\n\n管理规则的过滤关键词。\n\n---\n\n```\nshift stats\n```\n\n查看转发统计（总量及近 7 天每日数量）。\n\n---\n\n## 🎯 支持的目标类型\n\n* **频道/群组**：`@username` 或 `-100...ID`\n* **个人用户**：`@username` 或 `user_id`\n* **当前对话**：`me` 或 `here`\n\n---\n\n## 🛡 消息类型选项\n\n* `silent`：静音转发\n* `text`：文本\n* `photo`：图片\n* `document`：文档\n* `video`：视频\n* `sticker`：贴纸\n* `animation`：动图\n* `voice`：语音\n* `audio`：音频\n* `all`：全部类型\n\n---\n\n## 🔍 高级特性\n\n* **循环检测**：防止无限转发\n* **多级转发**：自动执行链式转发\n* **过滤机制**：关键词过滤，按需阻止消息\n* **统计分析**：每日与总量数据\n* **权限检测**：自动移除失效规则（如内容保护、无写入权限等）\n\n---\n\n## ⚠ 注意事项\n\n1. **防 Flood 限制**：插件遇到 FloodWait 会自动等待并重试。\n2. **内容保护**：源对话开启内容保护（`noforwards`）时，规则会被删除。\n3. **深度限制**：多级转发最大深度为 5 层，防止循环与性能问题。\n4. **消息过滤**：过滤关键词不区分大小写。"
         },
         {
             "name": "clean_member",
@@ -358,7 +358,7 @@
             "size": "24.9 kb",
             "supported": true,
             "des_short": "群成员清理插件。",
-            "des": "## clear_member\n\n用于清理群聊中的成员，支持批量移除不活跃或违规成员。"
+            "des": "# 群成员清理插件 - 智能缓存版 v4.0\n\n## 插件简介\n本插件用于Telegram群组成员的智能清理，支持多种清理模式，包括按未上线时间、未发言时间、发言数量、注销账户以及清理所有普通成员。采用智能缓存系统，支持生成CSV格式报告，方便查看和复查。支持处理超过5万成员的大型群组。\n\n## 功能特点\n- 支持5种清理模式，满足不同需求\n- 智能缓存系统，缓存有效期24小时，显著提升查找和清理效率\n- 生成详尽CSV报告，包含用户ID、用户名、姓名、最后上线时间、注销状态\n- 自动清理过期缓存，保持缓存目录整洁\n- 分批异步处理，降低频率限制风险\n- 不会误删管理员，安全性高\n- 支持查找并缓存，也支持直接清理两种模式\n- 处理超大群组成员，突破官方单次获取限制\n\n## 使用说明\n-clean_member <模式> [天数] [search]\n\n- `<模式>`：\n  - 1 - 按未上线时间清理\n  - 2 - 按未发言时间清理\n  - 3 - 按发言数量清理\n  - 4 - 清理已注销账户\n  - 5 - 清理所有普通成员\n- `[天数]`：根据模式不同，填写天数参数（非必填，模式4和5可忽略）\n- `[search]`：可选参数，表示只查找符合条件的成员并缓存结果，不直接清理\n\n## 示例\n- `-clean_member 1 7 search`  \n  查找并缓存7天未上线用户\n- `-clean_member 1 7`  \n  直接清理7天未上线用户（优先使用缓存）\n- `-clean_member 4`  \n  清理已注销账户\n\n## 权限需求\n需要群管理员权限，且具备封禁成员权限。\n\n## 文件存储\n- 缓存文件和报告均保存在 `plugins/clean_member_cache/` 目录下\n\n## 注意事项\n- 缓存有效期24小时，过期自动删除\n- 处理大型群组时，建议先执行带`search`的查找命令，再执行清理\n- 避免频繁执行，以防触发Telegram频率限制\n---"
         },
         {
             "name": "aban",
@@ -368,7 +368,7 @@
             "size": "45.3 kb",
             "supported": true,
             "des_short": "功能强大的群组封禁管理插件，支持单群和跨群批量操作。",
-            "des": "## 高级封禁管理插件\n\n功能强大的 Telegram 群组管理插件，支持单群和跨群的用户封禁管理操作。\n\n### 单群操作\n- `kick <用户> [原因]`: 踢出用户\n- `ban <用户> [原因]`: 封禁用户并删除消息\n- `unban <用户>`: 解封用户\n- `mute <用户> [分钟] [原因]`: 禁言用户\n- `unmute <用户>`: 解除禁言\n\n### 跨群批量操作\n- `sb <用户> [原因]`: 批量封禁\n- `unsb <用户>`: 批量解封\n\n### 缓存管理\n- `refresh`: 刷新群组缓存\n- `preload`: 预加载缓存\n- `cache`: 查看缓存状态\n- `aban`: 显示帮助\n\n**支持方式**: @用户名、用户ID、回复消息、频道身份\n**特色功能**: 智能用户解析、并发优化、永久缓存、权限检查"
+            "des": "# 高级封禁管理插件 AdvancedBan\n\n一个功能强大的 Telegram 群组管理插件，支持单群和跨群的用户封禁管理操作。\n被操作用户不在群内依旧能被封禁，对于无交互历史的用户可能会无法封禁，请注意。\n## 主要功能\n\n### 单群操作\n- **踢出用户** `kick`: 踢出用户，用户可重新加入\n- **封禁用户** `ban`: 永久封禁用户，同时删除该用户的所有消息\n- **解封用户** `unban`: 解除用户封禁状态\n- **禁言用户** `mute`: 临时禁言用户，默认60分钟，最长24小时\n- **解除禁言** `unmute`: 立即解除用户禁言\n\n### 跨群批量操作\n- **批量封禁** `sb`: 在所有管理的群组中封禁指定用户\n- **批量解封** `unsb`: 在所有管理的群组中解封指定用户\n\n### 缓存管理\n- **刷新缓存** `refresh`: 手动刷新群组缓存\n- **预加载缓存** `preload`: 预先建立缓存以提高操作速度\n- **查看缓存状态** `cache`: 显示当前缓存信息\n\n## 使用方法\n聊天框内发送 `<指令名>` 查看帮助"
         }
     ]
 }

@@ -3,6 +3,7 @@ import html
 import io
 import httpx
 import re
+import importlib
 
 from pagermaid.enums import Message
 from pagermaid.listener import listener
@@ -13,10 +14,19 @@ from PIL import Image
 from telethon.errors import MessageTooLongError
 
 # Dependencies
-pip_install("google-genai")
-pip_install("markdown")
-pip_install("telegraph[aio]")
-pip_install("beautifulsoup4")
+dependencies = {
+    "google.genai": "google-genai",
+    "markdown": "markdown",
+    "telegraph": "telegraph",
+    "bs4": "beautifulsoup4",
+}
+
+for module, package in dependencies.items():
+    try:
+        importlib.import_module(module)
+    except ModuleNotFoundError:
+        pip_install(package)
+
 import markdown
 from bs4 import BeautifulSoup
 from google import genai
