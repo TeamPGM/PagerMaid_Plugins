@@ -192,13 +192,13 @@
         },
         {
             "name": "gemini",
-            "version": "0.81",
+            "version": "0.82",
             "section": "chat",
             "maintainer": "outlook84",
-            "size": "36.8 kb",
+            "size": "41.9 kb",
             "supported": true,
             "des_short": "Google Gemini AI 插件。",
-            "des": "## Gemini\n\nGoogle Gemini AI 插件。需要 PagerMaid-Modify 1.5.8 及以上版本。\n\n核心功能:\n- `gemini [query]`: 与模型聊天 (默认)。\n- `gemini image [prompt]`: 生成或编辑图片。\n- `gemini search [query]`: 使用 Gemini AI 支持的 Google 搜索。\n\n设置:\n- `gemini settings`: 显示当前配置。\n- `gemini set_api_key [key]`: 设置您的 Gemini API 密钥。\n- `gemini set_base_url [url]`: 设置自定义 Gemini API 基础 URL。留空以清除。\n- `gemini max_tokens [number]`: 设置最大输出 token 数 (0 表示无限制)。\n\n模型管理:\n- `gemini model list`: 列出可用模型。\n- `gemini model set [chat|search|image] [name]`: 设置聊天、搜索或图片模型。\n\n提示词管理:\n- `gemini prompt list`: 列出所有已保存的系统提示。\n- `gemini prompt add [name] [prompt]`: 添加一个新的系统提示。\n- `gemini prompt del [name]`: 删除一个系统提示。\n- `gemini prompt set [chat|search] [name]`: 设置聊天或搜索的激活系统提示。\n\n上下文管理:\n- `gemini context [on|off]`: 开启或关闭对话上下文。\n- `gemini context clear`: 清除对话历史。\n- `gemini context show`: 显示对话历史。\n\nTelegraph 集成:\n- `gemini telegraph [on|off]`: 开启或关闭 Telegraph 集成。\n- `gemini telegraph limit [number]`: 设置消息字符数超过多少时自动发送至 Telegraph (0 表示消息字数超过 Telegram 限制时发送)。\n- `gemini telegraph list [page]`: 列出已创建的 Telegraph 文章。\n- `gemini telegraph del [id|all]`: 删除指定的 Telegraph 文章或全部文章。\n- `gemini telegraph clear`: 从列表中清除所有 Telegraph 文章记录。"
+            "des": "## Gemini\n\nGoogle Gemini AI 插件。需要 PagerMaid-Modify 1.5.8 及以上版本。\n\n核心功能:\n- `gemini [query]`: 与模型聊天 (默认)。\n- `gemini image [prompt]`: 生成或编辑图片。\n- `gemini search [query]`: 使用 Gemini AI 支持的 Google 搜索。\n\n设置:\n- `gemini settings`: 显示当前配置。\n- `gemini set_api_key [key]`: 设置您的 Gemini API 密钥。\n- `gemini set_base_url [url]`: 设置自定义 Gemini API 基础 URL。留空以清除。\n- `gemini max_tokens [number]`: 设置最大输出 token 数 (0 表示无限制)。\n- `gemini collapse [on|off]`: 开启或关闭折叠引用。\n\n模型管理:\n- `gemini model list`: 列出可用模型。\n- `gemini model set [chat|search|image] [name]`: 设置聊天、搜索或图片模型。\n\n提示词管理:\n- `gemini prompt list`: 列出所有已保存的系统提示。\n- `gemini prompt add [name] [prompt]`: 添加一个新的系统提示。\n- `gemini prompt del [name]`: 删除一个系统提示。\n- `gemini prompt set [chat|search] [name]`: 设置聊天或搜索的激活系统提示。\n\n上下文管理:\n- `gemini context [on|off]`: 开启或关闭对话上下文。\n- `gemini context clear`: 清除对话历史。\n- `gemini context show`: 显示对话历史。\n\nTelegraph 集成:\n- `gemini telegraph [on|off]`: 开启或关闭 Telegraph 集成。\n- `gemini telegraph limit [number]`: 设置消息字符数超过多少时自动发送至 Telegraph (0 表示消息字数超过 Telegram 限制时发送)。\n- `gemini telegraph list [page]`: 列出已创建的 Telegraph 文章。\n- `gemini telegraph del [id|all]`: 删除指定的 Telegraph 文章或全部文章。\n- `gemini telegraph clear`: 从列表中清除所有 Telegraph 文章记录。"
         },
         {
             "name": "ip",

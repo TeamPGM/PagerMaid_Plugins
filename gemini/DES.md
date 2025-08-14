@@ -12,6 +12,7 @@ Google Gemini AI 插件。需要 PagerMaid-Modify 1.5.8 及以上版本。
 - `gemini set_api_key [key]`: 设置您的 Gemini API 密钥。
 - `gemini set_base_url [url]`: 设置自定义 Gemini API 基础 URL。留空以清除。
 - `gemini max_tokens [number]`: 设置最大输出 token 数 (0 表示无限制)。
+- `gemini collapse [on|off]`: 开启或关闭折叠引用。
 
 模型管理:
 - `gemini model list`: 列出可用模型。
