@@ -105,7 +105,7 @@ def _sanitize_html_for_telegraph(html_content: str) -> str:
     soup = BeautifulSoup(html_content, 'html.parser')
     for tag in soup.find_all(True):
         if tag.name not in ALLOWED_TAGS:
-            tag.replace_with(html.escape(str(tag)))
+            tag.unwrap()
     return str(soup)
 
 
@@ -766,7 +766,7 @@ async def _send_response(message: Message, prompt_text: str, html_output: str, p
     # Check for character limit before trying to send the message
     if telegraph_enabled and telegraph_limit > 0 and len(final_text) > telegraph_limit:
         if prompt_text:
-            title = (prompt_text[:15] + '...') if len(prompt_text) > 18 else prompt_text
+            title = f'{prompt_text[:15]}...' if len(prompt_text) > 18 else prompt_text
         else:
             title = "Gemini 回复"
         sanitized_html = _sanitize_html_for_telegraph(html_output)
@@ -839,11 +839,15 @@ async def _execute_gemini_request(message: Message, args: str, use_search: bool)
         return
 
     html_output = markdown.markdown(output_text, extensions=['fenced_code'])
+
     # Replace unsupported h1/h2/h5/h6 tags with h3/h4 for Telegraph compatibility
-    html_output = html_output.replace("<h1>", "<h3>").replace("</h1>", "</h3>")
-    html_output = html_output.replace("<h2>", "<h3>").replace("</h2>", "</h3>")
-    html_output = html_output.replace("<h5>", "<h4>").replace("</h5>", "</h4>")
-    html_output = html_output.replace("<h6>", "<h4>").replace("</h6>", "</h4>")
+    soup = BeautifulSoup(html_output, "html.parser")
+    for tag in soup.find_all(['h1', 'h2']):
+        tag.name = 'h3'
+    for tag in soup.find_all(['h5', 'h6']):
+        tag.name = 'h4'
+    html_output = str(soup)
+
     prompt_text = _get_prompt_text_for_display(message, args)
     await _send_response(message, prompt_text, html_output, powered_by)
 
