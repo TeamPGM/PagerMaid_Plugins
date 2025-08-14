@@ -181,6 +181,16 @@
             "des": "每日问候。\n指令：,everyday_greet"
         },
         {
+            "name": "gdl",
+            "version": "0.8",
+            "section": "daily",
+            "maintainer": "outlook84",
+            "size": "14.9 kb",
+            "supported": true,
+            "des_short": "基于 gallery-dl, 从各种网站下载图片或视频。",
+            "des": "# gallery-dl\n\n## 功能\n\n本插件基于强大的 `gallery-dl` 工具，可以从众多网站下载图片或视频库。\n\n## 使用方法\n\n您可以通过以下命令使用本插件：\n\n- `gdl <链接>`: 下载指定的图片或视频库。\n- `gdl _pixiv <关键字>`: 下载 pixiv 热门插画。\n- `gdl _proxy <url>`: 设置下载时使用的 HTTP/SOCKS 代理。\n- `gdl _proxy`: 删除已设置的代理。\n- `gdl update`: 检查并更新 `gallery-dl` 到最新版本。\n\n## 支持的网站\n\n`gallery-dl` 支持的网站列表非常广泛：\n\n- [支持的网站列表](https://github.com/mikf/gallery-dl/blob/master/docs/supportedsites.md)\n\n## 可选依赖\n\n如果使用下载视频功能，需要 `ffmpeg`。  \n为了支持某些特定网站或功能，可能需要安装额外的依赖库：\n\n- [可选依赖说明](https://github.com/mikf/gallery-dl?tab=readme-ov-file#optional)\n\n## 配置文件\n\n### 配置文件路径\n\n本插件的配置文件位于 PagerMaid 工作目录下的 `data/gdl/config.json`。\n\n### 示例：使用 Cookie、用户名密码或 oauth 登录\n\n部分网站需要登陆才能访问资源，可以在 `config.json` 中按以下配置。\n\n```json\n{\n    \"extractor\": {\n        \"twitter\": {\n            \"cookies\": \"data/gdl/cookies-x-com.txt\"\n        },\n        \"iwara\": {\n            \"username\": \"example\",\n            \"password\": \"example\"\n        }\n    },\n    \"cache\": {\n        \"file\": \"data/gdl/.cache/gallery-dl/cache.sqlite3\"\n    }\n}\n```\n\n对于需要 OAuth 认证的网站（如 Pixiv），按以下步骤操作：\n\n1.  进入 PagerMaid 工作目录下的 `data/gdl` 目录。如果使用容器，需在容器内执行此操作。\n2.  执行以下命令（以 Pixiv 为例）并根据屏幕提示完成认证流程：\n    ```bash\n    export HOME=$PWD\n    gallery-dl oauth:pixiv\n    ```\n\n### 官方文档\n\n参考 `gallery-dl` 的官方文档来获取更详细的配置信息：\n\n- [配置文档](https://gdl-org.github.io/docs/configuration.html)\n- [配置示例](https://github.com/mikf/gallery-dl/blob/master/docs/gallery-dl-example.conf)\n- [详细配置示例](https://github.com/mikf/gallery-dl/blob/master/docs/gallery-dl.conf)\n\n## 注意事项\n\n> **请注意**：通过非官方 API 方式抓取资源可能导致网站账户被封禁。同时，在配置文件中存储的 Cookie 或密码存在泄露风险。请自行承担使用本插件所带来的全部风险。"
+        },
+        {
             "name": "gemini",
             "version": "0.81",
             "section": "chat",
