@@ -53,10 +53,14 @@ def ydv_opts(url: str) -> dict:
         **base_opts,
         "merge_output_format": "mp4",
         "outtmpl": "data/ytdl/videos/%(title)s.%(ext)s",
+        "postprocessor_args": ["-movflags", "+faststart"],
     }
     if "youtube.com" in url or "youtu.be" in url:
+        codec = db.get("custom.ytdl_codec", "avc1")
         opts["format"] = (
-            "bestvideo[vcodec^=vp9]+bestaudio[acodec=opus]/bestvideo[vcodec^=vp9]+bestaudio/bestvideo+bestaudio"
+            f"bestvideo[vcodec^={codec}]+bestaudio/"
+            "bestvideo[vcodec!=av01]+bestaudio/"
+            "best[vcodec!=av01]"
         )
     else:
         opts["format"] = "bestvideo+bestaudio/best"
@@ -76,7 +80,7 @@ ydm_opts = {
 }
 
 
-def _ytdl_download(url: str, message: Message, loop, opts: dict):
+def _ytdl_download(url: str, message: Message, loop, opts: dict, file_type_zh: str):
     """Download media using yt-dlp."""
     thumb_path = None
     last_edit_time = time.time()
@@ -90,7 +94,7 @@ def _ytdl_download(url: str, message: Message, loop, opts: dict):
                 if total_bytes:
                     downloaded_bytes = d.get("downloaded_bytes")
                     percentage = downloaded_bytes / total_bytes * 100
-                    text = f"正在下载... {percentage:.1f}%"
+                    text = f"📥 正在下载{file_type_zh}... {percentage:.1f}%"
                     asyncio.run_coroutine_threadsafe(message.edit(text), loop)
 
     opts_local = opts.copy()
@@ -116,7 +120,7 @@ def _ytdl_download(url: str, message: Message, loop, opts: dict):
                         "Could not determine the path of the downloaded file."
                     )
                 # Get the most recently modified file
-                file_path = max(downloaded_files, key=os.path.getmtime)
+                file_path = str(max(downloaded_files, key=os.path.getmtime))
 
             if os.stat(file_path).st_size > 2 * 1024 * 1024 * 1024 * 0.99:
                 raise DownloadError("文件太大(超过 2GB),无法发送。")
@@ -159,11 +163,13 @@ async def ytdl_common(message: Message, file_type: str, proxy: str = None):
     url = message.arguments
     if file_type == "audio":
         opts = ydm_opts.copy()
+        file_type_zh = "音频"
     else:
         opts = ydv_opts(url)
+        file_type_zh = "视频"
     if proxy:
         opts["proxy"] = proxy
-    message: Message = await message.edit(f"正在请求 {file_type}...")
+    message: Message = await message.edit(f"📥 正在请求{file_type_zh}...")
 
     try:
         (
@@ -175,7 +181,7 @@ async def ytdl_common(message: Message, file_type: str, proxy: str = None):
             height,
             webpage_url,
         ) = await bot.loop.run_in_executor(
-            None, _ytdl_download, url, message, bot.loop, opts
+            None, _ytdl_download, url, message, bot.loop, opts, file_type_zh
         )
 
         caption = f"<code>{title}</code>"
@@ -208,10 +214,11 @@ async def ytdl_common(message: Message, file_type: str, proxy: str = None):
                 attributes=attributes,
                 workers=4,
                 parse_mode="html",
+                supports_streaming=True,
             )
             await message.delete()
         else:
-            await message.edit(f"正在上传 {file_type}...")
+            await message.edit(f"📤 正在上传{file_type_zh}...")
             last_edit_time = time.time()
 
             async def progress(current, total):
@@ -220,7 +227,7 @@ async def ytdl_common(message: Message, file_type: str, proxy: str = None):
                     last_edit_time = time.time()
                     with contextlib.suppress(Exception):
                         await message.edit(
-                            f"正在上传 {file_type}... {current / total:.2%}"
+                            f"📤 正在上传{file_type_zh}... {current / total:.2%}"
                         )
 
             await bot.send_file(
@@ -233,8 +240,17 @@ async def ytdl_common(message: Message, file_type: str, proxy: str = None):
                 progress_callback=progress,
                 workers=4,
                 parse_mode="html",
+                supports_streaming=True,
             )
             await message.delete()
+    except DownloadError as e:
+        if "Unsupported URL" in str(e):
+            await message.edit("下载失败：不支持的 URL 或该网站暂时无法下载。")
+        else:
+            await message.edit(
+                f"下载/发送文件失败，发生错误：\n<code>{traceback.format_exc()}</code>",
+                parse_mode="html",
+            )
     except Exception as e:
         await message.edit(
             f"下载/发送文件失败，发生错误：\n<code>{traceback.format_exc()}</code>",
@@ -246,10 +262,23 @@ async def ytdl_common(message: Message, file_type: str, proxy: str = None):
             shutil.rmtree(download_path)
 
 
+ytdl_help = (
+    "**Youtube-dl**\n\n"
+    "使用方法: `ytdl [m] <链接/关键词> | _proxy [<url>] | _codec [<codec>] | update`\n\n"
+    " - `ytdl <链接/关键词>`: 下载视频 (默认)\n"
+    " - `ytdl m <链接/关键词>`: 下载音频\n"
+    " - `ytdl _proxy <url>`: 设置 HTTP/SOCKS 代理\n"
+    " - `ytdl _proxy`: 删除代理\n"
+    " - `ytdl _codec <codec>`: 设置优先选择的 Youtube 视频编码 (默认 avc1, 可选 vp9/av01)\n"
+    " - `ytdl _codec`: 删除优先选择的 Youtube 视频编码\n"
+    " - `ytdl update`: 更新 yt-dlp"
+)
+
+
 @listener(
     command="ytdl",
-    description="从各种网站下载视频或音频。",
-    parameters="[m] <链接/关键词> | _proxy [<url>] | update",
+    description="从各种网站下载视频或音频。\n\n" + ytdl_help,
+    parameters="[m] <链接/关键词> | _proxy [<url>] | _codec [<codec>] | update",
 )
 async def ytdl(message: Message, client: AsyncClient):
     """
@@ -258,6 +287,8 @@ async def ytdl(message: Message, client: AsyncClient):
     - `ytdl m <url/keyword>`: download audio
     - `ytdl _proxy <url>`: set HTTP/SOCKS proxy
     - `ytdl _proxy`: delete proxy
+    - `ytdl _codec <codec>`: set preferred video codec
+    - `ytdl _codec`: reset preferred video codec
     - `ytdl update`: update yt-dlp
     """
     arguments = message.arguments
@@ -274,27 +305,31 @@ async def ytdl(message: Message, client: AsyncClient):
             else:
                 return await message.edit("未设置代理。")
 
+    if arguments.startswith("_codec"):
+        parts = arguments.split(" ", 1)
+        if len(parts) > 1 and parts[1]:
+            db["custom.ytdl_codec"] = parts[1]
+            return await message.edit(f"Youtube 优先视频编码已设置为: `{parts[1]}`")
+        else:
+            codec = db.get("custom.ytdl_codec")
+            if codec:
+                del db["custom.ytdl_codec"]
+                return await message.edit(f"Youtube 优先视频编码 `{codec}` 已删除。")
+            else:
+                return await message.edit("Youtube 未设置优先视频编码。")
+
     if arguments == "update":
         await ytdl_update(message, client)
         return
-    help_text = (
-        "**Youtube-dl**\n\n"
-        "使用方法: `ytdl [m] <链接/关键词> | _proxy [<url>] | update`\n\n"
-        " - `ytdl <链接/关键词>`: 下载视频 (默认)\n"
-        " - `ytdl m <链接/关键词>`: 下载音频\n"
-        " - `ytdl _proxy <url>`: 设置 HTTP/SOCKS 代理\n"
-        " - `ytdl _proxy`: 删除代理\n"
-        " - `ytdl update`: 更新 yt-dlp"
-    )
     if not arguments:
-        return await message.edit(help_text, parse_mode="markdown")
+        return await message.edit(ytdl_help, parse_mode="markdown")
 
     parts = arguments.split(" ", 1)
     is_audio = parts[0] == "m"
 
     if is_audio:
         if len(parts) < 2 or not parts[1].strip():
-            return await message.edit(help_text, parse_mode="markdown")
+            return await message.edit(ytdl_help, parse_mode="markdown")
         message.arguments = parts[1]
         file_type = "audio"
     else:
