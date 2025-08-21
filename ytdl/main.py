@@ -350,5 +350,5 @@ async def ytdl_update(message: Message, client: AsyncClient):
     except Exception:
         await message.edit("获取最新版本信息失败，请稍后再试。")
         return
-    pip_install("yt-dlp[default,curl-cffi]", version=f">={latest_version}", alias="a")
+    pip_install("yt-dlp[curl-cffi]", version=f">={latest_version}", alias="a")
     await message.edit(f"yt-dlp 已更新到最新版本：{latest_version}。重启 PagerMaid 后生效。")

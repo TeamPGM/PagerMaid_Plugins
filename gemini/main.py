@@ -983,7 +983,7 @@ async def _handle_tts(message: Message, args: str):
     except ValueError as e:
         if str(e).startswith("TOKEN_LIMIT_EXCEEDED"):
             total_tokens = str(e).split(":")[1].strip()
-            await _show_error(message, f"文本超过 1500 tokens 限制 ({total_tokens} tokens)，无法生成语音。")
+            await _show_error(message, f"文本超过 1000 tokens 限制 ({total_tokens} tokens)，无法生成语音。")
         else:
             await _show_error(message, f"发生意外错误: {e}")
 
@@ -1017,7 +1017,7 @@ async def _execute_audio_request(message: Message, args: str, use_search: bool):
     except ValueError as e:
         if str(e).startswith("TOKEN_LIMIT_EXCEEDED"):
             total_tokens = str(e).split(":")[1].strip()
-            fallback_reason = f"文本超过 1500 tokens 限制 ({total_tokens} tokens)。"
+            fallback_reason = f"文本超过 1000 tokens 限制 ({total_tokens} tokens)。"
             tts_result = False
         else:
             raise e
