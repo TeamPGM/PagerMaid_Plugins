@@ -192,7 +192,7 @@
         },
         {
             "name": "gemini",
-            "version": "0.9",
+            "version": "0.91",
             "section": "chat",
             "maintainer": "outlook84",
             "size": "47.4 kb",
@@ -332,7 +332,7 @@
         },
         {
             "name": "ytdl",
-            "version": "2.3",
+            "version": "2.31",
             "section": "chat",
             "maintainer": "xtaodada",
             "size": "12.0 kb",

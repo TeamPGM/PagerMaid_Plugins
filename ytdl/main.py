@@ -9,7 +9,7 @@ import httpx
 import importlib
 
 from telethon import types
-from telethon.tl.types import DocumentAttributeAudio
+from telethon.tl.types import DocumentAttributeAudio, DocumentAttributeVideo
 
 from pagermaid.enums import Message, AsyncClient
 from pagermaid.listener import listener
@@ -17,7 +17,7 @@ from pagermaid.services import bot, sqlite as db
 from pagermaid.utils import pip_install
 
 dependencies = {
-    "yt_dlp": "yt-dlp[default,curl-cffi]",
+    "yt_dlp": "yt-dlp[curl-cffi]",
     "FastTelethonhelper": "FastTelethonhelper",
 }
 
@@ -192,7 +192,7 @@ async def ytdl_common(message: Message, file_type: str, proxy: str = None):
         if duration:
             if file_type == "video":
                 attributes.append(
-                    types.DocumentAttributeVideo(
+                    DocumentAttributeVideo(
                         duration=duration, w=width or 0, h=height or 0
                     )
                 )
@@ -351,4 +351,4 @@ async def ytdl_update(message: Message, client: AsyncClient):
         await message.edit("获取最新版本信息失败，请稍后再试。")
         return
     pip_install("yt-dlp[default,curl-cffi]", version=f">={latest_version}", alias="a")
-    await message.edit(f"yt-dlp 已更新到最新版本：{latest_version}。")
+    await message.edit(f"yt-dlp 已更新到最新版本：{latest_version}。重启 PagerMaid 后生效。")

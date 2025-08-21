@@ -356,7 +356,7 @@ async def _call_gemini_tts_api(message: Message, text: str) -> tuple[str | None,
 
         model_name = db.get(Config.TTS_MODEL, Config.DEFAULT_TTS_MODEL)
         token_count_response = client.models.count_tokens(model=f"models/{model_name}", contents=[clean_text])
-        if token_count_response.total_tokens > 1500:
+        if token_count_response.total_tokens > 1000:
             raise ValueError(f"TOKEN_LIMIT_EXCEEDED:{token_count_response.total_tokens}")
 
         voice_name = db.get(Config.TTS_VOICE, Config.DEFAULT_TTS_VOICE)
