@@ -291,6 +291,16 @@
             "des": "# Speedtest\n\n使用 speedtest-cli 测试当前服务器的网络速度。"
         },
         {
+            "name": "strx",
+            "version": "0.1",
+            "section": "chat",
+            "maintainer": "outlook84",
+            "size": "7.89 kb",
+            "supported": true,
+            "des_short": "回复贴纸/图片将其添加到自己的贴纸包。",
+            "des": "# strx\n\n回复贴纸/图片将其添加到自己的贴纸包。\n\n## 使用方式\n\n- `-strx <pack_name>`: 设置或更改你的贴纸包名称。名称必须以字母开头，且只包含字母、数字和下划线，长度不超过64个字符。\n- 回复一张图片或贴纸使用 `-strx`: 将该图片或贴纸添加到你设置的贴纸包。\n- `-strx`: 查看当前设置的贴纸包名称。"
+        },
+        {
             "name": "tel",
             "version": "1.131",
             "section": "daily",
@@ -338,7 +348,7 @@
             "size": "12.0 kb",
             "supported": true,
             "des_short": "基于 `yt-dlp`，从各种网站下载视频或音频。",
-            "des": "## yt-dlp\n\n基于 `yt-dlp`，从 YouTube 等网站下载视频或音频。\n\n- `ytdl <链接/关键词>`: 下载视频 (默认)\n- `ytdl m <链接/关键词>`: 下载音频\n- `ytdl _proxy <url>`: 设置 HTTP/SOCKS 代理\n- `ytdl _proxy`: 删除代理\n- `ytdl _codec <codec>`: 设置优先选择的 Youtube 视频编码 (默认 avc1, 可选 vp9/av01)\n- `ytdl _codec`: 删除优先选择的 Youtube 视频编码\n- `ytdl update`: 更新 yt-dlp"
+            "des": "## yt-dlp\n\n基于 `yt-dlp`，从 YouTube 等网站下载视频或音频。\n\n- `ytdl <链接/关键词>`: 下载视频 (默认)\n- `ytdl m <链接/关键词>`: 下载音频\n- `ytdl _proxy <url>`: 设置 HTTP/SOCKS 代理\n- `ytdl _proxy`: 删除代理\n- `ytdl _codec <codec>`: 设置优先选择的 YouTube 视频编码 (默认 avc1, 可选 vp9/av01)\n- `ytdl _codec`: 删除优先选择的 YouTube 视频编码\n- `ytdl update`: 更新 yt-dlp"
         },
         {
             "name": "bf",
