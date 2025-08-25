@@ -16,7 +16,7 @@ from PIL import Image
 from telethon.errors import MessageTooLongError, MessageEmptyError
 from telethon.extensions import html as tg_html
 from telethon.tl.types import (
-    MessageEntityBlockquote, MessageEntityItalic, MessageEntityBold
+    MessageEntityBlockquote, MessageEntityItalic, MessageEntityBold, MessageEntityPre
 )
 
 # Dependencies
@@ -760,27 +760,80 @@ async def _handle_collapse(message: Message, args: str):
 
 
 def _build_response_message(prompt_text: str, html_output: str, powered_by: str) -> tuple[str, list]:
-    """Builds the final response text and entities."""
+    """
+    Builds the final response text and entities, intelligently wrapping the response in
+    blockquotes without nesting block-level entities like code blocks.
+    """
     final_text, entities = "", []
     collapsible = db.get(Config.COLLAPSIBLE_QUOTE_ENABLED, False)
     response_text_formatted, response_entities = tg_html.parse(html_output)
 
     if prompt_text:
         prompt_header = "👤提示:\n"
-        entities.append(MessageEntityBold(offset=_get_utf16_length(final_text), length=_get_utf16_length(prompt_header.strip())))
+        entities.append(MessageEntityBold(offset=0, length=_get_utf16_length(prompt_header.strip())))
         final_text += prompt_header
-        entities.append(MessageEntityBlockquote(offset=_get_utf16_length(final_text), length=_get_utf16_length(prompt_text), collapsed=collapsible))
+        entities.append(MessageEntityBlockquote(offset=_get_utf16_length(final_text),
+                                                length=_get_utf16_length(prompt_text), collapsed=collapsible))
         final_text += prompt_text + "\n"
 
+    # --- 回复部分 ---
     response_header = "🤖回复:\n"
-    entities.append(MessageEntityBold(offset=_get_utf16_length(final_text), length=_get_utf16_length(response_header.strip())))
+    entities.append(MessageEntityBold(offset=_get_utf16_length(final_text),
+                                      length=_get_utf16_length(response_header.strip())))
     final_text += response_header
-    quote_start = _get_utf16_length(final_text)
-    entities.append(MessageEntityBlockquote(offset=quote_start, length=_get_utf16_length(response_text_formatted), collapsed=collapsible))
+    
+    # 计算回复内容在最终消息中的起始偏移量
+    response_start_offset = _get_utf16_length(final_text)
+
+    # --- 智能引用块逻辑开始 ---
+    final_response_entities = []
+    
+    # 1. 识别出所有会打断引用的块级实体
+    block_types = (MessageEntityPre, MessageEntityBlockquote)
+    block_entities = sorted(
+        [e for e in response_entities if isinstance(e, block_types)],
+        key=lambda e: e.offset
+    )
+
+    # 2. 保留所有非块级实体（如粗体、斜体、链接等）
+    final_response_entities.extend(e for e in response_entities if not isinstance(e, block_types))
+    # 3. 也保留块级实体本身
+    final_response_entities.extend(block_entities)
+    
+    last_offset = 0
+    response_text_len = _get_utf16_length(response_text_formatted)
+
+    # 4. 在块级实体的“间隙”中创建新的引用块
+    if not block_entities:
+        # 如果没有任何块级实体，就给整个回复内容添加一个引用块
+        if response_text_len > 0:
+            final_response_entities.append(MessageEntityBlockquote(offset=0, length=response_text_len, collapsed=collapsible))
+    else:
+        # 为第一个块级实体之前的内容创建引用块
+        first_block_offset = block_entities[0].offset
+        if first_block_offset > 0:
+            final_response_entities.append(MessageEntityBlockquote(offset=0, length=first_block_offset, collapsed=collapsible))
+        
+        # 为两个块级实体之间的内容创建引用块
+        for i in range(len(block_entities) - 1):
+            start = block_entities[i].offset + block_entities[i].length
+            end = block_entities[i+1].offset
+            if end > start:
+                final_response_entities.append(MessageEntityBlockquote(offset=start, length=end - start, collapsed=collapsible))
+        
+        # 为最后一个块级实体之后的内容创建引用块
+        last_block = block_entities[-1]
+        start = last_block.offset + last_block.length
+        if start < response_text_len:
+             final_response_entities.append(MessageEntityBlockquote(offset=start, length=response_text_len - start, collapsed=collapsible))
+
+    # 将格式化后的回复文本追加到最终文本中
     final_text += response_text_formatted + "\n"
-    for entity in response_entities:
-        entity.offset += quote_start
-    entities.extend(response_entities)
+    
+    # 调整所有新生成的和原有的回复实体的偏移量，并添加到主实体列表中
+    for entity in final_response_entities:
+        entity.offset += response_start_offset
+    entities.extend(final_response_entities)
 
     entities.append(MessageEntityItalic(offset=_get_utf16_length(final_text), length=_get_utf16_length(powered_by)))
     final_text += powered_by
