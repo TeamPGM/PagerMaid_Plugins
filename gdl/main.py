@@ -18,14 +18,18 @@ from pagermaid.utils import pip_install
 
 # Dependency check
 dependencies = {
-    "gallery-dl",
-    "FastTelethonhelper",
+    "gallery_dl": "gallery-dl",
+    "FastTelethonhelper": "git+https://github.com/outlook84/FastTelethonhelper.git@main",
 }
-for package in dependencies:
+
+for alias, pip_name in dependencies.items():
     try:
-        importlib.metadata.version(package)
-    except importlib.metadata.PackageNotFoundError:
-        pip_install(package)
+        importlib.import_module(alias)
+    except ModuleNotFoundError:
+        if "git+" in pip_name:
+            pip_install(alias, version=" @ " + pip_name, alias=alias)
+        else:
+            pip_install(pip_name, alias=alias)
 
 try:
     from FastTelethonhelper import fast_upload

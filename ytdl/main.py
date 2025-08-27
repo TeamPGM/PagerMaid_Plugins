@@ -18,14 +18,17 @@ from pagermaid.utils import pip_install
 
 dependencies = {
     "yt_dlp": "yt-dlp[curl-cffi]",
-    "FastTelethonhelper": "FastTelethonhelper",
+    "FastTelethonhelper": "git+https://github.com/outlook84/FastTelethonhelper.git@main",
 }
 
-for module, package in dependencies.items():
+for alias, pip_name in dependencies.items():
     try:
-        importlib.import_module(module)
+        importlib.import_module(alias)
     except ModuleNotFoundError:
-        pip_install(package)
+        if "git+" in pip_name:
+            pip_install(alias, version=" @ " + pip_name, alias=alias)
+        else:
+            pip_install(pip_name, alias=alias)
 
 import yt_dlp
 from yt_dlp.utils import DownloadError, ExtractorError
