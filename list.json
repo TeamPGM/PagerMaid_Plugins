@@ -211,6 +211,16 @@
             "des": "### IP 查询\n\n使用 ip2location.io 提供的 API 查询 IP 地址信息。\n\n**使用方法:** `.ip <ip>`"
         },
         {
+            "name": "jupai",
+            "version": "1.03",
+            "section": "chat",
+            "maintainer": "xiaoyi、outlook84",
+            "size": "1.44 kb",
+            "supported": true,
+            "des_short": "jupai 举牌小人",
+            "des": "# 举牌小人\n\n```\n-jupai 123\n```"
+        },
+        {
             "name": "listusernames",
             "version": "1.01",
             "section": "daily",
@@ -268,7 +278,7 @@
             "size": "2.79 kb",
             "supported": true,
             "des_short": "qr 二维码相关操作",
-            "des": "# QR Code 工具\n\n## 概述\n\n本插件提供了生成和解析二维码的功能。\n\n## 命令\n\n### 生成二维码\n\n- **命令:** `genqr <文本内容>`\n- **功能:** 根据您提供的文本内容生成一张二维码图片。\n\n### 解析二维码\n\n- **命令:** `parseqr`\n- **功能:** 解析图片中的二维码。可以通过回复一张包含二维码的图片，或者发送图片时在配文中加上此命令来使用。"
+            "des": "# QR Code 工具\n\n## 概述\n\n本插件提供了生成和解析二维码的功能。\n\n## 命令\n\n### 生成二维码\n\n- **命令:** `genqr <文本内容>`\n- **功能:** 根据提供的文本内容生成一张二维码图片。\n\n### 解析二维码\n\n- **命令:** `parseqr`\n- **功能:** 解析图片中的二维码。可以通过回复一张包含二维码的图片，或者发送图片时在配文中加上此命令来使用。"
         },
         {
             "name": "repeat",
