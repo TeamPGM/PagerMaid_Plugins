@@ -1,11 +1,19 @@
+import asyncio
+
 from pagermaid.listener import listener
 from pagermaid.enums import Message, AsyncClient
 
 
-async def get_video_url(client: AsyncClient) -> str:
-    res = await client.get("https://tucdn.wpon.cn/api-girl/index.php?wpon=json", timeout=10.0)
-    data = res.json()
-    return "https:" + data["mp4"]
+async def get_video_url(client: AsyncClient, retries: int = 3, delay: float = 1.5) -> str:
+    for attempt in range(retries):
+        try:
+            res = await client.get("http://api.yujn.cn/api/zzxjj.php?type=video", timeout=10.0, follow_redirects=True)
+            return str(res.url)
+        except Exception as e:
+            if attempt < retries - 1:
+                await asyncio.sleep(delay)
+            else:
+                raise e
 
 
 @listener(command="xjj", description="小姐姐视频")
