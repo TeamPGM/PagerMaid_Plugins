@@ -7,7 +7,7 @@ from pagermaid.enums import Message, AsyncClient
 async def get_video_url(client: AsyncClient, retries: int = 3, delay: float = 1.5) -> str:
     for attempt in range(retries):
         try:
-            res = await client.get("http://api.yujn.cn/api/zzxjj.php?type=video", timeout=10.0, follow_redirects=True)
+            res = await client.get("https://api.yujn.cn/api/zzxjj.php?type=video", timeout=10.0, follow_redirects=True)
             return str(res.url)
         except Exception as e:
             if attempt < retries - 1:
