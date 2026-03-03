@@ -69,16 +69,11 @@ class Config:
     BASE_URL = f"{PREFIX}base_url"
 
     # Defaults
-    DEFAULT_CHAT_MODEL = "gemini-2.0-flash"
-    DEFAULT_SEARCH_MODEL = "gemini-2.0-flash"
-    DEFAULT_IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation"
+    DEFAULT_CHAT_MODEL = "gemini-2.5-flash"
+    DEFAULT_SEARCH_MODEL = "gemini-2.5-flash"
+    DEFAULT_IMAGE_MODEL = "gemini-3.1-flash-image"
     DEFAULT_TTS_MODEL = "gemini-2.5-flash-preview-tts"
     DEFAULT_TTS_VOICE = "Laomedeia"
-
-    # Model Lists
-    SEARCH_MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]
-    IMAGE_MODELS = ["gemini-2.0-flash-preview-image-generation"]
-    TTS_MODELS = ["gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"]
 
 
 # --- Telegraph Setup ---
@@ -137,7 +132,7 @@ def _sanitize_html_for_telegraph(html_content: str) -> str:
 
 async def _send_usage(message: Message, command: str, usage: str):
     """Sends a formatted usage message."""
-    await message.edit(f"<b>用法:</b> <code>,{alias_command('gemini')} {command} {usage}</code>", parse_mode='html')
+    await message.edit(f"<b>用法:</b> <code>{alias_command('gemini')} {command} {usage}</code>", parse_mode='html')
 
 
 async def _show_error(message: Message, text: str):
@@ -304,11 +299,19 @@ async def _call_gemini_image_api(message: Message, contents: list) -> tuple[str 
     if not client:
         return None, None
     model_name = db.get(Config.IMAGE_MODEL, Config.DEFAULT_IMAGE_MODEL)
-    try:
+
+    def blocking_image_call():
         config = types.GenerateContentConfig(response_modalities=["TEXT", "IMAGE"])
-        response = client.models.generate_content(model=f"models/{model_name}", contents=contents, config=config)
+        return client.models.generate_content(model=f"models/{model_name}", contents=contents, config=config)
+
+    try:
+        loop = asyncio.get_running_loop()
+        response = await loop.run_in_executor(None, blocking_image_call)
         text_response, image_response = None, None
         for part in response.candidates[0].content.parts:
+            # Skip thinking/reasoning parts from thinking-capable models
+            if getattr(part, 'thought', False):
+                continue
             if part.text:
                 text_response = part.text
             elif part.inline_data:
@@ -470,18 +473,15 @@ async def _model_set(message: Message, args: str):
         return
     model_type, model_name = parts
     model_map = {
-        "chat": (Config.CHAT_MODEL, None, "聊天"),
-        "search": (Config.SEARCH_MODEL, Config.SEARCH_MODELS, "搜索"),
-        "image": (Config.IMAGE_MODEL, Config.IMAGE_MODELS, "图片"),
-        "tts": (Config.TTS_MODEL, Config.TTS_MODELS, "TTS"),
+        "chat": (Config.CHAT_MODEL, "聊天"),
+        "search": (Config.SEARCH_MODEL, "搜索"),
+        "image": (Config.IMAGE_MODEL, "图片"),
+        "tts": (Config.TTS_MODEL, "TTS"),
     }
     if model_type not in model_map:
         await _send_usage(message, "model set", "[chat|search|image|tts] [model_name]")
         return
-    key, valid_models, type_name = model_map[model_type]
-    if valid_models and model_name not in valid_models:
-        await _show_error(message, f"无效的{type_name}模型。请从以下选项中选择: <code>{', '.join(valid_models)}</code>")
-        return
+    key, type_name = model_map[model_type]
     db[key] = model_name
     await message.edit(f"<b>Gemini {type_name}模型已设置为:</b> <code>{model_name}</code>", parse_mode='html')
 
@@ -493,12 +493,7 @@ async def _model_list(message: Message, _):
     await message.edit("🔍 正在搜索可用模型...", parse_mode='html')
     try:
         all_models = [m.name.replace("models/", "") for m in client.models.list()]
-        text = (
-            f"<b>可用图片模型:</b>\n<code>{', '.join(Config.IMAGE_MODELS)}</code>\n\n"
-            f"<b>可用搜索模型:</b>\n<code>{', '.join(Config.SEARCH_MODELS)}</code>\n\n"
-            f"<b>可用 TTS 模型:</b>\n<code>{', '.join(Config.TTS_MODELS)}</code>\n\n"
-            f"<b>所有可用模型:</b>\n<code>{', '.join(all_models)}</code>"
-        )
+        text = f"<b>所有可用模型:</b>\n<code>{', '.join(all_models)}</code>"
         await message.edit(text, parse_mode='html')
     except Exception as e:
         await _show_error(message, f"获取模型时出错:\n<pre><code>{html.escape(str(e))}</code></pre>")
