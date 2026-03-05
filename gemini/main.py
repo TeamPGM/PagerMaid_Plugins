@@ -367,7 +367,7 @@ async def _call_gemini_api(message: Message, contents: list, use_search: bool) -
         display_text = _extract_response_text(response)
         if db.get(Config.CONTEXT_ENABLED) and not use_search:
             history = db.get(Config.CHAT_HISTORY, [])
-            history.extend([contents[0], response.text])
+            history.extend([contents[0], display_text])
             db[Config.CHAT_HISTORY] = history
         return display_text
     except Exception as e:
