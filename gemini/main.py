@@ -76,31 +76,30 @@ class Config:
     DEFAULT_TTS_VOICE = "Laomedeia"
 
 
-# --- Telegraph Setup ---
+# --- Telegraph Functions ---
 
 async def _get_telegraph_content(url: str) -> str | None:
-    """Fetches and parses content from a Telegraph URL."""
+    """Fetches and parses content from a Telegraph URL.
+    """
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.get(url)
+            response = await client.get(url, follow_redirects=True, timeout=10)
             response.raise_for_status()
             soup = BeautifulSoup(response.text, 'html.parser')
             article = soup.find('article')
             return article.get_text(separator='\n', strip=True) if article else None
-    except (httpx.HTTPStatusError, httpx.RequestError):
-        return None
     except Exception:
         return None
 
 
-def _format_text_for_telegram(text: str) -> str:
-    """Formats markdown text to HTML suitable for Telegram."""
-    html_output = markdown.markdown(text, extensions=['fenced_code'])
-    soup = BeautifulSoup(html_output, "html.parser")
-    for tag in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']):
-        tag.name = 'b'
-        tag.insert_after(BeautifulSoup("<br>", "html.parser"))
-    return str(soup)
+async def _resolve_telegraph_text(text: str, message: Message) -> str:
+    """If text contains a telegra.ph URL, fetch and return the article content."""
+    if match := re.search(r'https://telegra\.ph/[\w/-]+', text):
+        await message.edit("正在提取 Telegraph 链接内容...", parse_mode='html')
+        content = await _get_telegraph_content(match.group(0))
+        await message.edit("💬 思考中...", parse_mode='html')
+        return content if content else text
+    return text
 
 
 def _get_telegraph_client():
@@ -114,8 +113,6 @@ def _get_telegraph_client():
     return Telegraph(access_token=token)
 
 
-# --- Helper Functions ---
-
 def _sanitize_html_for_telegraph(html_content: str) -> str:
     """Sanitizes HTML to prevent invalid tag errors from Telegraph."""
     ALLOWED_TAGS = {
@@ -128,6 +125,88 @@ def _sanitize_html_for_telegraph(html_content: str) -> str:
         if tag.name not in ALLOWED_TAGS:
             tag.unwrap()
     return str(soup)
+
+
+async def _send_to_telegraph(title: str, content: str) -> tuple[str | None, str | None]:
+    """Creates a Telegraph page and returns its URL and a potential error message."""
+    try:
+        if len(content.encode('utf-8')) > 64 * 1024:
+            return None, "内容超过 Telegraph 64KB 大小限制"
+        client = _get_telegraph_client()
+        page = client.create_page(title=title, html_content=content)
+        posts = db.get(Config.TELEGRAPH_POSTS, {})
+        post_id = str(max(map(int, posts.keys()), default=0) + 1)
+        posts[post_id] = {"path": page['path'], "title": title}
+        db[Config.TELEGRAPH_POSTS] = posts
+        return page['url'], None
+    except Exception as e:
+        return None, str(e)
+
+
+def _format_text_for_telegram(text: str) -> str:
+    """Converts markdown text to Telegram-compatible HTML.
+    """
+    raw_html = markdown.markdown(text, extensions=['fenced_code'])
+    soup = BeautifulSoup(raw_html, "html.parser")
+
+    def _convert(node) -> str:
+        # Plain text node
+        if node.name is None:
+            return html.escape(str(node))
+
+        tag = node.name
+
+        # <pre><code> — handle as a unit to avoid double-escaping
+        if tag == 'pre':
+            code_node = node.find('code')
+            code_text = html.escape(node.get_text())
+            lang = ''
+            if code_node:
+                for cls in code_node.get('class', []):
+                    if cls.startswith('language-'):
+                        lang = cls[len('language-'):]
+                        break
+            inner_tag = f'<code class="{html.escape(lang)}">' if lang else '<code>'
+            return f'<pre>{inner_tag}{code_text}</code></pre>\n'
+
+        inner = "".join(_convert(child) for child in node.children)
+
+        if tag in ('b', 'strong'):
+            return f"<b>{inner}</b>"
+        if tag in ('i', 'em'):
+            return f"<i>{inner}</i>"
+        if tag in ('s', 'del', 'strike'):
+            return f"<s>{inner}</s>"
+        if tag == 'u':
+            return f"<u>{inner}</u>"
+        if tag == 'code':
+            return f"<code>{inner}</code>"
+        if tag in ('h1', 'h2', 'h3', 'h4', 'h5', 'h6'):
+            return f"<b>{inner}</b>\n"
+        if tag == 'p':
+            return f"{inner}\n\n"
+        if tag == 'br':
+            return "\n"
+        if tag == 'hr':
+            return "\n——\n"
+        if tag == 'a':
+            href = html.escape(node.get('href', ''))
+            return f'<a href="{href}">{inner}</a>'
+        if tag in ('ul', 'ol'):
+            return f"{inner}"
+        if tag == 'li':
+            return f"• {inner.strip()}\n"
+        if tag == 'blockquote':
+            return f"<blockquote>{inner}</blockquote>\n"
+        # Any unrecognised tag: just emit the inner content
+        return inner
+
+    result = "".join(_convert(child) for child in soup.children)
+    result = re.sub(r'\n{3,}', '\n\n', result)
+    return result.strip()
+
+
+# --- Helper Functions ---
 
 
 async def _send_usage(message: Message, command: str, usage: str):
@@ -170,18 +249,6 @@ async def _get_prompt_text_for_display(message: Message, args: str) -> str:
     return ""
 
 
-async def _get_text_from_potential_telegraph(text: str, message_for_edit: Message) -> str:
-    """Extracts content from a Telegraph URL if present, otherwise returns original text."""
-    if not text:
-        return ""
-    if match := re.search(r'https://telegra\.ph/([\w/-]+)', text):
-        await message_for_edit.edit("正在提取 Telegraph 链接内容...", parse_mode='html')
-        content = await _get_telegraph_content(match.group(0))
-        await message_for_edit.edit("💬 思考中...", parse_mode='html')
-        return content or text
-    return text
-
-
 async def _get_full_content(message: Message, args: str) -> list | None:
     """Gathers prompt and media from message, reply, and args."""
     content_parts, text_parts = [], []
@@ -215,11 +282,9 @@ async def _get_full_content(message: Message, args: str) -> list | None:
                 content_parts.append(types.Part(inline_data=types.Blob(mime_type=mime_type, data=media_bytes)))
 
     if reply and not reply.sticker and reply.text:
-        replied_text = _remove_gemini_footer(reply.text)
-        text_parts.append(await _get_text_from_potential_telegraph(replied_text, message))
+        text_parts.append(await _resolve_telegraph_text(_remove_gemini_footer(reply.text), message))
     if args:
-        processed_args = _remove_gemini_footer(args)
-        text_parts.append(await _get_text_from_potential_telegraph(processed_args, message))
+        text_parts.append(await _resolve_telegraph_text(_remove_gemini_footer(args), message))
 
     if full_text := "\n".join(text_parts):
         content_parts.insert(0, full_text)
@@ -251,6 +316,17 @@ async def _get_gemini_client(message: Message) -> genai.Client | None:
     return genai.Client(api_key=api_key, vertexai=False, http_options=http_options)
 
 
+def _extract_response_text(response) -> str:
+    """Extracts response text, skipping thought/reasoning parts from thinking models."""
+    try:
+        parts = response.candidates[0].content.parts
+    except (IndexError, AttributeError):
+        return response.text or ""
+
+    text_segments = [part.text for part in parts if not getattr(part, 'thought', False) and part.text]
+    return "\n".join(text_segments) if text_segments else (response.text or "")
+
+
 async def _call_gemini_api(message: Message, contents: list, use_search: bool) -> str | None:
     """Calls the Gemini API in a non-blocking way and returns the response text, or None on error."""
     client = await _get_gemini_client(message)
@@ -271,11 +347,16 @@ async def _call_gemini_api(message: Message, contents: list, use_search: bool) -
                             'HARM_CATEGORY_HARASSMENT', 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
                             'HARM_CATEGORY_CIVIC_INTEGRITY']]
         max_tokens = db.get(Config.MAX_TOKENS, 0)
+        tools = [
+            types.Tool(google_search=types.GoogleSearch(), url_context=types.UrlContext())
+        ] if use_search else [
+            types.Tool(url_context=types.UrlContext())
+        ]
         config = types.GenerateContentConfig(
             system_instruction=system_prompt,
             safety_settings=safety_settings,
             max_output_tokens=max_tokens if max_tokens > 0 else None,
-            tools=[types.Tool(google_search=types.GoogleSearch())] if use_search else None
+            tools=tools,
         )
         return client.models.generate_content(model=f"models/{model_name}", contents=api_contents, config=config)
 
@@ -283,11 +364,12 @@ async def _call_gemini_api(message: Message, contents: list, use_search: bool) -
         loop = asyncio.get_running_loop()
         response = await loop.run_in_executor(None, blocking_api_call)
 
+        display_text = _extract_response_text(response)
         if db.get(Config.CONTEXT_ENABLED) and not use_search:
             history = db.get(Config.CHAT_HISTORY, [])
             history.extend([contents[0], response.text])
             db[Config.CHAT_HISTORY] = history
-        return response.text
+        return display_text
     except Exception as e:
         await _handle_gemini_exception(message, e)
         return None
@@ -613,23 +695,6 @@ async def _handle_context(message: Message, args: str):
     else:
         await _send_usage(message, "context", "[on|off|clear|show]")
 
-
-async def _send_to_telegraph(title: str, content: str) -> tuple[str | None, str | None]:
-    """Creates a Telegraph page and returns its URL and a potential error message."""
-    try:
-        if len(content.encode('utf-8')) > 64 * 1024:
-            return None, "内容超过 Telegraph 64KB 大小限制"
-        client = _get_telegraph_client()
-        page = client.create_page(title=title, html_content=content)
-        posts = db.get(Config.TELEGRAPH_POSTS, {})
-        post_id = str(max(map(int, posts.keys()), default=0) + 1)
-        posts[post_id] = {"path": page['path'], "title": title}
-        db[Config.TELEGRAPH_POSTS] = posts
-        return page['url'], None
-    except Exception as e:
-        return None, str(e)
-
-
 async def _telegraph_toggle(message: Message, args: str):
     is_on = args == "on"
     db[Config.TELEGRAPH_ENABLED] = is_on
@@ -851,11 +916,11 @@ def _build_response_message(prompt_text: str, html_output: str, powered_by: str)
     return final_text, entities
 
 
-async def _post_to_telegraph_and_reply(message: Message, prompt_text: str, html_output: str, powered_by: str, limit: int):
+async def _post_to_telegraph_and_reply(message: Message, prompt_text: str, raw_text: str, powered_by: str, limit: int):
     """Handles posting long messages to Telegraph."""
     title = (prompt_text[:15] + '...') if prompt_text and len(prompt_text) > 18 else prompt_text or "Gemini 回复"
-    sanitized_html = _sanitize_html_for_telegraph(html_output)
-    url, error = await _send_to_telegraph(title, sanitized_html)
+    telegraph_html = _sanitize_html_for_telegraph(markdown.markdown(raw_text, extensions=['fenced_code']))
+    url, error = await _send_to_telegraph(title, telegraph_html)
     if url:
         reason = f"超过 {limit} 字符" if limit > 0 else "超过 Telegram 消息最大字符数"
         telegraph_link_text = f"🤖<b>回复:</b>\n<blockquote><b>回复{reason}，已上传到 Telegraph:</b>\n {url}</blockquote>"
@@ -865,14 +930,24 @@ async def _post_to_telegraph_and_reply(message: Message, prompt_text: str, html_
         await _show_error(message, f"上传到 Telegraph 失败: {error}" if error else "上传到 Telegraph 失败。")
 
 
-async def _send_response(message: Message, prompt_text: str, html_output: str, powered_by: str):
+async def _send_response(message: Message, prompt_text: str, html_output: str, powered_by: str, raw_text: str = ""):
     """Formats and sends the final response, handling Telegraph for long messages."""
     final_text, entities = _build_response_message(prompt_text, html_output, powered_by)
     telegraph_enabled = db.get(Config.TELEGRAPH_ENABLED)
     telegraph_limit = db.get(Config.TELEGRAPH_LIMIT, 0)
 
+    # Check user-configured telegraph limit
     if telegraph_enabled and telegraph_limit > 0 and len(final_text) > telegraph_limit:
-        await _post_to_telegraph_and_reply(message, prompt_text, html_output, powered_by, telegraph_limit)
+        await _post_to_telegraph_and_reply(message, prompt_text, raw_text or html_output, powered_by, telegraph_limit)
+        return
+
+    # Proactively check Telegram's 4096-char hard limit BEFORE calling message.edit(),
+    TG_MAX_LENGTH = 4096
+    if _get_utf16_length(final_text) > TG_MAX_LENGTH:
+        if telegraph_enabled:
+            await _post_to_telegraph_and_reply(message, prompt_text, raw_text or html_output, powered_by, 0)
+        else:
+            await _show_error(message, "输出过长。启用 Telegraph 集成以链接形式发送。")
         return
 
     try:
@@ -893,7 +968,7 @@ async def _send_response(message: Message, prompt_text: str, html_output: str, p
         await _show_error(message, "模型返回了空的或无效的回复，无法发送。")
     except MessageTooLongError:
         if telegraph_enabled:
-            await _post_to_telegraph_and_reply(message, prompt_text, html_output, powered_by, 0)
+            await _post_to_telegraph_and_reply(message, prompt_text, raw_text or html_output, powered_by, 0)
         else:
             await _show_error(message, "输出过长。启用 Telegraph 集成以链接形式发送。")
 
@@ -917,7 +992,7 @@ async def _execute_gemini_request(message: Message, args: str, use_search: bool)
 
     html_output = _format_text_for_telegram(output_text)
     prompt_text = await _get_prompt_text_for_display(message, args)
-    await _send_response(message, prompt_text, html_output, powered_by)
+    await _send_response(message, prompt_text, html_output, powered_by, raw_text=output_text)
 
 
 async def _handle_search(message: Message, args: str):
@@ -1093,7 +1168,7 @@ async def _execute_audio_request(message: Message, args: str, use_search: bool):
         await message.edit(f"{fallback_message} 将以文本形式发送回复。", parse_mode='html')
         html_output = _format_text_for_telegram(output_text)
         prompt_text = await _get_prompt_text_for_display(message, args)
-        await _send_response(message, prompt_text, html_output, powered_by)
+        await _send_response(message, prompt_text, html_output, powered_by, raw_text=output_text)
     # if tts_result is None, do nothing as the error is already displayed.
 
 
@@ -1111,9 +1186,9 @@ async def _handle_search_audio(message: Message, args: str):
 Google Gemini AI 插件。需要 PagerMaid-Modify 1.5.8 及以上版本。
 
 核心功能:
-- `gemini [query]`: 与模型聊天 (默认)。
+- `gemini [query]`: 与模型聊天，自动读取消息中的 URL 内容。
 - `gemini _audio [query]`: 获取模型回复并转换为语音。
-- `gemini search [query]`: 使用 Gemini AI 支持的 Google 搜索。
+- `gemini search [query]`: 使用 Gemini AI 支持的 Google 搜索 + URL 读取。
 - `gemini search_audio [query]`: 获取搜索结果并转换为语音。
 - `gemini tts [text]`: 将文本转换为语音。需要安装 ffmpeg。
 - `gemini image [prompt]`: 生成或编辑图片。
